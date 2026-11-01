@@ -4,8 +4,11 @@
 > Diseña, dimensiona y calcula la rentabilidad de una instalación de autoconsumo solar en 8 sencillos pasos desde tu navegador, sin necesidad de instalar nada ni registrarte.
 
 [![Estado](https://img.shields.io/badge/Estado-Listo%20para%20uso-success.svg)](#)
+[![Release](https://img.shields.io/badge/Release-v4.3.0%20(Descargable)-success.svg)](https://github.com/Xtreams-01/Energy-calculator/releases/tag/v4.3.0)
 [![Normativa](https://img.shields.io/badge/Normativa-REBT%20ITC--BT--19%2F20%2F40%20%7C%20RD%20244%2F2019-blue.svg)](#)
 [![Cálculos](https://img.shields.io/badge/Motor-Física%20Real%20%26%20Fichas%20Técnicas-orange.svg)](#)
+
+[📥 **Descargar última versión portable (.html)**](https://github.com/Xtreams-01/Energy-calculator/releases/download/v4.3.0/showroom_solar_portable.html) | [📦 **Descargar paquete completo (.zip)**](https://github.com/Xtreams-01/Energy-calculator/releases/download/v4.3.0/Showroom_Solar_v4.3.0_Offline.zip) | [🚀 **Ver todas las Releases**](https://github.com/Xtreams-01/Energy-calculator/releases)
 
 ---
 
