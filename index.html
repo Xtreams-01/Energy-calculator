@@ -1235,11 +1235,11 @@
                     </div>
                     <div>
                         <span class="font-bold text-[var(--text-primary)] block">Pérdidas de Conversión del Inversor (DC → AC)</span>
-                        <span id="s3LossBreakdown" class="text-[var(--text-muted)] font-mono text-[11px]">Eficiencia nominal ponderada: 98.4%</span>
+                        <span id="s3LossBreakdown" class="text-[var(--text-muted)] font-mono text-[11px]">Ficha propia (Huawei SUN2000-3KTL): Rendimiento η = 97.6% (Pérdida: -2.4%)</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 self-end sm:self-auto">
-                    <span id="s3LossPctBadge" class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-[#0066FF]/12 text-[#0066FF] whitespace-nowrap">-1.6%</span>
+                    <span id="s3LossPctBadge" class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-[#0066FF]/12 text-[#0066FF] whitespace-nowrap">-2.4%</span>
                     <span id="s3LossKwhBadge" class="text-xs font-mono text-[var(--text-muted)] whitespace-nowrap">(-95 kWh/año)</span>
                 </div>
             </div>
@@ -1722,12 +1722,12 @@
                         </div>
                         <div>
                             <span class="font-bold text-[var(--text-primary)] block">Pérdidas por Ciclado de Batería (Round-Trip)</span>
-                            <span id="s5LossBreakdown" class="text-[var(--text-muted)] font-mono text-[11px]">Eficiencia de ciclo completo (BMS + Celdas): 95.0%</span>
+                            <span id="s5LossBreakdown" class="text-[var(--text-muted)] font-mono text-[11px]">Sistema sin batería activa (0% pérdidas de ciclado)</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 self-end sm:self-auto">
-                        <span id="s5LossPctBadge" class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-[#8B5CF6]/12 text-[#8B5CF6] whitespace-nowrap">-5.0%</span>
-                        <span id="s5LossKwhBadge" class="text-xs font-mono text-[var(--text-muted)] whitespace-nowrap">(-45 kWh/año)</span>
+                        <span id="s5LossPctBadge" class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-[#8B5CF6]/12 text-[#8B5CF6] whitespace-nowrap">0.0%</span>
+                        <span id="s5LossKwhBadge" class="text-xs font-mono text-[var(--text-muted)] whitespace-nowrap">(0 kWh/año)</span>
                     </div>
                 </div>
 
@@ -4960,7 +4960,7 @@ const UI = {
             const resi = [];
             const ind = [];
             for (const [id, m] of Object.entries(MODULOS_FV)) {
-                const opt = `<option value="${escapeHtml(id)}">${escapeHtml(m.name)} — ${m.wp}Wp (${m.efficiency}%)</option>`;
+                const opt = `<option value="${escapeHtml(id)}">${escapeHtml(m.name)} — ${m.wp}Wp (η: ${m.efficiency}% • NOCT: ${m.noct}°C • Mismatch: ${m.mismatchPct}%)</option>`;
                 if (m.wp < 550) {
                     resi.push(opt);
                 } else {
@@ -4973,14 +4973,14 @@ const UI = {
             `;
         }
 
-        // Catálogo Inversores (Organizado por Monofásicos, Trifásicos e Industriales)
+        // Catálogo Inversores (Organizado por Monofásicos, Trifásicos e Industriales con rendimiento individual)
         const selInv = document.getElementById('selInverterCatalog');
         if (selInv) {
             const mono = [];
             const triResi = [];
             const ind = [];
             for (const [id, inv] of Object.entries(INVERSORES_COMERCIALES)) {
-                const opt = `<option value="${escapeHtml(id)}">${escapeHtml(inv.nombre)}</option>`;
+                const opt = `<option value="${escapeHtml(id)}">${escapeHtml(inv.nombre)} — Rendimiento: ${inv.rendimiento}%</option>`;
                 if (inv.tipoRed === 'monofasico') {
                     mono.push(opt);
                 } else if (inv.pacKw <= 20) {
@@ -4996,11 +4996,11 @@ const UI = {
             `;
         }
 
-        // Catálogo Baterías
+        // Catálogo Baterías (Con eficiencia Round-Trip individual)
         const selBat = document.getElementById('selBatteryCatalog');
         if (selBat) {
             selBat.innerHTML = Object.entries(BATERIAS_CATALOGO).map(([id, b]) =>
-                `<option value="${escapeHtml(id)}">${escapeHtml(b.name)}</option>`
+                `<option value="${escapeHtml(id)}">${escapeHtml(b.name)} — Round-Trip: ${b.roundTripEffPct}% (Pérdida: ${(100 - b.roundTripEffPct).toFixed(1)}%)</option>`
             ).join('');
         }
     },
@@ -5347,7 +5347,8 @@ const UI = {
 
         if (c.losses && c.losses.inverter) {
             const clipInfo = c.losses.inverter.clippingLossPct > 0 ? ` | Clipping: -${c.losses.inverter.clippingLossPct}% (${fmtNum(c.losses.inverter.clippingKwh)} kWh)` : ` | Clipping: 0%`;
-            this.setText('s3LossBreakdown', `Conversión: -${c.losses.inverter.conversionLossPct}% (según tabla η=${c.losses.inverter.efficiencyPct}%)${clipInfo}`);
+            const invShortName = inv.modelName ? inv.modelName.split('(')[0].trim() : 'Inversor';
+            this.setText('s3LossBreakdown', `Ficha propia (${invShortName}): Rendimiento nominal η = ${c.losses.inverter.efficiencyPct}% (Pérdida conversión: -${c.losses.inverter.conversionLossPct}%)${clipInfo}`);
             this.setText('s3LossPctBadge', `-${c.losses.inverter.lossPct}%`);
             this.setText('s3LossKwhBadge', `(-${fmtNum(c.losses.inverter.lossKwh)} kWh/año)`);
         }
@@ -5401,7 +5402,8 @@ const UI = {
 
         if (c.losses && c.losses.battery) {
             const hasB = st.batterySystem.enabled;
-            this.setText('s5LossBreakdown', hasB ? `Eficiencia de ciclo completo (Round-Trip): ${c.losses.battery.roundTripPct}%` : 'Sistema sin batería (0% pérdidas de ciclado)');
+            const batShortName = bat.modelName ? bat.modelName.split('(')[0].trim() : 'Batería';
+            this.setText('s5LossBreakdown', hasB ? `Ficha propia (${batShortName}): Eficiencia Round-Trip propia η = ${c.losses.battery.roundTripPct}% (Pérdida ciclado: -${c.losses.battery.cycleLossPct}%)` : 'Sistema sin batería activa (0% pérdidas de ciclado)');
             this.setText('s5LossPctBadge', hasB ? `-${c.losses.battery.cycleLossPct}%` : '0.0%');
             this.setText('s5LossKwhBadge', hasB ? `(-${fmtNum(c.losses.battery.lossKwh)} kWh/año)` : '(0 kWh/año)');
         }
@@ -5817,7 +5819,7 @@ const UI = {
                 const batRow = l.battery.enabled ? `
                     <tr class="hover:bg-[var(--bg-subtle)] transition">
                         <td class="p-3 font-semibold text-[var(--text-primary)]">Batería LiFePO4 (Ciclado)</td>
-                        <td class="p-3">${badgeTabla}<span class="text-[var(--text-muted)] text-[11px]">Round-Trip de catálogo: η = ${l.battery.roundTripPct}% sobre energía ciclada</span></td>
+                        <td class="p-3">${badgeTabla}<span class="text-[var(--text-muted)] text-[11px]">Ficha ${escapeHtml(st.batterySystem.modelName.split('(')[0].trim())}: Round-Trip propio η = ${l.battery.roundTripPct}% sobre energía ciclada</span></td>
                         <td class="p-3 text-right text-[#8B5CF6] font-bold">-${l.battery.cycleLossPct}%</td>
                         <td class="p-3 text-right text-[#EF4444]">-${fmtNum(l.battery.lossKwh)} kWh</td>
                         <td class="p-3 text-right font-bold text-[#10B981]">${fmtNum(l.total.netDeliveredKwh)} kWh</td>
@@ -5850,7 +5852,7 @@ const UI = {
                     </tr>
                     <tr class="hover:bg-[var(--bg-subtle)] transition">
                         <td class="p-3 font-semibold text-[var(--text-primary)]">Paneles FV (Mismatch)</td>
-                        <td class="p-3">${badgeTabla}<span class="text-[var(--text-muted)] text-[11px]">Ficha de catálogo: tolerancia positiva y clasificación de células</span></td>
+                        <td class="p-3">${badgeTabla}<span class="text-[var(--text-muted)] text-[11px]">Ficha ${escapeHtml(st.pvModules.name.split('(')[0].trim())}: Tolerancia fabril propia -${l.pv.mismatchPct}% • NOCT ${l.pv.noct}°C</span></td>
                         <td class="p-3 text-right text-[#F59E0B] font-bold">-${l.pv.mismatchPct}%</td>
                         <td class="p-3 text-right text-[#EF4444]">-${fmtNum(l.pv.mismatchKwh)} kWh</td>
                         <td class="p-3 text-right font-bold">${fmtNum(remMismatch)} kWh</td>
@@ -5885,7 +5887,7 @@ const UI = {
                     </tr>
                     <tr class="hover:bg-[var(--bg-subtle)] transition">
                         <td class="p-3 font-semibold text-[var(--text-primary)]">Inversor DC/AC (Conversión)</td>
-                        <td class="p-3">${badgeTabla}<span class="text-[var(--text-muted)] text-[11px]">Ficha técnica oficial de catálogo: Eficiencia europea η = ${l.inverter.efficiencyPct}%</span></td>
+                        <td class="p-3">${badgeTabla}<span class="text-[var(--text-muted)] text-[11px]">Ficha ${escapeHtml(st.inverterAndStrings.modelName.split('(')[0].trim())}: Rendimiento propio η = ${l.inverter.efficiencyPct}%</span></td>
                         <td class="p-3 text-right text-[#0066FF] font-bold">-${l.inverter.conversionLossPct}%</td>
                         <td class="p-3 text-right text-[#EF4444]">-${fmtNum(l.inverter.conversionLossKwh)} kWh</td>
                         <td class="p-3 text-right font-bold">${fmtNum(remInv)} kWh</td>
@@ -6441,7 +6443,7 @@ const PrintReport = {
                         </tr>
                         <tr>
                             <td><strong>Paneles FV (Mismatch)</strong></td>
-                            <td><span style="font-size: 7pt; font-weight: bold; background: #EFF6FF; color: #1D4ED8; padding: 1px 4px; border-radius: 4px; border: 1px solid #BFDBFE;">TABLA PANEL</span> Tolerancia de potencia y clasificación de células</td>
+                            <td><span style="font-size: 7pt; font-weight: bold; background: #EFF6FF; color: #1D4ED8; padding: 1px 4px; border-radius: 4px; border: 1px solid #BFDBFE;">TABLA PANEL</span> Ficha ${escapeHtml(pv.name.split('(')[0].trim())}: Tolerancia fabril propia -${c.losses ? c.losses.pv.mismatchPct : 1.0}% • NOCT ${c.losses ? c.losses.pv.noct : 45}°C</td>
                             <td style="text-align: right; color: #D97706; font-weight: bold;">-${c.losses ? c.losses.pv.mismatchPct : 1.0}%</td>
                             <td style="text-align: right; color: #DC2626;">-${c.losses ? fmtNum(c.losses.pv.mismatchKwh) : '0'} kWh/año</td>
                             <td style="text-align: right; font-weight: 600;">${c.losses ? fmtNum(c.losses.grossStcGenKwh - c.losses.pv.thermalKwh - c.losses.pv.mismatchKwh) : '—'} kWh</td>
@@ -6476,7 +6478,7 @@ const PrintReport = {
                         </tr>
                         <tr>
                             <td><strong>Inversor DC/AC (Conversión)</strong></td>
-                            <td><span style="font-size: 7pt; font-weight: bold; background: #EFF6FF; color: #1D4ED8; padding: 1px 4px; border-radius: 4px; border: 1px solid #BFDBFE;">TABLA INVERSOR</span> Eficiencia europea de catálogo η = ${c.losses ? c.losses.inverter.efficiencyPct : 98.4}%</td>
+                            <td><span style="font-size: 7pt; font-weight: bold; background: #EFF6FF; color: #1D4ED8; padding: 1px 4px; border-radius: 4px; border: 1px solid #BFDBFE;">TABLA INVERSOR</span> Ficha ${escapeHtml(inv.modelName.split('(')[0].trim())}: Rendimiento propio η = ${c.losses ? c.losses.inverter.efficiencyPct : 98.4}%</td>
                             <td style="text-align: right; color: #0066FF; font-weight: bold;">-${c.losses ? c.losses.inverter.conversionLossPct : 1.6}%</td>
                             <td style="text-align: right; color: #DC2626;">-${c.losses ? fmtNum(c.losses.inverter.conversionLossKwh) : '0'} kWh/año</td>
                             <td style="text-align: right; font-weight: 600;">${c.losses ? fmtNum(c.losses.grossStcGenKwh - c.losses.pv.lossKwh - c.losses.cables.lossKwh - c.losses.inverter.lossKwh) : '—'} kWh</td>
@@ -6492,7 +6494,7 @@ const PrintReport = {
                         ${(c.losses && c.losses.battery.enabled) ? `
                         <tr>
                             <td><strong>Batería LiFePO4 (Ciclado)</strong></td>
-                            <td><span style="font-size: 7pt; font-weight: bold; background: #EFF6FF; color: #1D4ED8; padding: 1px 4px; border-radius: 4px; border: 1px solid #BFDBFE;">TABLA BATERÍA</span> Ficha técnica: Round-Trip η = ${c.losses.battery.roundTripPct}%</td>
+                            <td><span style="font-size: 7pt; font-weight: bold; background: #EFF6FF; color: #1D4ED8; padding: 1px 4px; border-radius: 4px; border: 1px solid #BFDBFE;">TABLA BATERÍA</span> Ficha ${escapeHtml(bat.modelName.split('(')[0].trim())}: Round-Trip propio η = ${c.losses.battery.roundTripPct}%</td>
                             <td style="text-align: right; color: #7C3AED; font-weight: bold;">-${c.losses.battery.cycleLossPct}%</td>
                             <td style="text-align: right; color: #DC2626;">-${fmtNum(c.losses.battery.lossKwh)} kWh/año</td>
                             <td style="text-align: right; font-weight: 600;">${fmtNum(c.losses.total.netDeliveredKwh)} kWh</td>

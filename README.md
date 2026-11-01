@@ -97,13 +97,13 @@ A diferencia de otros simuladores que usan porcentajes fijos o arbitrarios, esta
 
 | Pérdida / Rendimiento | Origen del Dato | ¿Cómo se obtiene? |
 | :--- | :---: | :--- |
-| **Pérdidas por calor en el panel** | `CALCULADO` | Modelo Evans/PVGIS según la temperatura real que alcanza la célula bajo el sol y el coeficiente térmico de potencia ($\gamma_{Pmp}$). |
-| **Tolerancia y Mismatch** | `TABLA FICHA` | Extraído directamente de la ficha técnica oficial del fabricante del panel seleccionado ($0,8\% - 1,2\%$). |
+| **Pérdidas térmicas del panel** | `CALCULADO` | Modelo Evans/PVGIS según radiación real y el coeficiente térmico propio ($\gamma_{Pmp}$) de cada panel. |
+| **Mismatch y Tolerancia fabril** | `TABLA FICHA` | **100% propio de cada panel.** Extraído de la ficha oficial de cada fabricante (ej. AIKO: $0,8\%$, Jinko: $0,9\%$, LONGi: $1,0\%$, JA Solar: $1,1\%$, Hyundai: $1,2\%$). |
 | **Reflexión solar en el cristal** | `CALCULADO` | Modelo óptico de Martin-Ruiz según la inclinación del tejado y la posición del sol. |
-| **Suciedad (Soiling)** | `0,00%` | Garantizado mediante el contrato de mantenimiento y limpieza periódica del sistema. |
-| **Rendimiento del Inversor** | `TABLA FICHA` | Rendimiento europeo ponderado de la ficha del fabricante ($97,0\% - 98,7\%$). |
-| **Pérdidas en los cables** | `CALCULADO` | Ley de Joule real ($P = I^2 \cdot R$) en función de la longitud, sección del cable y corriente de trabajo. |
-| **Rendimiento de la Batería** | `TABLA FICHA` | Eficiencia de ida y vuelta (Round-Trip) según especificación del fabricante ($90\% - 95\%$). |
+| **Suciedad (Soiling)** | `0,00%` | Garantizado mediante el contrato anual de mantenimiento y limpieza periódica del sistema. |
+| **Rendimiento del Inversor** | `TABLA FICHA` | **100% propio de cada inversor.** Rendimiento europeo nominal extraído directamente de la ficha técnica de cada modelo (ej. SMA Sunny Boy: $97,0\%$, Fronius Primo: $97,4\%$, Huawei 3KTL: $97,6\%$, Huawei 6KTL: $98,4\%$, Sungrow SG110CX: $98,7\%$). |
+| **Pérdidas Joule en cables** | `CALCULADO` | Ley de Ohm/Joule real ($P = I^2 \cdot R$) en función de la longitud, sección del cable y corriente de trabajo. |
+| **Rendimiento de la Batería** | `TABLA FICHA` | **100% propio de cada batería.** Eficiencia de ciclo completo (Round-Trip) según especificación del fabricante (ej. Tesla Powerwall 2: $90,0\%$, Pylontech US5000: $94,0\%$, Huawei LUNA2000: $95,0\%$, BYD HVS/HVM: $95,5\%$). |
 
 ---
 
