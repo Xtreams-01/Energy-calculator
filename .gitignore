@@ -1,14 +1,14 @@
-# Python
+# Development and auxiliary files
+test_showroom_wizard_e2e.py
+ai_studio_code(1).html
+showroom_solar_portable.html
+WORKFLOW_MAP.md
+subir-a-cloudflare/
+
+# Python & OS
 __pycache__/
 *.py[cod]
-*$py.class
 .pytest_cache/
-
-# OS / Editor
 .DS_Store
 Thumbs.db
-.vscode/
-.idea/
-
-# Temporary / logs
 *.log
