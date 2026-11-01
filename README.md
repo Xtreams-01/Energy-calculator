@@ -16,7 +16,6 @@ Estructurada para despliegue directo e instantáneo en **Cloudflare Pages** sin 
 ```
 .
 ├── index.html                   # SPA principal interactiva (HTML5 + Tailwind CSS + JS Vanilla)
-├── ingenieria.html              # Estación técnica auxiliar de cálculo avanzado
 ├── _headers                     # Cabeceras de seguridad de Cloudflare (CSP, X-Frame-Options, HSTS)
 ├── functions/api/pvgis.js       # Proxy serverless Edge Function para la API de PVGIS (evita bloqueos CORS)
 ├── .gitignore                   # Exclusión de archivos locales de desarrollo
