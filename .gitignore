@@ -5,6 +5,10 @@ showroom_solar_portable.html
 WORKFLOW_MAP.md
 subir-a-cloudflare/
 
+# Packages & Archives
+*.zip
+*.tar.gz
+
 # Python & OS
 __pycache__/
 *.py[cod]
