@@ -464,9 +464,14 @@
                     </div>
                 </div>
 
-                <!-- Acciones Globales: JSON, Idioma, Tema -->
-                <div class="flex items-center gap-2 shrink-0">
-                    <button type="button" onclick="UI.openJsonModal()" class="btn-press inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bento-subtle hover:border-[#0066FF]/40 transition" aria-label="Importar o exportar proyecto JSON">
+                <!-- Acciones Globales: Auto-Ajuste, JSON, Idioma, Tema -->
+                <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <button type="button" id="btnAutoPilotToggle" onclick="Actions.toggleAutoPilot()" class="btn-press inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-mono font-bold bg-[#10B981]/12 text-[#10B981] border border-[#10B981]/30 whitespace-nowrap transition" aria-label="Activar o pausar el auto-ajuste integral">
+                        <span id="lblAutoPilotShort" class="sm:hidden">⚡ Auto</span>
+                        <span id="lblAutoPilotFull" class="hidden sm:inline">⚡ Auto-Ajuste: ON</span>
+                    </button>
+
+                    <button type="button" onclick="UI.openJsonModal()" class="btn-press inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold bento-subtle hover:border-[#0066FF]/40 transition" aria-label="Importar o exportar proyecto JSON">
                         <svg class="w-3.5 h-3.5 text-[#0066FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                         <span class="hidden sm:inline">.JSON</span>
                     </button>
@@ -522,7 +527,7 @@
                             <h2 class="font-display font-bold text-lg" data-i18n="s0CardTitle">Identificación del Expediente Solar</h2>
                             <p class="text-xs text-[var(--text-muted)]" data-i18n="s0CardSub">Estos datos encabezarán el informe ejecutivo y la memoria técnica descargable.</p>
                         </div>
-                        <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-semibold bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 whitespace-nowrap">v4.0</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-semibold bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 whitespace-nowrap">v4.5</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1119,7 +1124,7 @@
 
                     <!-- Selector desplegable de catálogo (Visible en Modo A) -->
                     <div id="boxModCatalogSelect" class="space-y-2">
-                        <label for="selModuleCatalog" class="block text-xs font-semibold text-[var(--text-secondary)]">Seleccionar Módulo Fotovoltaico Comercial (Tier-1)</label>
+                        <label for="selModuleCatalog" class="block text-xs font-semibold text-[var(--text-secondary)]">Seleccionar Módulo Fotovoltaico Comercial (30 Modelos Tier-1: 390–715 Wp)</label>
                         <select id="selModuleCatalog" class="showroom-input w-full font-medium" onchange="Actions.selectCatalogModule(this.value)">
                             <!-- Poblado desde MODULOS_FV -->
                         </select>
@@ -1193,7 +1198,13 @@
                                 <input id="inpModCount" type="number" min="1" max="500" step="1" class="showroom-input w-24 text-right font-mono font-bold text-base text-[#0066FF]" oninput="Actions.setModuleCount(this.value)">
                             </div>
                         </div>
-                        <input id="rngModCount" type="range" min="1" max="60" step="1" value="8" aria-label="Cantidad de paneles solares" oninput="Actions.setModuleCount(this.value)" style="--thumb-accent: #0066FF;">
+                        <input id="rngModCount" type="range" min="1" max="120" step="1" value="8" aria-label="Cantidad de paneles solares" oninput="Actions.setModuleCount(this.value)" style="--thumb-accent: #0066FF;">
+                        <div id="s2AutoStatusBanner" class="p-3 rounded-xl text-xs border bg-[#0066FF]/5 border-[#0066FF]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <span id="s2AutoStatusText" class="text-[var(--text-secondary)] font-medium">⚡ Auto-sincronizado con inversor y secciones REBT</span>
+                            <button type="button" id="btnS2AutoFix" onclick="Actions.autoFixAllErrors('keep_inverter')" class="hidden btn-press px-3 py-1.5 rounded-lg text-xs font-bold bg-[#EF4444] text-white whitespace-nowrap shrink-0">
+                                🔧 Autocorregir
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -1371,8 +1382,13 @@
                         </div>
                     </div>
 
-                    <div id="boxInvCatalogSelect">
-                        <label for="selInverterCatalog" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Modelo Comercial (Huawei / Fronius / Sungrow)</label>
+                    <div id="boxInvCatalogSelect" class="space-y-1.5">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <label for="selInverterCatalog" class="block text-xs font-semibold text-[var(--text-secondary)]">Modelo Comercial (54 inversores: 0.8–125 kW)</label>
+                            <button type="button" onclick="Actions.autoSelectOptimalInverter()" class="btn-press px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#0066FF]/10 text-[#0066FF] hover:bg-[#0066FF]/20 whitespace-nowrap">
+                                ⚡ Auto-elegir Inversor
+                            </button>
+                        </div>
                         <select id="selInverterCatalog" class="showroom-input w-full font-medium text-xs sm:text-sm" onchange="Actions.selectCatalogInverter(this.value)">
                             <!-- Poblado desde INVERSORES_COMERCIALES -->
                         </select>
@@ -1426,13 +1442,19 @@
 
                     <div class="pt-3 border-t border-[var(--border-hairline)] flex items-center justify-between gap-3">
                         <label for="selNumMppts" class="text-xs font-bold text-[var(--text-secondary)]">Nº de Seguidores MPPT Activos:</label>
-                        <select id="selNumMppts" class="showroom-input w-28 font-mono font-bold text-[#0066FF]" onchange="Actions.setNumMppts(this.value)">
+                        <select id="selNumMppts" class="showroom-input w-32 font-mono font-bold text-[#0066FF]" onchange="Actions.setNumMppts(this.value)">
                             <option value="1">1 MPPT</option>
                             <option value="2">2 MPPTs</option>
                             <option value="3">3 MPPTs</option>
                             <option value="4">4 MPPTs</option>
                             <option value="5">5 MPPTs</option>
                             <option value="6">6 MPPTs</option>
+                            <option value="7">7 MPPTs</option>
+                            <option value="8">8 MPPTs</option>
+                            <option value="9">9 MPPTs</option>
+                            <option value="10">10 MPPTs</option>
+                            <option value="11">11 MPPTs</option>
+                            <option value="12">12 MPPTs</option>
                         </select>
                     </div>
                 </div>
@@ -1495,8 +1517,8 @@
                     </div>
                 </div>
                 <div id="s4VerdictFixBox" class="hidden shrink-0">
-                    <button type="button" id="btnApplySuggestedFix" onclick="Actions.autoSelectCurrentSegment()" class="btn-press px-4 py-2.5 rounded-xl text-xs font-bold bg-[#EF4444] text-white shadow-md whitespace-nowrap">
-                        Aplicar Sección Recomendada
+                    <button type="button" id="btnApplySuggestedFix" onclick="Actions.autoSelectAllCables()" class="btn-press px-4 py-2.5 rounded-xl text-xs font-bold bg-[#EF4444] text-white shadow-md whitespace-nowrap">
+                        🔧 Autocorregir Secciones REBT
                     </button>
                 </div>
             </div>
@@ -1857,8 +1879,13 @@
                             </div>
                         </div>
 
-                        <div id="boxBatCatalogSelect">
-                            <label for="selBatteryCatalog" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Modelo de Batería Comercial</label>
+                        <div id="boxBatCatalogSelect" class="space-y-1.5">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <label for="selBatteryCatalog" class="block text-xs font-semibold text-[var(--text-secondary)]">Modelo Comercial (34 sistemas LV/HV/AC)</label>
+                                <button type="button" onclick="Actions.autoSelectOptimalBattery()" class="btn-press px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#0066FF]/10 text-[#0066FF] hover:bg-[#0066FF]/20 whitespace-nowrap">
+                                    ⚡ Auto-elegir Batería
+                                </button>
+                            </div>
                             <select id="selBatteryCatalog" class="showroom-input w-full text-xs sm:text-sm font-medium" onchange="Actions.selectCatalogBattery(this.value)">
                                 <!-- Poblado desde BATERIAS_CATALOGO -->
                             </select>
@@ -2316,9 +2343,13 @@
                 <span id="bottomLiveSummary" class="text-[11px] text-[var(--text-muted)] truncate max-w-md">3.60 kWp • 5.904 kWh/año • REBT Conforme</span>
             </div>
 
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2">
                 <span id="wizardValidationMsg" class="hidden text-xs font-semibold text-[#EF4444]">Revisa los campos requeridos</span>
-                <button type="button" id="btnWizardNext" onclick="Wizard.next()" class="btn-press px-5 sm:px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold text-white bg-[#0066FF] hover:bg-[#0052CC] shadow-md shadow-[#0066FF]/25 inline-flex items-center gap-2 whitespace-nowrap">
+                <button type="button" id="btnGlobalAutoFix" onclick="Actions.autoFixAllErrors('smart')" class="hidden btn-press px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs font-bold text-white bg-[#EF4444] hover:bg-red-600 shadow-md shadow-[#EF4444]/25 inline-flex items-center gap-1.5 whitespace-nowrap">
+                    <span>🔧</span>
+                    <span id="lblGlobalAutoFix">Autocorregir</span>
+                </button>
+                <button type="button" id="btnWizardNext" onclick="Wizard.next()" class="btn-press px-4 sm:px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold text-white bg-[#0066FF] hover:bg-[#0052CC] shadow-md shadow-[#0066FF]/25 inline-flex items-center gap-2 whitespace-nowrap">
                     <span id="lblWizardNext">Siguiente Paso →</span>
                 </button>
             </div>
@@ -2538,252 +2569,618 @@ const CNMC_30TD_CALENDARIO = {
 };
 
 const MODULOS_FV = {
-    longi_450: {
-        name: "LONGi Hi-MO 6 Explorer LR5-54HTH 450 Wp (Residencial)",
-        wp: 450, vmp: 34.6, imp: 13.01, voc: 41.5, isc: 13.80,
-        efficiency: 22.3, betaVoc: -0.27, gammaPmp: -0.34, lengthMm: 1722, widthMm: 1134,
-        noct: 45, mismatchPct: 1.0, toleranceWp: "0/+3%"
-    },
-    aiko_465: {
-        name: "AIKO Neostar 2S N-Type ABC 465 Wp (Alta Eficiencia)",
-        wp: 465, vmp: 34.8, imp: 13.36, voc: 41.2, isc: 14.15,
-        efficiency: 23.3, betaVoc: -0.22, gammaPmp: -0.26, lengthMm: 1757, widthMm: 1134,
-        noct: 43, mismatchPct: 0.8, toleranceWp: "0/+3%"
-    },
-    jinko_435: {
-        name: "Jinko Solar Tiger Neo N-Type TOPCon 435 Wp",
-        wp: 435, vmp: 32.7, imp: 13.30, voc: 38.9, isc: 13.88,
-        efficiency: 22.0, betaVoc: -0.25, gammaPmp: -0.30, lengthMm: 1762, widthMm: 1134,
-        noct: 45, mismatchPct: 0.9, toleranceWp: "0/+3W"
-    },
-    ja_solar_415: {
-        name: "JA Solar DeepBlue 4.0 Pro JAM54D40 415 Wp (Full Black)",
-        wp: 415, vmp: 31.6, imp: 13.13, voc: 37.5, isc: 13.95,
-        efficiency: 21.3, betaVoc: -0.26, gammaPmp: -0.30, lengthMm: 1722, widthMm: 1134,
-        noct: 45, mismatchPct: 1.1, toleranceWp: "0/+5W"
-    },
-    trina_vertex_s_440: {
-        name: "Trina Solar Vertex S+ TSM-NEG9R.28 440 Wp (Doble Vidrio)",
-        wp: 440, vmp: 44.0, imp: 10.01, voc: 52.2, isc: 10.67,
-        efficiency: 22.0, betaVoc: -0.24, gammaPmp: -0.30, lengthMm: 1762, widthMm: 1134,
-        noct: 43, mismatchPct: 0.8, toleranceWp: "0/+5W"
+    // --- GAMA COMPACTA & FULL BLACK RESIDENCIAL (390 Wp – 455 Wp) ---
+    meyer_burger_black_390: {
+        name: "Meyer Burger Black HJT 390 Wp (Heterojunción Suiza/DE)",
+        wp: 390, vmp: 38.8, imp: 10.06, voc: 44.6, isc: 10.60,
+        efficiency: 21.2, betaVoc: -0.23, gammaPmp: -0.26, lengthMm: 1767, widthMm: 1041,
+        noct: 44, mismatchPct: 0.7, toleranceWp: "0/+5W", seg: "compact"
     },
     hyundai_410: {
         name: "Hyundai HiE-S410VG Shingled 410 Wp (Ultra Black)",
         wp: 410, vmp: 34.4, imp: 11.92, voc: 41.4, isc: 12.65,
         efficiency: 20.9, betaVoc: -0.27, gammaPmp: -0.34, lengthMm: 1719, widthMm: 1140,
-        noct: 45, mismatchPct: 1.2, toleranceWp: "0/+5W"
+        noct: 45, mismatchPct: 1.2, toleranceWp: "0/+5W", seg: "compact"
+    },
+    ja_solar_415: {
+        name: "JA Solar DeepBlue 4.0 Pro JAM54D40 415 Wp (Full Black)",
+        wp: 415, vmp: 31.6, imp: 13.13, voc: 37.5, isc: 13.95,
+        efficiency: 21.3, betaVoc: -0.26, gammaPmp: -0.30, lengthMm: 1722, widthMm: 1134,
+        noct: 45, mismatchPct: 1.1, toleranceWp: "0/+5W", seg: "compact"
+    },
+    rec_alpha_pure_r_430: {
+        name: "REC Alpha Pure-R HJT 430 Wp (Sin Plomo • Alta Tensión)",
+        wp: 430, vmp: 50.5, imp: 8.52, voc: 59.4, isc: 8.89,
+        efficiency: 22.3, betaVoc: -0.24, gammaPmp: -0.24, lengthMm: 1730, widthMm: 1118,
+        noct: 44, mismatchPct: 0.7, toleranceWp: "0/+5W", seg: "compact"
+    },
+    jinko_435: {
+        name: "Jinko Solar Tiger Neo N-Type TOPCon 435 Wp",
+        wp: 435, vmp: 32.7, imp: 13.30, voc: 38.9, isc: 13.88,
+        efficiency: 22.0, betaVoc: -0.25, gammaPmp: -0.30, lengthMm: 1762, widthMm: 1134,
+        noct: 45, mismatchPct: 0.9, toleranceWp: "0/+3W", seg: "compact"
+    },
+    sunpower_maxeon6_440: {
+        name: "SunPower Maxeon 6 IBC SPR-MAX6-440 440 Wp (Garantía 40a)",
+        wp: 440, vmp: 40.5, imp: 10.87, voc: 48.2, isc: 11.58,
+        efficiency: 22.8, betaVoc: -0.24, gammaPmp: -0.29, lengthMm: 1872, widthMm: 1032,
+        noct: 43, mismatchPct: 0.6, toleranceWp: "0/+5%", seg: "compact"
+    },
+    trina_vertex_s_440: {
+        name: "Trina Solar Vertex S+ TSM-NEG9R.28 440 Wp (Doble Vidrio)",
+        wp: 440, vmp: 44.0, imp: 10.01, voc: 52.2, isc: 10.67,
+        efficiency: 22.0, betaVoc: -0.24, gammaPmp: -0.30, lengthMm: 1762, widthMm: 1134,
+        noct: 43, mismatchPct: 0.8, toleranceWp: "0/+5W", seg: "compact"
+    },
+    longi_450: {
+        name: "LONGi Hi-MO 6 Explorer LR5-54HTH 450 Wp (Residencial)",
+        wp: 450, vmp: 34.6, imp: 13.01, voc: 41.5, isc: 13.80,
+        efficiency: 22.3, betaVoc: -0.27, gammaPmp: -0.34, lengthMm: 1722, widthMm: 1134,
+        noct: 45, mismatchPct: 1.0, toleranceWp: "0/+3%", seg: "compact"
+    },
+    aiko_neostar_2s_fb_455: {
+        name: "AIKO Neostar 2S+ Full Black ABC 455 Wp (Doble Vidrio)",
+        wp: 455, vmp: 34.4, imp: 13.23, voc: 40.9, isc: 14.05,
+        efficiency: 22.8, betaVoc: -0.22, gammaPmp: -0.26, lengthMm: 1757, widthMm: 1134,
+        noct: 43, mismatchPct: 0.8, toleranceWp: "0/+3%", seg: "compact"
+    },
+
+    // --- GAMA RESIDENCIAL PREMIUM & ALTA DENSIDAD (460 Wp – 505 Wp) ---
+    dmegc_infinity_460: {
+        name: "DMEGC Infinity RT DM460M10RT-B54HBB 460 Wp (Bifacial)",
+        wp: 460, vmp: 33.4, imp: 13.78, voc: 40.1, isc: 14.45,
+        efficiency: 23.0, betaVoc: -0.25, gammaPmp: -0.29, lengthMm: 1762, widthMm: 1134,
+        noct: 45, mismatchPct: 0.9, toleranceWp: "0/+3%", seg: "resi_plus"
+    },
+    aiko_465: {
+        name: "AIKO Neostar 2S N-Type ABC 465 Wp (Alta Eficiencia)",
+        wp: 465, vmp: 34.8, imp: 13.36, voc: 41.2, isc: 14.15,
+        efficiency: 23.3, betaVoc: -0.22, gammaPmp: -0.26, lengthMm: 1757, widthMm: 1134,
+        noct: 43, mismatchPct: 0.8, toleranceWp: "0/+3%", seg: "resi_plus"
+    },
+    rec_alpha_pure_rx_470: {
+        name: "REC Alpha Pure-RX HJT 470 Wp (Premium Residencial)",
+        wp: 470, vmp: 56.1, imp: 8.38, voc: 65.7, isc: 8.85,
+        efficiency: 22.6, betaVoc: -0.24, gammaPmp: -0.24, lengthMm: 1728, widthMm: 1205,
+        noct: 44, mismatchPct: 0.7, toleranceWp: "0/+5W", seg: "resi_plus"
     },
     jinko_tiger_neo_475: {
         name: "Jinko Solar Tiger Neo 54HL4R-BDV 475 Wp (Bifacial)",
         wp: 475, vmp: 33.0, imp: 14.40, voc: 39.8, isc: 15.18,
         efficiency: 22.2, betaVoc: -0.25, gammaPmp: -0.29, lengthMm: 1895, widthMm: 1134,
-        noct: 45, mismatchPct: 0.9, toleranceWp: "0/+3W"
+        noct: 45, mismatchPct: 0.9, toleranceWp: "0/+3W", seg: "resi_plus"
+    },
+    aiko_neostar_2p_485: {
+        name: "AIKO Neostar 2P N-Type ABC 485 Wp (Récord 24.3% Eficiencia)",
+        wp: 485, vmp: 35.4, imp: 13.71, voc: 41.6, isc: 14.42,
+        efficiency: 24.3, betaVoc: -0.22, gammaPmp: -0.26, lengthMm: 1757, widthMm: 1134,
+        noct: 43, mismatchPct: 0.7, toleranceWp: "0/+3%", seg: "resi_plus"
+    },
+    hyundai_hit_485: {
+        name: "Hyundai HiT-H485GF Heterojunction 485 Wp (Bifacial HJT)",
+        wp: 485, vmp: 36.8, imp: 13.18, voc: 44.1, isc: 13.86,
+        efficiency: 22.5, betaVoc: -0.24, gammaPmp: -0.26, lengthMm: 1903, widthMm: 1134,
+        noct: 44, mismatchPct: 0.9, toleranceWp: "0/+5W", seg: "resi_plus"
     },
     longi_himo_x6_500: {
         name: "LONGi Hi-MO X6 Max LR5-54HTD 500 Wp (HPBC Bifacial)",
         wp: 500, vmp: 33.2, imp: 15.06, voc: 39.8, isc: 16.02,
         efficiency: 22.6, betaVoc: -0.26, gammaPmp: -0.29, lengthMm: 1961, widthMm: 1134,
-        noct: 45, mismatchPct: 1.0, toleranceWp: "0/+3%"
+        noct: 45, mismatchPct: 1.0, toleranceWp: "0/+3%", seg: "resi_plus"
     },
+    sunpower_maxeon7_505: {
+        name: "SunPower Maxeon 7 IBC 505 Wp (Ultra-Eficiencia 24.1%)",
+        wp: 505, vmp: 44.3, imp: 11.40, voc: 52.4, isc: 12.10,
+        efficiency: 24.1, betaVoc: -0.23, gammaPmp: -0.27, lengthMm: 1895, widthMm: 1105,
+        noct: 43, mismatchPct: 0.6, toleranceWp: "0/+5%", seg: "resi_plus"
+    },
+
+    // --- GAMA COMERCIAL, PYME & CUBIERTA TERCIARIA (550 Wp – 595 Wp) ---
     canadian_550: {
         name: "Canadian Solar HiKu6 CS6W-550MS 550 Wp (Gran Superficie)",
         wp: 550, vmp: 41.9, imp: 13.13, voc: 49.8, isc: 14.00,
         efficiency: 21.5, betaVoc: -0.26, gammaPmp: -0.34, lengthMm: 2278, widthMm: 1134,
-        noct: 45, mismatchPct: 1.1, toleranceWp: "0/+5W"
+        noct: 45, mismatchPct: 1.1, toleranceWp: "0/+5W", seg: "commercial"
+    },
+    risen_titan_s_575: {
+        name: "Risen Titan S RSM144-9-575N 575 Wp (N-Type Comercial)",
+        wp: 575, vmp: 42.8, imp: 13.44, voc: 51.2, isc: 14.20,
+        efficiency: 22.3, betaVoc: -0.25, gammaPmp: -0.29, lengthMm: 2278, widthMm: 1134,
+        noct: 44, mismatchPct: 0.9, toleranceWp: "0/+3%", seg: "commercial"
     },
     trina_580: {
         name: "Trina Solar Vertex N TSM-580NEG19RC 580 Wp (Comercial)",
         wp: 580, vmp: 38.3, imp: 15.15, voc: 45.4, isc: 16.20,
         efficiency: 22.5, betaVoc: -0.24, gammaPmp: -0.30, lengthMm: 2278, widthMm: 1134,
-        noct: 43, mismatchPct: 0.8, toleranceWp: "0/+5W"
+        noct: 43, mismatchPct: 0.8, toleranceWp: "0/+5W", seg: "commercial"
     },
+    ja_deepblue_585: {
+        name: "JA Solar DeepBlue 4.0 Pro JAM72D40 585 Wp (Bifacial C&I)",
+        wp: 585, vmp: 43.6, imp: 13.42, voc: 51.8, isc: 14.25,
+        efficiency: 22.6, betaVoc: -0.25, gammaPmp: -0.30, lengthMm: 2278, widthMm: 1134,
+        noct: 45, mismatchPct: 0.9, toleranceWp: "0/+5W", seg: "commercial"
+    },
+    qcells_qtron_590: {
+        name: "Qcells Q.TRON XL-G2.3 N-Type 590 Wp (Q.ANTUM NEO)",
+        wp: 590, vmp: 44.1, imp: 13.38, voc: 52.3, isc: 14.12,
+        efficiency: 22.5, betaVoc: -0.24, gammaPmp: -0.30, lengthMm: 2315, widthMm: 1134,
+        noct: 45, mismatchPct: 0.8, toleranceWp: "0/+5W", seg: "commercial"
+    },
+    longi_himo_x6_max_595: {
+        name: "LONGi Hi-MO X6 Max LR7-72HTH 595 Wp (HPBC Comercial)",
+        wp: 595, vmp: 44.2, imp: 13.46, voc: 52.5, isc: 14.32,
+        efficiency: 23.0, betaVoc: -0.25, gammaPmp: -0.28, lengthMm: 2278, widthMm: 1134,
+        noct: 44, mismatchPct: 0.8, toleranceWp: "0/+3%", seg: "commercial"
+    },
+
+    // --- GAMA INDUSTRIAL, NAVE & HUERTO SOLAR G12 (620 Wp – 715 Wp) ---
     jinko_tiger_neo_620: {
         name: "Jinko Solar Tiger Neo 78HL4-BDV 620 Wp (Industrial)",
         wp: 620, vmp: 46.2, imp: 13.43, voc: 55.4, isc: 14.15,
         efficiency: 22.2, betaVoc: -0.25, gammaPmp: -0.29, lengthMm: 2465, widthMm: 1134,
-        noct: 45, mismatchPct: 0.9, toleranceWp: "0/+3W"
+        noct: 45, mismatchPct: 0.9, toleranceWp: "0/+3W", seg: "industrial"
+    },
+    aiko_comet_2u_660: {
+        name: "AIKO Comet 2U N-Type ABC 660 Wp (Industrial 24.4%)",
+        wp: 660, vmp: 45.8, imp: 14.41, voc: 54.2, isc: 15.22,
+        efficiency: 24.4, betaVoc: -0.22, gammaPmp: -0.26, lengthMm: 2382, widthMm: 1134,
+        noct: 43, mismatchPct: 0.7, toleranceWp: "0/+3%", seg: "industrial"
+    },
+    longi_himo_9_660: {
+        name: "LONGi Hi-MO 9 BC LR8-66HYD 660 Wp (Bifacial HPBC 2.0)",
+        wp: 660, vmp: 41.0, imp: 16.10, voc: 49.4, isc: 17.08,
+        efficiency: 24.4, betaVoc: -0.24, gammaPmp: -0.26, lengthMm: 2382, widthMm: 1134,
+        noct: 44, mismatchPct: 0.7, toleranceWp: "0/+3%", seg: "industrial"
     },
     trina_vertex_670: {
         name: "Trina Solar Vertex TSM-DEG21C.20 670 Wp (210mm Industrial)",
         wp: 670, vmp: 38.2, imp: 17.55, voc: 46.1, isc: 18.62,
         efficiency: 21.6, betaVoc: -0.25, gammaPmp: -0.34, lengthMm: 2384, widthMm: 1303,
-        noct: 43, mismatchPct: 0.8, toleranceWp: "0/+5W"
+        noct: 43, mismatchPct: 0.8, toleranceWp: "0/+5W", seg: "industrial"
     },
     canadian_topbihiKu7_690: {
         name: "Canadian Solar TOPBiHiKu7 690 Wp (N-Type Huerto/Ind.)",
         wp: 690, vmp: 39.5, imp: 17.47, voc: 47.7, isc: 18.52,
         efficiency: 22.2, betaVoc: -0.25, gammaPmp: -0.30, lengthMm: 2384, widthMm: 1303,
-        noct: 45, mismatchPct: 0.9, toleranceWp: "0/+5W"
+        noct: 45, mismatchPct: 0.9, toleranceWp: "0/+5W", seg: "industrial"
+    },
+    trina_vertex_n_705: {
+        name: "Trina Solar Vertex N TSM-705NEG21C.20 705 Wp (i-TOPCon G12)",
+        wp: 705, vmp: 40.7, imp: 17.33, voc: 48.8, isc: 18.42,
+        efficiency: 22.7, betaVoc: -0.24, gammaPmp: -0.29, lengthMm: 2384, widthMm: 1303,
+        noct: 43, mismatchPct: 0.8, toleranceWp: "0/+5W", seg: "industrial"
+    },
+    huasun_himalaya_715: {
+        name: "Huasun Himalaya G12-132 HJT Bifacial 715 Wp (Ultra-Potencia)",
+        wp: 715, vmp: 42.6, imp: 16.79, voc: 50.6, isc: 17.75,
+        efficiency: 23.0, betaVoc: -0.24, gammaPmp: -0.24, lengthMm: 2384, widthMm: 1303,
+        noct: 44, mismatchPct: 0.7, toleranceWp: "0/+5W", seg: "industrial"
     }
 };
 
 const INVERSORES_COMERCIALES = {
-    // --- MONOFÁSICOS RESIDENCIALES (1F • 230V) ---
+    // --- MICROINVERSORES & KITS PEQUEÑA POTENCIA (1F • 1 a 4 Paneles • Baja Tensión Arranque) ---
+    hoymiles_hms_800_2t: {
+        nombre: "Hoymiles HMS-800W-2T Microinversor (0.8 kW • 1F • 2 MPPT)",
+        pacKw: 0.8, tipoRed: "monofasico", numMppts: 2, brand: "hoymiles", batBus: "ac",
+        vdcMax: 65, vstart: 22, vmpptMin: 16, vmpptMax: 60, imaxMppt: 14.0, iscMppt: 25.0, rendimiento: 96.5
+    },
+    enphase_iq8hc_pack4: {
+        nombre: "Enphase Pack 4× IQ8HC Microinversores (1.52 kW • 1F • 4 MPPT)",
+        pacKw: 1.52, tipoRed: "monofasico", numMppts: 4, brand: "enphase", batBus: "ac",
+        vdcMax: 60, vstart: 22, vmpptMin: 28, vmpptMax: 45, imaxMppt: 14.0, iscMppt: 25.0, rendimiento: 97.1
+    },
+    hoymiles_hms_2000_4t: {
+        nombre: "Hoymiles HMS-2000-4T Microinversor 4-en-1 (2.0 kW • 1F • 4 MPPT)",
+        pacKw: 2.0, tipoRed: "monofasico", numMppts: 4, brand: "hoymiles", batBus: "ac",
+        vdcMax: 65, vstart: 22, vmpptMin: 16, vmpptMax: 60, imaxMppt: 14.0, iscMppt: 25.0, rendimiento: 96.7
+    },
+
+    // --- MONOFÁSICOS RESIDENCIALES HÍBRIDOS & STRING (1F • 230V • 2.0 a 10.0 kW) ---
     huawei_sun2000_2ktl_l1: {
-        nombre: "Huawei SUN2000-2KTL-L1 (2.0 kW • 1F • 2 MPPT)",
-        pacKw: 2.0, tipoRed: "monofasico", numMppts: 2,
+        nombre: "Huawei SUN2000-2KTL-L1 Híbrido (2.0 kW • 1F • 2 MPPT)",
+        pacKw: 2.0, tipoRed: "monofasico", numMppts: 2, brand: "huawei", batBus: "hv",
         vdcMax: 600, vstart: 100, vmpptMin: 90, vmpptMax: 560, imaxMppt: 13.5, iscMppt: 18.0, rendimiento: 97.5
     },
     huawei_sun2000_3ktl_l1: {
-        nombre: "Huawei SUN2000-3KTL-L1 HC (3.0 kW • 1F • 2 MPPT)",
-        pacKw: 3.0, tipoRed: "monofasico", numMppts: 2,
+        nombre: "Huawei SUN2000-3KTL-L1 HC Híbrido (3.0 kW • 1F • 2 MPPT)",
+        pacKw: 3.0, tipoRed: "monofasico", numMppts: 2, brand: "huawei", batBus: "hv",
         vdcMax: 600, vstart: 100, vmpptMin: 90, vmpptMax: 560, imaxMppt: 13.5, iscMppt: 18.0, rendimiento: 97.6
     },
     fronius_primo_gen24_3: {
-        nombre: "Fronius Primo GEN24 3.0 Plus (3.0 kW • 1F • 2 MPPT)",
-        pacKw: 3.0, tipoRed: "monofasico", numMppts: 2,
+        nombre: "Fronius Primo GEN24 3.0 Plus Híbrido (3.0 kW • 1F • 2 MPPT)",
+        pacKw: 3.0, tipoRed: "monofasico", numMppts: 2, brand: "fronius", batBus: "hv",
         vdcMax: 600, vstart: 80, vmpptMin: 65, vmpptMax: 530, imaxMppt: 22.0, iscMppt: 33.0, rendimiento: 97.4
     },
     goodwe_gw3000d_ns: {
         nombre: "GoodWe GW3000D-NS G3 (3.0 kW • 1F • 2 MPPT)",
-        pacKw: 3.0, tipoRed: "monofasico", numMppts: 2,
+        pacKw: 3.0, tipoRed: "monofasico", numMppts: 2, brand: "goodwe", batBus: "hv",
         vdcMax: 600, vstart: 60, vmpptMin: 50, vmpptMax: 550, imaxMppt: 16.0, iscMppt: 22.0, rendimiento: 97.6
     },
     solax_x1_boost_3_0: {
         nombre: "SolaX X1-Boost G4 3.0 (3.0 kW • 1F • 2 MPPT)",
-        pacKw: 3.0, tipoRed: "monofasico", numMppts: 2,
+        pacKw: 3.0, tipoRed: "monofasico", numMppts: 2, brand: "solax", batBus: "hv",
         vdcMax: 600, vstart: 70, vmpptMin: 50, vmpptMax: 550, imaxMppt: 16.0, iscMppt: 22.0, rendimiento: 97.8
     },
     sma_sunny_boy_3_0: {
         nombre: "SMA Sunny Boy 3.0 (3.0 kW • 1F • 2 MPPT)",
-        pacKw: 3.0, tipoRed: "monofasico", numMppts: 2,
+        pacKw: 3.0, tipoRed: "monofasico", numMppts: 2, brand: "sma", batBus: "hv",
         vdcMax: 600, vstart: 100, vmpptMin: 110, vmpptMax: 500, imaxMppt: 15.0, iscMppt: 22.5, rendimiento: 97.0
     },
+    deye_sun_3_6k_sg03lp1: {
+        nombre: "Deye SUN-3.6K-SG03LP1-EU Híbrido LV (3.6 kW • 1F • 2 MPPT)",
+        pacKw: 3.6, tipoRed: "monofasico", numMppts: 2, brand: "deye", batBus: "lv",
+        vdcMax: 500, vstart: 125, vmpptMin: 125, vmpptMax: 425, imaxMppt: 16.0, iscMppt: 22.0, rendimiento: 97.3
+    },
+    sungrow_sh3_6rs: {
+        nombre: "Sungrow SH3.6RS Híbrido (3.68 kW • 1F • 2 MPPT)",
+        pacKw: 3.68, tipoRed: "monofasico", numMppts: 2, brand: "sungrow", batBus: "hv",
+        vdcMax: 600, vstart: 50, vmpptMin: 40, vmpptMax: 560, imaxMppt: 16.0, iscMppt: 20.0, rendimiento: 97.5
+    },
     huawei_sun2000_4ktl_l1: {
-        nombre: "Huawei SUN2000-4KTL-L1 (4.0 kW • 1F • 2 MPPT)",
-        pacKw: 4.0, tipoRed: "monofasico", numMppts: 2,
+        nombre: "Huawei SUN2000-4KTL-L1 Híbrido (4.0 kW • 1F • 2 MPPT)",
+        pacKw: 4.0, tipoRed: "monofasico", numMppts: 2, brand: "huawei", batBus: "hv",
         vdcMax: 600, vstart: 100, vmpptMin: 90, vmpptMax: 560, imaxMppt: 13.5, iscMppt: 18.0, rendimiento: 97.7
     },
+    kostal_plenticore_g3_s_4_5: {
+        nombre: "Kostal Plenticore G3 S Híbrido (4.5 kW • 1F • 3 MPPT)",
+        pacKw: 4.5, tipoRed: "monofasico", numMppts: 3, brand: "kostal", batBus: "hv",
+        vdcMax: 650, vstart: 95, vmpptMin: 75, vmpptMax: 550, imaxMppt: 17.0, iscMppt: 23.8, rendimiento: 97.4
+    },
     huawei_sun2000_5ktl: {
-        nombre: "Huawei SUN2000-5KTL-L1 (5.0 kW • 1F • 2 MPPT)",
-        pacKw: 5.0, tipoRed: "monofasico", numMppts: 2,
+        nombre: "Huawei SUN2000-5KTL-L1 Híbrido (5.0 kW • 1F • 2 MPPT)",
+        pacKw: 5.0, tipoRed: "monofasico", numMppts: 2, brand: "huawei", batBus: "hv",
         vdcMax: 600, vstart: 100, vmpptMin: 90, vmpptMax: 560, imaxMppt: 13.5, iscMppt: 18.0, rendimiento: 97.8
     },
     fronius_primo_gen24_5: {
-        nombre: "Fronius Primo GEN24 5.0 Plus (5.0 kW • 1F • 2 MPPT)",
-        pacKw: 5.0, tipoRed: "monofasico", numMppts: 2,
+        nombre: "Fronius Primo GEN24 5.0 Plus Híbrido (5.0 kW • 1F • 2 MPPT)",
+        pacKw: 5.0, tipoRed: "monofasico", numMppts: 2, brand: "fronius", batBus: "hv",
         vdcMax: 600, vstart: 80, vmpptMin: 65, vmpptMax: 530, imaxMppt: 22.0, iscMppt: 33.0, rendimiento: 97.5
     },
+    sungrow_sh5_0rs: {
+        nombre: "Sungrow SH5.0RS Híbrido (5.0 kW • 1F • 2 MPPT)",
+        pacKw: 5.0, tipoRed: "monofasico", numMppts: 2, brand: "sungrow", batBus: "hv",
+        vdcMax: 600, vstart: 50, vmpptMin: 40, vmpptMax: 560, imaxMppt: 16.0, iscMppt: 20.0, rendimiento: 97.7
+    },
+    deye_sun_5k_sg03lp1: {
+        nombre: "Deye SUN-5K-SG03LP1-EU Híbrido LV 48V (5.0 kW • 1F • 2 MPPT)",
+        pacKw: 5.0, tipoRed: "monofasico", numMppts: 2, brand: "deye", batBus: "lv",
+        vdcMax: 500, vstart: 125, vmpptMin: 125, vmpptMax: 425, imaxMppt: 16.0, iscMppt: 22.0, rendimiento: 97.4
+    },
+    goodwe_gw5000_eh: {
+        nombre: "GoodWe GW5000-EH Plus+ Híbrido (5.0 kW • 1F • 2 MPPT)",
+        pacKw: 5.0, tipoRed: "monofasico", numMppts: 2, brand: "goodwe", batBus: "hv",
+        vdcMax: 600, vstart: 95, vmpptMin: 85, vmpptMax: 550, imaxMppt: 16.0, iscMppt: 21.2, rendimiento: 97.6
+    },
+    victron_multiplus_ii_5000: {
+        nombre: "Victron MultiPlus-II GX 48/5000 + MPPT RS (5.0 kW • 1F • 2 MPPT)",
+        pacKw: 5.0, tipoRed: "monofasico", numMppts: 2, brand: "victron", batBus: "lv",
+        vdcMax: 450, vstart: 120, vmpptMin: 80, vmpptMax: 400, imaxMppt: 18.0, iscMppt: 20.0, rendimiento: 95.8
+    },
     sma_sunny_boy_5_0: {
-        nombre: "SMA Sunny Boy 5.0 (5.0 kW • 1F • 2 MPPT)",
-        pacKw: 5.0, tipoRed: "monofasico", numMppts: 2,
-        vdcMax: 600, vstart: 100, vmpptMin: 175, vmpptMax: 500, imaxMppt: 15.0, iscMppt: 22.5, rendimiento: 97.0
+        nombre: "SMA Sunny Boy Smart Energy 5.0 (5.0 kW • 1F • 3 MPPT)",
+        pacKw: 5.0, tipoRed: "monofasico", numMppts: 3, brand: "sma", batBus: "hv",
+        vdcMax: 600, vstart: 66, vmpptMin: 60, vmpptMax: 500, imaxMppt: 15.0, iscMppt: 22.5, rendimiento: 97.2
+    },
+    solis_s6_eh1p6k_l: {
+        nombre: "Solis S6-EH1P6K-L-PLUS Híbrido LV (6.0 kW • 1F • 2 MPPT)",
+        pacKw: 6.0, tipoRed: "monofasico", numMppts: 2, brand: "solis", batBus: "lv",
+        vdcMax: 600, vstart: 90, vmpptMin: 90, vmpptMax: 520, imaxMppt: 16.0, iscMppt: 24.0, rendimiento: 97.5
+    },
+    ingeteam_1play_6tl_m: {
+        nombre: "Ingeteam Ingecon Sun Storage 1Play 6TL M (6.0 kW • 1F • 2 MPPT)",
+        pacKw: 6.0, tipoRed: "monofasico", numMppts: 2, brand: "ingeteam", batBus: "hv",
+        vdcMax: 550, vstart: 120, vmpptMin: 100, vmpptMax: 500, imaxMppt: 15.5, iscMppt: 20.0, rendimiento: 97.6
     },
     fronius_primo_gen24_6: {
-        nombre: "Fronius Primo GEN24 6.0 Plus (6.0 kW • 1F • 2 MPPT)",
-        pacKw: 6.0, tipoRed: "monofasico", numMppts: 2,
+        nombre: "Fronius Primo GEN24 6.0 Plus Híbrido (6.0 kW • 1F • 2 MPPT)",
+        pacKw: 6.0, tipoRed: "monofasico", numMppts: 2, brand: "fronius", batBus: "hv",
         vdcMax: 600, vstart: 80, vmpptMin: 65, vmpptMax: 530, imaxMppt: 22.0, iscMppt: 33.0, rendimiento: 97.6
     },
     huawei_sun2000_6ktl_l1: {
-        nombre: "Huawei SUN2000-6KTL-L1 (6.0 kW • 1F • 2 MPPT)",
-        pacKw: 6.0, tipoRed: "monofasico", numMppts: 2,
+        nombre: "Huawei SUN2000-6KTL-L1 Híbrido (6.0 kW • 1F • 2 MPPT)",
+        pacKw: 6.0, tipoRed: "monofasico", numMppts: 2, brand: "huawei", batBus: "hv",
         vdcMax: 600, vstart: 100, vmpptMin: 90, vmpptMax: 560, imaxMppt: 13.5, iscMppt: 18.0, rendimiento: 98.4
     },
+    deye_sun_8k_sg01lp1: {
+        nombre: "Deye SUN-8K-SG01LP1-EU Híbrido LV (8.0 kW • 1F • 2 MPPT)",
+        pacKw: 8.0, tipoRed: "monofasico", numMppts: 2, brand: "deye", batBus: "lv",
+        vdcMax: 500, vstart: 125, vmpptMin: 150, vmpptMax: 425, imaxMppt: 26.0, iscMppt: 34.0, rendimiento: 97.5
+    },
+    huawei_sun2000_8ktl_lc0: {
+        nombre: "Huawei SUN2000-8K-LC0 Híbrido (8.0 kW • 1F • 3 MPPT)",
+        pacKw: 8.0, tipoRed: "monofasico", numMppts: 3, brand: "huawei", batBus: "hv",
+        vdcMax: 600, vstart: 50, vmpptMin: 40, vmpptMax: 560, imaxMppt: 16.0, iscMppt: 20.0, rendimiento: 98.1
+    },
+    huawei_sun2000_10ktl_lc0: {
+        nombre: "Huawei SUN2000-10K-LC0 Híbrido (10.0 kW • 1F • 3 MPPT)",
+        pacKw: 10.0, tipoRed: "monofasico", numMppts: 3, brand: "huawei", batBus: "hv",
+        vdcMax: 600, vstart: 50, vmpptMin: 40, vmpptMax: 560, imaxMppt: 16.0, iscMppt: 20.0, rendimiento: 98.1
+    },
 
-    // --- TRIFÁSICOS RESIDENCIALES Y COMERCIALES (3F • 400V) ---
+    // --- TRIFÁSICOS RESIDENCIALES & PYME HÍBRIDOS (3F • 400V • 4.0 a 25.0 kW) ---
     huawei_sun2000_4ktl_m1: {
-        nombre: "Huawei SUN2000-4KTL-M1 (4.0 kW • 3F • 2 MPPT)",
-        pacKw: 4.0, tipoRed: "trifasico", numMppts: 2,
+        nombre: "Huawei SUN2000-4KTL-M1 Híbrido (4.0 kW • 3F • 2 MPPT)",
+        pacKw: 4.0, tipoRed: "trifasico", numMppts: 2, brand: "huawei", batBus: "hv",
         vdcMax: 1100, vstart: 200, vmpptMin: 140, vmpptMax: 980, imaxMppt: 13.5, iscMppt: 19.5, rendimiento: 98.2
     },
     huawei_sun2000_6ktl_m1: {
-        nombre: "Huawei SUN2000-6KTL-M1 (6.0 kW • 3F • 2 MPPT)",
-        pacKw: 6.0, tipoRed: "trifasico", numMppts: 2,
+        nombre: "Huawei SUN2000-6KTL-M1 Híbrido (6.0 kW • 3F • 2 MPPT)",
+        pacKw: 6.0, tipoRed: "trifasico", numMppts: 2, brand: "huawei", batBus: "hv",
         vdcMax: 1100, vstart: 200, vmpptMin: 140, vmpptMax: 980, imaxMppt: 13.5, iscMppt: 19.5, rendimiento: 98.3
     },
+    fronius_symo_gen24_6: {
+        nombre: "Fronius Symo GEN24 6.0 Plus Híbrido (6.0 kW • 3F • 2 MPPT)",
+        pacKw: 6.0, tipoRed: "trifasico", numMppts: 2, brand: "fronius", batBus: "hv",
+        vdcMax: 1000, vstart: 80, vmpptMin: 80, vmpptMax: 800, imaxMppt: 25.0, iscMppt: 37.5, rendimiento: 98.0
+    },
     huawei_sun2000_8ktl_m1: {
-        nombre: "Huawei SUN2000-8KTL-M1 (8.0 kW • 3F • 2 MPPT)",
-        pacKw: 8.0, tipoRed: "trifasico", numMppts: 2,
+        nombre: "Huawei SUN2000-8KTL-M1 Híbrido (8.0 kW • 3F • 2 MPPT)",
+        pacKw: 8.0, tipoRed: "trifasico", numMppts: 2, brand: "huawei", batBus: "hv",
         vdcMax: 1100, vstart: 200, vmpptMin: 140, vmpptMax: 980, imaxMppt: 13.5, iscMppt: 19.5, rendimiento: 98.3
     },
     huawei_sun2000_10ktl_m1: {
-        nombre: "Huawei SUN2000-10KTL-M1 (10.0 kW • 3F • 2 MPPT)",
-        pacKw: 10.0, tipoRed: "trifasico", numMppts: 2,
+        nombre: "Huawei SUN2000-10KTL-M1 Híbrido (10.0 kW • 3F • 2 MPPT)",
+        pacKw: 10.0, tipoRed: "trifasico", numMppts: 2, brand: "huawei", batBus: "hv",
         vdcMax: 1100, vstart: 200, vmpptMin: 140, vmpptMax: 980, imaxMppt: 13.5, iscMppt: 19.5, rendimiento: 98.4
     },
     fronius_symo_gen24_10: {
-        nombre: "Fronius Symo GEN24 10.0 Plus (10.0 kW • 3F • 2 MPPT)",
-        pacKw: 10.0, tipoRed: "trifasico", numMppts: 2,
+        nombre: "Fronius Symo GEN24 10.0 Plus Híbrido (10.0 kW • 3F • 2 MPPT)",
+        pacKw: 10.0, tipoRed: "trifasico", numMppts: 2, brand: "fronius", batBus: "hv",
         vdcMax: 1000, vstart: 80, vmpptMin: 80, vmpptMax: 800, imaxMppt: 25.0, iscMppt: 37.5, rendimiento: 98.2
     },
     sungrow_sh10rt: {
         nombre: "Sungrow SH10RT Híbrido (10.0 kW • 3F • 2 MPPT)",
-        pacKw: 10.0, tipoRed: "trifasico", numMppts: 2,
+        pacKw: 10.0, tipoRed: "trifasico", numMppts: 2, brand: "sungrow", batBus: "hv",
         vdcMax: 1000, vstart: 180, vmpptMin: 150, vmpptMax: 950, imaxMppt: 25.0, iscMppt: 32.0, rendimiento: 98.4
     },
     sma_tripower_10_0: {
         nombre: "SMA Sunny Tripower 10.0 Smart Energy (10.0 kW • 3F • 2 MPPT)",
-        pacKw: 10.0, tipoRed: "trifasico", numMppts: 2,
+        pacKw: 10.0, tipoRed: "trifasico", numMppts: 2, brand: "sma", batBus: "hv",
         vdcMax: 1000, vstart: 180, vmpptMin: 150, vmpptMax: 800, imaxMppt: 25.0, iscMppt: 37.5, rendimiento: 98.1
     },
+    goodwe_gw10k_et_plus: {
+        nombre: "GoodWe GW10K-ET Plus+ Híbrido (10.0 kW • 3F • 2 MPPT)",
+        pacKw: 10.0, tipoRed: "trifasico", numMppts: 2, brand: "goodwe", batBus: "hv",
+        vdcMax: 1000, vstart: 180, vmpptMin: 200, vmpptMax: 850, imaxMppt: 16.0, iscMppt: 21.2, rendimiento: 98.2
+    },
+    deye_sun_12k_sg04lp3: {
+        nombre: "Deye SUN-12K-SG04LP3-EU Híbrido LV 48V (12.0 kW • 3F • 2 MPPT)",
+        pacKw: 12.0, tipoRed: "trifasico", numMppts: 2, brand: "deye", batBus: "lv",
+        vdcMax: 800, vstart: 160, vmpptMin: 200, vmpptMax: 650, imaxMppt: 26.0, iscMppt: 34.0, rendimiento: 97.6
+    },
+    fronius_symo_gen24_12_sc: {
+        nombre: "Fronius Symo GEN24 12.0 SC Plus Híbrido (12.0 kW • 3F • 2 MPPT)",
+        pacKw: 12.0, tipoRed: "trifasico", numMppts: 2, brand: "fronius", batBus: "hv",
+        vdcMax: 1000, vstart: 80, vmpptMin: 80, vmpptMax: 800, imaxMppt: 28.0, iscMppt: 42.0, rendimiento: 98.2
+    },
+    huawei_sun2000_12k_map0: {
+        nombre: "Huawei SUN2000-12K-MAP0 Asimétrico (12.0 kW • 3F • 2 MPPT)",
+        pacKw: 12.0, tipoRed: "trifasico", numMppts: 2, brand: "huawei", batBus: "hv",
+        vdcMax: 1100, vstart: 160, vmpptMin: 160, vmpptMax: 1000, imaxMppt: 22.0, iscMppt: 30.0, rendimiento: 98.4
+    },
     huawei_sun2000_15ktl: {
-        nombre: "Huawei SUN2000-15KTL-M2 (15.0 kW • 3F • 2 MPPT)",
-        pacKw: 15.0, tipoRed: "trifasico", numMppts: 2,
-        vdcMax: 1080, vstart: 200, vmpptMin: 160, vmpptMax: 950, imaxMppt: 22.0, iscMppt: 30.0, rendimiento: 98.5
+        nombre: "Huawei SUN2000-15KTL-M5 (15.0 kW • 3F • 2 MPPT)",
+        pacKw: 15.0, tipoRed: "trifasico", numMppts: 2, brand: "huawei", batBus: "hv",
+        vdcMax: 1100, vstart: 200, vmpptMin: 160, vmpptMax: 950, imaxMppt: 30.0, iscMppt: 40.0, rendimiento: 98.5
+    },
+    sungrow_sh15t: {
+        nombre: "Sungrow SH15T Híbrido C&I (15.0 kW • 3F • 3 MPPT)",
+        pacKw: 15.0, tipoRed: "trifasico", numMppts: 3, brand: "sungrow", batBus: "hv",
+        vdcMax: 1000, vstart: 180, vmpptMin: 150, vmpptMax: 950, imaxMppt: 32.0, iscMppt: 40.0, rendimiento: 98.1
     },
     huawei_sun2000_20ktl_m2: {
-        nombre: "Huawei SUN2000-20KTL-M2 (20.0 kW • 3F • 2 MPPT)",
-        pacKw: 20.0, tipoRed: "trifasico", numMppts: 2,
-        vdcMax: 1080, vstart: 200, vmpptMin: 160, vmpptMax: 950, imaxMppt: 22.0, iscMppt: 30.0, rendimiento: 98.65
+        nombre: "Huawei SUN2000-20K-MB0 Híbrido (20.0 kW • 3F • 2 MPPT)",
+        pacKw: 20.0, tipoRed: "trifasico", numMppts: 2, brand: "huawei", batBus: "hv",
+        vdcMax: 1100, vstart: 200, vmpptMin: 160, vmpptMax: 950, imaxMppt: 30.0, iscMppt: 40.0, rendimiento: 98.65
+    },
+    sma_tripower_x_20: {
+        nombre: "SMA Sunny Tripower X 20 (20.0 kW • 3F • 3 MPPT)",
+        pacKw: 20.0, tipoRed: "trifasico", numMppts: 3, brand: "sma", batBus: "ac",
+        vdcMax: 1000, vstart: 188, vmpptMin: 150, vmpptMax: 800, imaxMppt: 24.0, iscMppt: 35.0, rendimiento: 98.4
+    },
+    huawei_sun2000_25k_mb0: {
+        nombre: "Huawei SUN2000-25K-MB0 Híbrido C&I (25.0 kW • 3F • 2 MPPT)",
+        pacKw: 25.0, tipoRed: "trifasico", numMppts: 2, brand: "huawei", batBus: "hv",
+        vdcMax: 1100, vstart: 200, vmpptMin: 200, vmpptMax: 1000, imaxMppt: 30.0, iscMppt: 40.0, rendimiento: 98.4
+    },
+
+    // --- COMERCIALES & INDUSTRIALES 3.0TD GRAN ESCALA (3F • 400V • 30 a 125 kW) ---
+    huawei_sun2000_30ktl_m3: {
+        nombre: "Huawei SUN2000-30KTL-M3 Comercial (30.0 kW • 3F • 4 MPPT)",
+        pacKw: 30.0, tipoRed: "trifasico", numMppts: 4, brand: "huawei", batBus: "hv",
+        vdcMax: 1100, vstart: 200, vmpptMin: 200, vmpptMax: 1000, imaxMppt: 26.0, iscMppt: 40.0, rendimiento: 98.5
     },
     sungrow_sg33cx: {
-        nombre: "Sungrow SG33CX Comercial (33.0 kW • 3F • 3 MPPT)",
-        pacKw: 33.0, tipoRed: "trifasico", numMppts: 3,
+        nombre: "Sungrow SG33CX-P2 Comercial (33.0 kW • 3F • 3 MPPT)",
+        pacKw: 33.0, tipoRed: "trifasico", numMppts: 3, brand: "sungrow", batBus: "hv",
         vdcMax: 1100, vstart: 250, vmpptMin: 200, vmpptMax: 1000, imaxMppt: 30.0, iscMppt: 40.0, rendimiento: 98.6
     },
+    huawei_sun2000_40ktl_m3: {
+        nombre: "Huawei SUN2000-40KTL-M3 Comercial (40.0 kW • 3F • 4 MPPT)",
+        pacKw: 40.0, tipoRed: "trifasico", numMppts: 4, brand: "huawei", batBus: "hv",
+        vdcMax: 1100, vstart: 200, vmpptMin: 200, vmpptMax: 1000, imaxMppt: 26.0, iscMppt: 40.0, rendimiento: 98.6
+    },
     sungrow_sg50cx: {
-        nombre: "Sungrow SG50CX Comercial (50.0 kW • 3F • 4 MPPT)",
-        pacKw: 50.0, tipoRed: "trifasico", numMppts: 4,
+        nombre: "Sungrow SG50CX-P2 Comercial (50.0 kW • 3F • 5 MPPT)",
+        pacKw: 50.0, tipoRed: "trifasico", numMppts: 5, brand: "sungrow", batBus: "hv",
         vdcMax: 1100, vstart: 250, vmpptMin: 200, vmpptMax: 1000, imaxMppt: 30.0, iscMppt: 40.0, rendimiento: 98.7
     },
+    sma_core1_50: {
+        nombre: "SMA Sunny Tripower CORE1 50-41 (50.0 kW • 3F • 6 MPPT)",
+        pacKw: 50.0, tipoRed: "trifasico", numMppts: 6, brand: "sma", batBus: "ac",
+        vdcMax: 1000, vstart: 188, vmpptMin: 150, vmpptMax: 800, imaxMppt: 20.0, iscMppt: 30.0, rendimiento: 98.3
+    },
+    fronius_tauro_eco_50: {
+        nombre: "Fronius Tauro ECO 50-3-D Industrial (50.0 kW • 3F • 3 MPPT)",
+        pacKw: 50.0, tipoRed: "trifasico", numMppts: 3, brand: "fronius", batBus: "ac",
+        vdcMax: 1000, vstart: 200, vmpptMin: 200, vmpptMax: 870, imaxMppt: 36.0, iscMppt: 72.0, rendimiento: 98.5
+    },
+    huawei_sun2000_60ktl_m0: {
+        nombre: "Huawei SUN2000-60KTL-M0 Industrial (60.0 kW • 3F • 6 MPPT)",
+        pacKw: 60.0, tipoRed: "trifasico", numMppts: 6, brand: "huawei", batBus: "hv",
+        vdcMax: 1100, vstart: 200, vmpptMin: 200, vmpptMax: 1000, imaxMppt: 22.0, iscMppt: 30.0, rendimiento: 98.6
+    },
     sungrow_sg110cx: {
-        nombre: "Sungrow SG110CX Industrial (100.0 kW • 3F • 4 MPPT)",
-        pacKw: 100.0, tipoRed: "trifasico", numMppts: 4,
+        nombre: "Sungrow SG110CX-P2 Industrial (100.0 kW • 3F • 9 MPPT)",
+        pacKw: 100.0, tipoRed: "trifasico", numMppts: 9, brand: "sungrow", batBus: "hv",
         vdcMax: 1100, vstart: 250, vmpptMin: 200, vmpptMax: 1000, imaxMppt: 30.0, iscMppt: 40.0, rendimiento: 98.7
+    },
+    huawei_sun2000_100ktl_m2: {
+        nombre: "Huawei SUN2000-100KTL-M2 Industrial (100.0 kW • 3F • 10 MPPT)",
+        pacKw: 100.0, tipoRed: "trifasico", numMppts: 10, brand: "huawei", batBus: "hv",
+        vdcMax: 1100, vstart: 200, vmpptMin: 200, vmpptMax: 1000, imaxMppt: 30.0, iscMppt: 40.0, rendimiento: 98.6
+    },
+    sungrow_sg125cx_p2: {
+        nombre: "Sungrow SG125CX-P2 Gran Industria (125.0 kW • 3F • 12 MPPT)",
+        pacKw: 125.0, tipoRed: "trifasico", numMppts: 12, brand: "sungrow", batBus: "hv",
+        vdcMax: 1100, vstart: 200, vmpptMin: 180, vmpptMax: 1000, imaxMppt: 30.0, iscMppt: 40.0, rendimiento: 98.8
     }
 };
 
 const BATERIAS_CATALOGO = {
-    huawei_luna_5: {
-        name: "Huawei LUNA2000-5-S0 (5.0 kWh • LiFePO4 HV)",
-        nominalKwh: 5.0, dodPct: 100, maxPowerKw: 2.5, roundTripEffPct: 95.0, coupling: "DC", nominalVoltageV: 400
+    // --- BAJA TENSIÓN 48V MODULAR (LV • Para Deye, Victron, Solis, SolaX LV) ---
+    pylontech_us3000c: {
+        name: "Pylontech US3000C (3.55 kWh • LiFePO4 48V LV)",
+        nominalKwh: 3.55, dodPct: 95, maxPowerKw: 1.8, roundTripEffPct: 94.0, coupling: "DC", nominalVoltageV: 48, brand: "pylontech", bus: "lv"
     },
-    solax_triple_5_8: {
-        name: "SolaX Triple Power T-BAT H 5.8 (5.8 kWh • LiFePO4 HV)",
-        nominalKwh: 5.8, dodPct: 90, maxPowerKw: 4.0, roundTripEffPct: 95.0, coupling: "DC", nominalVoltageV: 115
+    pylontech_us5000_4_8: {
+        name: "Pylontech US5000 (4.8 kWh • LiFePO4 48V LV)",
+        nominalKwh: 4.8, dodPct: 95, maxPowerKw: 2.4, roundTripEffPct: 94.2, coupling: "DC", nominalVoltageV: 48, brand: "pylontech", bus: "lv"
     },
-    byd_hvs_7_7: {
-        name: "BYD Battery-Box Premium HVS 7.7 (7.7 kWh • LiFePO4 HV)",
-        nominalKwh: 7.7, dodPct: 95, maxPowerKw: 5.0, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 307
+    deye_se_g5_1_pro: {
+        name: "Deye SE-G5.1 Pro-B (5.12 kWh • LiFePO4 51.2V LV)",
+        nominalKwh: 5.12, dodPct: 90, maxPowerKw: 5.0, roundTripEffPct: 94.5, coupling: "DC", nominalVoltageV: 48, brand: "deye", bus: "lv"
     },
-    sungrow_sbr096: {
-        name: "Sungrow SBR096 (9.6 kWh • LiFePO4 HV)",
-        nominalKwh: 9.6, dodPct: 100, maxPowerKw: 5.76, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 192
+    dyness_dl5_0c: {
+        name: "Dyness DL5.0C Modular (5.12 kWh • LiFePO4 51.2V LV)",
+        nominalKwh: 5.12, dodPct: 90, maxPowerKw: 4.8, roundTripEffPct: 94.0, coupling: "DC", nominalVoltageV: 48, brand: "dyness", bus: "lv"
     },
     pylontech_us5000_9_6: {
         name: "Pylontech 2× US5000 (9.6 kWh • LiFePO4 48V LV)",
-        nominalKwh: 9.6, dodPct: 90, maxPowerKw: 4.8, roundTripEffPct: 94.0, coupling: "DC", nominalVoltageV: 48
+        nominalKwh: 9.6, dodPct: 95, maxPowerKw: 4.8, roundTripEffPct: 94.0, coupling: "DC", nominalVoltageV: 48, brand: "pylontech", bus: "lv"
+    },
+    deye_rw_m6_1_x2: {
+        name: "Deye 2× RW-M6.1-B Wall-Mount (12.28 kWh • LiFePO4 LV)",
+        nominalKwh: 12.28, dodPct: 90, maxPowerKw: 8.0, roundTripEffPct: 94.5, coupling: "DC", nominalVoltageV: 48, brand: "deye", bus: "lv"
+    },
+    byd_lvl_15_4: {
+        name: "BYD Battery-Box Premium LVL 15.4 (15.36 kWh • LiFePO4 48V LV)",
+        nominalKwh: 15.36, dodPct: 95, maxPowerKw: 12.8, roundTripEffPct: 94.8, coupling: "DC", nominalVoltageV: 48, brand: "byd", bus: "lv"
+    },
+
+    // --- ALTA TENSIÓN RESIDENCIAL MODULAR (HV • Huawei, BYD, Sungrow, SolaX, GoodWe, SMA) ---
+    huawei_luna_5: {
+        name: "Huawei LUNA2000-5-S0 (5.0 kWh • LiFePO4 HV)",
+        nominalKwh: 5.0, dodPct: 100, maxPowerKw: 2.5, roundTripEffPct: 95.0, coupling: "DC", nominalVoltageV: 400, brand: "huawei", bus: "hv"
+    },
+    byd_hvs_5_1: {
+        name: "BYD Battery-Box Premium HVS 5.1 (5.12 kWh • LiFePO4 HV)",
+        nominalKwh: 5.12, dodPct: 95, maxPowerKw: 5.1, roundTripEffPct: 95.6, coupling: "DC", nominalVoltageV: 204, brand: "byd", bus: "hv"
+    },
+    solax_triple_5_8: {
+        name: "SolaX Triple Power T-BAT H 5.8 (5.8 kWh • LiFePO4 HV)",
+        nominalKwh: 5.8, dodPct: 90, maxPowerKw: 4.0, roundTripEffPct: 95.0, coupling: "DC", nominalVoltageV: 115, brand: "solax", bus: "hv"
+    },
+    sungrow_sbr064: {
+        name: "Sungrow SBR064 (6.4 kWh • LiFePO4 HV)",
+        nominalKwh: 6.4, dodPct: 100, maxPowerKw: 3.84, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 128, brand: "sungrow", bus: "hv"
+    },
+    goodwe_lynx_f_6_6: {
+        name: "GoodWe Lynx Home F Plus+ 6.6 (6.55 kWh • LiFePO4 HV)",
+        nominalKwh: 6.55, dodPct: 95, maxPowerKw: 5.2, roundTripEffPct: 95.2, coupling: "DC", nominalVoltageV: 204, brand: "goodwe", bus: "hv"
+    },
+    huawei_luna_7_s1: {
+        name: "Huawei LUNA2000-7-S1 Nueva Gen (6.9 kWh • LiFePO4 HV)",
+        nominalKwh: 6.9, dodPct: 100, maxPowerKw: 3.5, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 400, brand: "huawei", bus: "hv"
+    },
+    byd_hvs_7_7: {
+        name: "BYD Battery-Box Premium HVS 7.7 (7.7 kWh • LiFePO4 HV)",
+        nominalKwh: 7.7, dodPct: 95, maxPowerKw: 5.0, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 307, brand: "byd", bus: "hv"
+    },
+    sungrow_sbr096: {
+        name: "Sungrow SBR096 (9.6 kWh • LiFePO4 HV)",
+        nominalKwh: 9.6, dodPct: 100, maxPowerKw: 5.76, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 192, brand: "sungrow", bus: "hv"
+    },
+    sma_home_storage_9_8: {
+        name: "SMA Home Storage 9.8 (9.8 kWh • LiFePO4 HV)",
+        nominalKwh: 9.8, dodPct: 95, maxPowerKw: 7.5, roundTripEffPct: 95.2, coupling: "DC", nominalVoltageV: 288, brand: "sma", bus: "hv"
     },
     huawei_luna_10: {
         name: "Huawei LUNA2000-10-S0 (10.0 kWh • LiFePO4 HV)",
-        nominalKwh: 10.0, dodPct: 100, maxPowerKw: 5.0, roundTripEffPct: 95.0, coupling: "DC", nominalVoltageV: 400
+        nominalKwh: 10.0, dodPct: 100, maxPowerKw: 5.0, roundTripEffPct: 95.0, coupling: "DC", nominalVoltageV: 400, brand: "huawei", bus: "hv"
     },
     byd_hvs_10_2: {
         name: "BYD Battery-Box Premium HVS 10.2 (10.2 kWh • LiFePO4 HV)",
-        nominalKwh: 10.2, dodPct: 95, maxPowerKw: 5.0, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 409
+        nominalKwh: 10.2, dodPct: 95, maxPowerKw: 5.0, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 409, brand: "byd", bus: "hv"
     },
     byd_hvm_11_0: {
         name: "BYD Battery-Box Premium HVM 11.0 (11.0 kWh • LiFePO4 HV)",
-        nominalKwh: 11.0, dodPct: 95, maxPowerKw: 5.5, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 204
+        nominalKwh: 11.0, dodPct: 95, maxPowerKw: 5.5, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 204, brand: "byd", bus: "hv"
     },
-    tesla_powerwall_2: {
-        name: "Tesla Powerwall 2 (13.5 kWh • AC Retrofit • 5 kW)",
-        nominalKwh: 13.5, dodPct: 100, maxPowerKw: 5.0, roundTripEffPct: 90.0, coupling: "AC", nominalVoltageV: 230
+    sungrow_sbr128: {
+        name: "Sungrow SBR128 (12.8 kWh • LiFePO4 HV)",
+        nominalKwh: 12.8, dodPct: 100, maxPowerKw: 7.68, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 256, brand: "sungrow", bus: "hv"
+    },
+    huawei_luna_14_s1: {
+        name: "Huawei LUNA2000-14-S1 Nueva Gen (13.8 kWh • LiFePO4 HV)",
+        nominalKwh: 13.8, dodPct: 100, maxPowerKw: 7.0, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 400, brand: "huawei", bus: "hv"
     },
     huawei_luna_15: {
         name: "Huawei LUNA2000-15-S0 (15.0 kWh • LiFePO4 HV)",
-        nominalKwh: 15.0, dodPct: 100, maxPowerKw: 5.0, roundTripEffPct: 95.0, coupling: "DC", nominalVoltageV: 400
+        nominalKwh: 15.0, dodPct: 100, maxPowerKw: 5.0, roundTripEffPct: 95.0, coupling: "DC", nominalVoltageV: 400, brand: "huawei", bus: "hv"
+    },
+    byd_hvm_16_6: {
+        name: "BYD Battery-Box Premium HVM 16.6 (16.6 kWh • LiFePO4 HV)",
+        nominalKwh: 16.6, dodPct: 95, maxPowerKw: 8.3, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 307, brand: "byd", bus: "hv"
+    },
+    huawei_luna_21_s1: {
+        name: "Huawei LUNA2000-21-S1 Nueva Gen (20.7 kWh • LiFePO4 HV)",
+        nominalKwh: 20.7, dodPct: 100, maxPowerKw: 10.5, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 400, brand: "huawei", bus: "hv"
+    },
+    byd_hvm_22_1: {
+        name: "BYD Battery-Box Premium HVM 22.1 (22.1 kWh • LiFePO4 HV)",
+        nominalKwh: 22.1, dodPct: 95, maxPowerKw: 11.0, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 409, brand: "byd", bus: "hv"
+    },
+
+    // --- SISTEMAS ALL-IN-ONE & ACOPLAMIENTO AC RETROFIT ---
+    enphase_iq_battery_5p: {
+        name: "Enphase IQ Battery 5P (5.0 kWh • AC LFP Microinversores)",
+        nominalKwh: 5.0, dodPct: 100, maxPowerKw: 3.84, roundTripEffPct: 90.0, coupling: "AC", nominalVoltageV: 230, brand: "enphase", bus: "ac"
+    },
+    ecoflow_powerocean_10: {
+        name: "EcoFlow PowerOcean LFP (10.2 kWh • 800V HV Activo)",
+        nominalKwh: 10.2, dodPct: 95, maxPowerKw: 6.6, roundTripEffPct: 95.0, coupling: "DC", nominalVoltageV: 400, brand: "ecoflow", bus: "hv"
+    },
+    tesla_powerwall_2: {
+        name: "Tesla Powerwall 2 (13.5 kWh • AC Retrofit • 5 kW)",
+        nominalKwh: 13.5, dodPct: 100, maxPowerKw: 5.0, roundTripEffPct: 90.0, coupling: "AC", nominalVoltageV: 230, brand: "tesla", bus: "ac"
+    },
+    tesla_powerwall_3: {
+        name: "Tesla Powerwall 3 LFP (13.5 kWh • Todo-en-Uno • 11.0 kW)",
+        nominalKwh: 13.5, dodPct: 100, maxPowerKw: 11.0, roundTripEffPct: 93.5, coupling: "DC", nominalVoltageV: 400, brand: "tesla", bus: "ac"
+    },
+
+    // --- ALMACENAMIENTO COMERCIAL E INDUSTRIAL C&I (3.0TD • 30 a 60 kWh) ---
+    sungrow_sbh300_30: {
+        name: "Sungrow SBH300 Comercial (30.0 kWh • LiFePO4 HV C&I)",
+        nominalKwh: 30.0, dodPct: 100, maxPowerKw: 15.0, roundTripEffPct: 95.6, coupling: "DC", nominalVoltageV: 400, brand: "sungrow", bus: "hv"
+    },
+    pylontech_force_h3_35: {
+        name: "Pylontech Force H3 C&I (35.8 kWh • LiFePO4 HV)",
+        nominalKwh: 35.8, dodPct: 95, maxPowerKw: 18.0, roundTripEffPct: 95.0, coupling: "DC", nominalVoltageV: 400, brand: "pylontech", bus: "hv"
+    },
+    huawei_luna_42_s1_dual: {
+        name: "Huawei 2× LUNA2000-21-S1 C&I (41.4 kWh • LiFePO4 HV)",
+        nominalKwh: 41.4, dodPct: 100, maxPowerKw: 21.0, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 400, brand: "huawei", bus: "hv"
+    },
+    byd_hvm_44_2_dual: {
+        name: "BYD 2× Battery-Box HVM 22.1 C&I (44.2 kWh • LiFePO4 HV)",
+        nominalKwh: 44.2, dodPct: 95, maxPowerKw: 22.0, roundTripEffPct: 95.5, coupling: "DC", nominalVoltageV: 409, brand: "byd", bus: "hv"
+    },
+    huawei_ci_pack_60: {
+        name: "Huawei LUNA2000 C&I Industrial Rack (60.0 kWh • LFP HV)",
+        nominalKwh: 60.0, dodPct: 100, maxPowerKw: 30.0, roundTripEffPct: 94.8, coupling: "DC", nominalVoltageV: 400, brand: "huawei", bus: "hv"
     }
 };
 
@@ -2838,7 +3235,8 @@ function createDefaultState() {
             currentStep: 0,
             completedSteps: [0],
             theme: "light",
-            lang: "es"
+            lang: "es",
+            autoPilot: true
         },
         locationAndPVGIS: {
             municipality: "Madrid",
@@ -2923,7 +3321,13 @@ function createDefaultState() {
                 { id: 3, name: "MPPT 3", stringsParallel: 1, modulesSeries: 6 },
                 { id: 4, name: "MPPT 4", stringsParallel: 1, modulesSeries: 6 },
                 { id: 5, name: "MPPT 5", stringsParallel: 1, modulesSeries: 6 },
-                { id: 6, name: "MPPT 6", stringsParallel: 1, modulesSeries: 6 }
+                { id: 6, name: "MPPT 6", stringsParallel: 1, modulesSeries: 6 },
+                { id: 7, name: "MPPT 7", stringsParallel: 1, modulesSeries: 6 },
+                { id: 8, name: "MPPT 8", stringsParallel: 1, modulesSeries: 6 },
+                { id: 9, name: "MPPT 9", stringsParallel: 1, modulesSeries: 6 },
+                { id: 10, name: "MPPT 10", stringsParallel: 1, modulesSeries: 6 },
+                { id: 11, name: "MPPT 11", stringsParallel: 1, modulesSeries: 6 },
+                { id: 12, name: "MPPT 12", stringsParallel: 1, modulesSeries: 6 }
             ]
         },
         cablingAndREBT: {
@@ -3184,7 +3588,11 @@ const PVGISService = {
         Store.state.pvModules.tilt = nearest.data.tilt;
         this.checkAutoFiscalRegion(nearest.name, lat, lon);
 
-        PhysicsEngine.recalculateAll();
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        } else {
+            PhysicsEngine.recalculateAll();
+        }
         UI.renderAll();
         this.refreshLivePVGIS(true);
     },
@@ -3204,7 +3612,11 @@ const PVGISService = {
         Store.state.pvModules.tilt = data.tilt;
         this.checkAutoFiscalRegion(provKey, data.lat, data.lon);
 
-        PhysicsEngine.recalculateAll();
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        } else {
+            PhysicsEngine.recalculateAll();
+        }
         UI.renderAll();
         this.refreshLivePVGIS(true);
     },
@@ -3228,7 +3640,11 @@ const PVGISService = {
         loc.pvgisSource = "PVGIS Coordenadas";
         this.checkAutoFiscalRegion(nearest.name, lat, lon);
 
-        PhysicsEngine.recalculateAll();
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        } else {
+            PhysicsEngine.recalculateAll();
+        }
         UI.renderAll();
         this.refreshLivePVGIS(true);
     },
@@ -3256,7 +3672,11 @@ const PVGISService = {
                 loc.monthlyWeights = [...nearest.data.weights];
                 this.checkAutoFiscalRegion(nearest.name, lat, lon);
 
-                PhysicsEngine.recalculateAll();
+                if (Store.state.projectMeta.autoPilot !== false) {
+                    AutoOptimizer.cascadeFromStep1();
+                } else {
+                    PhysicsEngine.recalculateAll();
+                }
                 UI.renderAll();
                 this.refreshLivePVGIS(false);
             },
@@ -3996,7 +4416,7 @@ const PhysicsEngine = {
         const areaM2 = +(moduleCount * unitAreaM2).toFixed(1);
 
         // 4. Inversor y Validación Térmica Multi-MPPT (Paso 3)
-        const numMppts = Math.max(1, Math.min(6, Math.round(Number(inv.numMppts) || 2)));
+        const numMppts = Math.max(1, Math.min(12, Math.round(Number(inv.numMppts) || 2)));
         const betaVoc = -Math.abs(Number(pv.betaVoc) || 0.27);
         const betaVmp = betaVoc - 0.04;
 
@@ -4081,12 +4501,12 @@ const PhysicsEngine = {
 
         if (minVmpHot === Infinity) minVmpHot = 0;
 
-        const pacKw = Math.max(0.5, Number(inv.pacKw) || 3.0);
+        const pacKw = Math.max(0.4, Number(inv.pacKw) || 3.0);
         const dcAcRatio = +(totalKwp / pacKw).toFixed(2);
         const dcAcPct = Math.round(dcAcRatio * 100);
-        let dcAcStatus = 'optimal'; // 1.00 - 1.30
-        if (dcAcRatio > 1.45 || dcAcRatio < 0.70) dcAcStatus = 'error';
-        else if (dcAcRatio > 1.30 || dcAcRatio < 0.95) dcAcStatus = 'warn';
+        let dcAcStatus = 'optimal'; // 0.90 - 1.30
+        if (dcAcRatio > 1.45) dcAcStatus = 'error';
+        else if (dcAcRatio > 1.30 || dcAcRatio < 0.85) dcAcStatus = 'warn';
 
         const stringsMatchGenerator = (totalAssignedModules === moduleCount);
         const inverterAllOk = allVocOk && allMpptWinOk && allCurrentOk && (dcAcStatus !== 'error') && totalAssignedModules > 0;
@@ -4415,6 +4835,564 @@ const PhysicsEngine = {
 };
 
 /* ============================================================================
+   5B. MOTOR DE PILOTO AUTOMÁTICO EN CASCADA Y AUTOCORRECCIÓN (AutoOptimizer)
+   ============================================================================ */
+const AutoOptimizer = {
+
+    getModuleThermalSpecs(pv) {
+        const betaVoc = -Math.abs(Number(pv.betaVoc) || 0.27);
+        const betaVmp = betaVoc - 0.04;
+        const voc25 = Number(pv.voc) || 41.5;
+        const vmp25 = Number(pv.vmp) || 34.6;
+        const vVocColdMod = voc25 * (1 + (betaVoc / 100) * (-35)); // -10°C vs 25°C
+        const vVmpHotMod = vmp25 * (1 + (betaVmp / 100) * 45);     // +70°C vs 25°C
+        const imp = Number(pv.imp) || 13.0;
+        const isc = Number(pv.isc) || 13.8;
+        const wp = Math.max(50, Number(pv.wp) || 450);
+        return { voc25, vmp25, vVocColdMod, vVmpHotMod, imp, isc, wp };
+    },
+
+    getInverterBounds(invSpec, pv) {
+        const m = this.getModuleThermalSpecs(pv);
+        const vMax = Number(invSpec.vMaxInv ?? invSpec.vdcMax) || 600;
+        const vStart = Number(invSpec.vStart ?? invSpec.vstart) || 100;
+        const vMpptMin = Number(invSpec.vMpptMin ?? invSpec.vmpptMin) || 90;
+        const vMpptMax = Number(invSpec.vMpptMax ?? invSpec.vmpptMax) || 560;
+        const iMax = Number(invSpec.iMaxMppt ?? invSpec.imaxMppt) || 13.5;
+        const iSc = Number(invSpec.iScMppt ?? invSpec.iscMppt) || 18.0;
+        const pacKw = Math.max(0.4, Number(invSpec.pacKw) || 3.0);
+        const numMppts = Math.max(1, Math.min(12, Math.round(Number(invSpec.numMppts) || 2)));
+
+        let minNs = 1;
+        while (minNs <= 40) {
+            const vHot = +(minNs * m.vVmpHotMod).toFixed(1);
+            if (vHot >= vStart && vHot >= vMpptMin) break;
+            minNs++;
+        }
+
+        let maxNs = 0;
+        for (let ns = 1; ns <= 40; ns++) {
+            const vCold = +(ns * m.vVocColdMod).toFixed(1);
+            const vNom = +(ns * m.vmp25).toFixed(1);
+            if (vCold < vMax && vNom <= vMpptMax) {
+                maxNs = ns;
+            } else {
+                break;
+            }
+        }
+
+        let maxNp = 0;
+        for (let np = 1; np <= 12; np++) {
+            const impTot = +(np * m.imp).toFixed(2);
+            const iscTot = +(np * m.isc).toFixed(2);
+            if (impTot <= iMax && iscTot <= iSc) {
+                maxNp = np;
+            } else {
+                break;
+            }
+        }
+
+        const canAcceptModule = (maxNs >= minNs) && (maxNp >= 1);
+        const minViableModules = canAcceptModule ? minNs : Infinity;
+        const maxElectricalModules = canAcceptModule ? (numMppts * maxNp * maxNs) : 0;
+        const maxDcAcModules = Math.max(minNs, Math.floor((pacKw * 1.448 * 1000) / m.wp));
+        const maxSafeModules = canAcceptModule ? Math.min(maxElectricalModules, maxDcAcModules) : 0;
+
+        return {
+            vMax, vStart, vMpptMin, vMpptMax, iMax, iSc, pacKw, numMppts,
+            minNs, maxNs, maxNp,
+            canAcceptModule,
+            minViableModules,
+            maxElectricalModules,
+            maxDcAcModules,
+            maxSafeModules
+        };
+    },
+
+    solveMpptDistribution(totalMods, invSpec, pv) {
+        const b = this.getInverterBounds(invSpec, pv);
+        const M = b.numMppts;
+        const emptySlots = Array.from({ length: M }, () => ({ np: 0, ns: 0 }));
+        if (!b.canAcceptModule || totalMods <= 0) {
+            return { exact: false, assigned: 0, slots: emptySlots, bounds: b };
+        }
+
+        // Mapa de cantidades válidas en un único seguidor MPPT -> {np, ns} (priorizando menor Np)
+        const validPerMppt = new Map();
+        validPerMppt.set(0, { np: 0, ns: 0 });
+        for (let np = 1; np <= b.maxNp; np++) {
+            for (let ns = b.minNs; ns <= b.maxNs; ns++) {
+                const c = np * ns;
+                if (!validPerMppt.has(c)) {
+                    validPerMppt.set(c, { np, ns });
+                }
+            }
+        }
+
+        const validList = Array.from(validPerMppt.keys()).sort((a, z) => a - z);
+        const capTarget = Math.min(Math.max(1, Math.round(totalMods)), b.maxElectricalModules);
+        const targetMean = capTarget / M;
+
+        // DP sobre m = 0..M seguidores y s = 0..capTarget paneles
+        let dp = new Map();
+        dp.set(0, { cost: 0, counts: [] });
+
+        for (let mIdx = 0; mIdx < M; mIdx++) {
+            const nextDp = new Map();
+            for (const [sumSoFar, state] of dp.entries()) {
+                for (const c of validList) {
+                    const nsSum = sumSoFar + c;
+                    if (nsSum > capTarget + b.maxNs) continue;
+                    const pairCfg = validPerMppt.get(c);
+                    // Penalizar desequilibrio entre MPPTs y ligeramente cadenas en paralelo innecesarias
+                    const diffMean = c - targetMean;
+                    const stepCost = diffMean * diffMean + (pairCfg.np > 1 ? (pairCfg.np - 1) * 1.5 : 0);
+                    const totalCost = state.cost + stepCost;
+                    const prevBest = nextDp.get(nsSum);
+                    if (!prevBest || totalCost < prevBest.cost) {
+                        nextDp.set(nsSum, { cost: totalCost, counts: [...state.counts, c] });
+                    }
+                }
+            }
+            dp = nextDp;
+        }
+
+        if (dp.has(totalMods)) {
+            const chosen = dp.get(totalMods).counts.sort((a, z) => z - a);
+            return {
+                exact: true,
+                assigned: totalMods,
+                slots: chosen.map(c => validPerMppt.get(c)),
+                bounds: b
+            };
+        }
+
+        // Si totalMods no tiene partición exacta, elegir la suma alcanzable más cercana dentro de límites eléctricos
+        let bestSum = 0;
+        let minGap = Infinity;
+        for (const s of dp.keys()) {
+            const gap = Math.abs(s - totalMods);
+            if (gap < minGap || (gap === minGap && s > bestSum)) {
+                minGap = gap;
+                bestSum = s;
+            }
+        }
+        const fallbackCounts = (dp.get(bestSum)?.counts || Array(M).fill(0)).sort((a, z) => z - a);
+        return {
+            exact: bestSum === totalMods,
+            assigned: bestSum,
+            slots: fallbackCounts.map(c => validPerMppt.get(c) || { np: 0, ns: 0 }),
+            bounds: b
+        };
+    },
+
+    writeSlotsToState(slots, numMppts) {
+        const inv = Store.state.inverterAndStrings;
+        inv.numMppts = numMppts;
+        while (inv.mppts.length < Math.max(12, numMppts)) {
+            const nextId = inv.mppts.length + 1;
+            inv.mppts.push({ id: nextId, name: `MPPT ${nextId}`, stringsParallel: 0, modulesSeries: 0 });
+        }
+        for (let i = 0; i < inv.mppts.length; i++) {
+            if (i < numMppts && slots[i]) {
+                inv.mppts[i].stringsParallel = slots[i].np;
+                inv.mppts[i].modulesSeries = slots[i].ns;
+            } else {
+                inv.mppts[i].stringsParallel = 0;
+                inv.mppts[i].modulesSeries = 0;
+            }
+        }
+    },
+
+    findBestCatalogInverter(totalMods, pv, ct, bat) {
+        const nMods = Math.max(1, Math.round(Number(totalMods) || 1));
+        const totalKwp = (nMods * (Number(pv.wp) || 450)) / 1000;
+        const isCommercial30TD = ct && ct.tariffMode === '30td';
+        const isOffGrid = bat && bat.offGridMode;
+
+        let bestMatch = null;
+        let bestFallback = null;
+
+        for (const [id, d] of Object.entries(INVERSORES_COMERCIALES)) {
+            const dist = this.solveMpptDistribution(nMods, d, pv);
+            if (!dist.bounds.canAcceptModule) continue;
+
+            const dcAc = totalKwp / d.pacKw;
+            const isMicro = d.vdcMax <= 70;
+
+            let score = Math.abs(dcAc - 1.12) * 12;
+            if (dcAc < 0.85) score += (0.85 - dcAc) * 20;
+            if (dcAc > 1.28) score += (dcAc - 1.28) * 24;
+
+            // Coherencia de red monofásica vs trifásica según potencia y tarifa CNMC
+            if (isCommercial30TD || totalKwp > 11.2) {
+                if (d.tipoRed === 'monofasico') score += 32;
+            } else if (totalKwp <= 6.8) {
+                if (d.tipoRed === 'trifasico') score += 10;
+            }
+
+            // Preferir inversor string frente a microinversor a partir de 5 módulos
+            if (nMods >= 5 && isMicro) score += 8;
+            if (isOffGrid && (d.brand === 'victron' || d.brand === 'deye')) score -= 3;
+
+            // Bonificar mayor rendimiento europeo de ficha
+            score -= ((Number(d.rendimiento) || 97.5) - 97.0) * 0.8;
+
+            const candidate = { id, spec: d, dist, dcAc, score };
+
+            if (dist.exact && dcAc <= 1.44) {
+                if (!bestMatch || candidate.score < bestMatch.score) {
+                    bestMatch = candidate;
+                }
+            } else {
+                const fbPenalty = Math.abs(dist.assigned - nMods) * 15 + (dcAc > 1.45 ? (dcAc - 1.45) * 60 : 0) + score;
+                if (!bestFallback || fbPenalty < bestFallback.fbPenalty) {
+                    bestFallback = { ...candidate, fbPenalty };
+                }
+            }
+        }
+
+        return bestMatch || bestFallback;
+    },
+
+    applyCatalogInverterToState(id, distSlots = null) {
+        const d = INVERSORES_COMERCIALES[id];
+        if (!d) return false;
+        const inv = Store.state.inverterAndStrings;
+        inv.mode = 'catalog';
+        inv.catalogId = id;
+        inv.modelName = d.nombre;
+        inv.pacKw = d.pacKw;
+        inv.gridType = d.tipoRed;
+        inv.numMppts = d.numMppts;
+        inv.vMaxInv = d.vdcMax;
+        inv.vStart = d.vstart;
+        inv.vMpptMin = d.vmpptMin;
+        inv.vMpptMax = d.vmpptMax;
+        inv.iMaxMppt = d.imaxMppt;
+        inv.iScMppt = d.iscMppt;
+        inv.efficiencyPct = d.rendimiento;
+
+        const slots = distSlots || this.solveMpptDistribution(Store.state.pvModules.moduleCount, d, Store.state.pvModules).slots;
+        this.writeSlotsToState(slots, d.numMppts);
+        return true;
+    },
+
+    findBestCatalogBattery() {
+        const st = Store.state;
+        const ct = st.consumptionAndTariff;
+        const pv = st.pvModules;
+        const inv = st.inverterAndStrings;
+        const bat = st.batterySystem;
+
+        const annualDemand = Math.max(200, Number(ct.annualKwh) || 4200);
+        const dailyDemand = annualDemand / 365;
+        const nocShare = Math.max(0.25, 1 - (PhysicsEngine.getEffectiveDiurnalSharePct() / 100));
+        const specYield = Store.computed?.pvgis?.specificYield || 1600;
+        const dailySolar = (((Number(pv.moduleCount) || 8) * (Number(pv.wp) || 450)) / 1000) * specYield / 365;
+
+        const targetKwh = bat.offGridMode
+            ? Math.max(5.0, dailyDemand * (Number(bat.autonomyDays) || 2.0))
+            : Math.max(4.5, Math.min(60, Math.min(dailyDemand * nocShare * 1.05, dailySolar * 0.68)));
+
+        const invCat = inv.mode === 'catalog' ? INVERSORES_COMERCIALES[inv.catalogId] : null;
+        const prefBrand = invCat?.brand || '';
+        const prefBus = invCat?.batBus || 'hv';
+
+        let bestId = 'huawei_luna_5';
+        let bestScore = Infinity;
+
+        for (const [id, b] of Object.entries(BATERIAS_CATALOGO)) {
+            const usable = b.nominalKwh * (b.dodPct / 100);
+            const relDiff = Math.abs(usable - targetKwh) / Math.max(4, targetKwh);
+            let score = relDiff * 14;
+
+            // Compatibilidad de bus DC (LV 48V vs HV 400V vs AC Retrofit)
+            if (prefBus === 'lv' && b.bus !== 'lv' && b.coupling !== 'AC') score += 18;
+            if (prefBus === 'hv' && b.bus === 'lv') score += 18;
+            if (prefBus === 'ac' && b.coupling !== 'AC') score += 14;
+
+            // Afinidad nativa de marca (ecosistema inversor-batería)
+            if (prefBrand && b.brand === prefBrand) score -= 3.2;
+            else if (prefBus === 'hv' && b.brand === 'byd' && ['fronius', 'sma', 'kostal', 'goodwe', 'ingeteam'].includes(prefBrand)) score -= 2.2;
+            else if (prefBus === 'lv' && b.brand === 'pylontech' && ['victron', 'deye', 'solis'].includes(prefBrand)) score -= 2.0;
+
+            score -= ((b.roundTripEffPct || 94) - 90) * 0.25;
+
+            if (score < bestScore) {
+                bestScore = score;
+                bestId = id;
+            }
+        }
+        return bestId;
+    },
+
+    applyOptimalBattery() {
+        const bat = Store.state.batterySystem;
+        if (bat.mode !== 'catalog') return;
+        const bestId = this.findBestCatalogBattery();
+        const b = BATERIAS_CATALOGO[bestId];
+        if (!b) return;
+        bat.catalogId = bestId;
+        bat.modelName = b.name;
+        bat.nominalKwh = b.nominalKwh;
+        bat.dodPct = b.dodPct;
+        bat.maxPowerKw = b.maxPowerKw;
+        bat.roundTripEffPct = b.roundTripEffPct;
+        bat.coupling = b.coupling;
+        Store.state.cablingAndREBT.battery.nominalVoltageV = b.nominalVoltageV;
+        Store.state.cablingAndREBT.battery.maxCurrentA = +((b.maxPowerKw * 1000) / b.nominalVoltageV).toFixed(1);
+    },
+
+    autoSizeAllCables() {
+        PhysicsEngine.recalculateAll();
+        const c = Store.computed;
+        if (!c || !c.cabling) return;
+        for (const seg of ['dc', 'ac', 'battery']) {
+            if (c.cabling[seg] && c.cabling[seg].minCompliantSection) {
+                Store.state.cablingAndREBT[seg].sectionMm2 = c.cabling[seg].minCompliantSection;
+            }
+        }
+        PhysicsEngine.recalculateAll();
+    },
+
+    /* Cascada integral desde Paso 1 (Curva / Consumo / Ubicación / Tarifa -> Paneles -> Inversor -> Strings -> Cables -> Batería -> CAPEX) */
+    cascadeFromStep1() {
+        const st = Store.state;
+        st.pvModules.useRecommendedCount = true;
+        PhysicsEngine.recalculateAll();
+
+        // Si es proyecto gran escala (>15 kWp) en catálogo con panel pequeño por defecto, mantener coherencia o escalar inversor
+        if (st.inverterAndStrings.mode === 'catalog') {
+            const bestInv = this.findBestCatalogInverter(st.pvModules.moduleCount, st.pvModules, st.consumptionAndTariff, st.batterySystem);
+            if (bestInv) {
+                this.applyCatalogInverterToState(bestInv.id, bestInv.dist.slots);
+            }
+        } else {
+            const dist = this.solveMpptDistribution(st.pvModules.moduleCount, st.inverterAndStrings, st.pvModules);
+            this.writeSlotsToState(dist.slots, dist.bounds.numMppts);
+        }
+
+        if (st.batterySystem.enabled && st.batterySystem.mode === 'catalog' && !st.batterySystem.offGridMode) {
+            this.applyOptimalBattery();
+        }
+
+        this.autoSizeAllCables();
+    },
+
+    /* Cascada integral desde Paso 2 (Cambio manual de nº de paneles, modelo o Wp -> Inversor -> Strings -> Cables -> Batería -> CAPEX) */
+    cascadeFromStep2() {
+        const st = Store.state;
+        PhysicsEngine.recalculateAll();
+
+        if (st.inverterAndStrings.mode === 'catalog') {
+            const bestInv = this.findBestCatalogInverter(st.pvModules.moduleCount, st.pvModules, st.consumptionAndTariff, st.batterySystem);
+            if (bestInv) {
+                this.applyCatalogInverterToState(bestInv.id, bestInv.dist.slots);
+            }
+        } else {
+            const dist = this.solveMpptDistribution(st.pvModules.moduleCount, st.inverterAndStrings, st.pvModules);
+            this.writeSlotsToState(dist.slots, dist.bounds.numMppts);
+        }
+
+        if (st.batterySystem.enabled && st.batterySystem.mode === 'catalog' && !st.batterySystem.offGridMode) {
+            this.applyOptimalBattery();
+        }
+
+        this.autoSizeAllCables();
+    },
+
+    /* Diagnóstico integral de errores e insuficiencias en todo el proyecto */
+    diagnoseIssues() {
+        const st = Store.state;
+        const c = Store.computed || PhysicsEngine.recalculateAll();
+        const pv = st.pvModules;
+        const inv = st.inverterAndStrings;
+        const ci = c.inverter;
+        const bounds = this.getInverterBounds(inv, pv);
+        const issues = [];
+
+        if (!bounds.canAcceptModule) {
+            if (bounds.maxNp < 1) {
+                issues.push({
+                    code: 'module_current_incompatible',
+                    step: 3,
+                    text: `Corriente del módulo (${pv.imp} A Imp / ${pv.isc} A Isc) supera la entrada máxima del inversor (${inv.iMaxMppt} A).`
+                });
+            } else {
+                issues.push({
+                    code: 'module_voltage_incompatible',
+                    step: 3,
+                    text: `Tensión del módulo incompatible con la ventana MPPT (${inv.vMpptMin}–${inv.vMpptMax} V / máx ${inv.vMaxInv} V).`
+                });
+            }
+        } else if (c.pv.moduleCount < bounds.minViableModules) {
+            const minReqV = Math.max(inv.vStart, inv.vMpptMin);
+            issues.push({
+                code: 'insufficient_modules',
+                step: 3,
+                minMods: bounds.minViableModules,
+                text: `Insuficiencia de módulos: este inversor necesita un mínimo de ${bounds.minViableModules} paneles en serie para alcanzar ${minReqV} V a +70 °C (actual: ${c.pv.moduleCount}).`
+            });
+        } else {
+            if (!ci.allVocOk) {
+                issues.push({
+                    code: 'overvoltage_voc',
+                    step: 3,
+                    text: `Sobretensión en frío (-10 °C): ${fmtNum(ci.maxVocCold, 1)} V supera Vmax (${inv.vMaxInv} V). Máximo seguro: ${bounds.maxNs} paneles/serie.`
+                });
+            }
+            if (!ci.allStartOk || !ci.allMpptWinOk) {
+                issues.push({
+                    code: 'mppt_window',
+                    step: 3,
+                    minMods: bounds.minNs,
+                    text: `Tensión de string fuera de rango MPPT/arranque: agrupa al menos ${bounds.minNs} paneles en serie por MPPT activo.`
+                });
+            }
+            if (!ci.allCurrentOk) {
+                issues.push({
+                    code: 'overcurrent_mppt',
+                    step: 3,
+                    text: `Exceso de intensidad en paralelo (${fmtNum(ci.maxImpMppt, 1)} A > ${inv.iMaxMppt} A). Máximo ${bounds.maxNp} rama(s)/MPPT.`
+                });
+            }
+            if (!ci.stringsMatchGenerator) {
+                issues.push({
+                    code: 'unassigned_modules',
+                    step: 3,
+                    text: `Desajuste de paneles: ${ci.totalAssignedModules} en strings MPPT frente a ${c.pv.moduleCount} en el generador.`
+                });
+            }
+            if (ci.dcAcStatus === 'error' || c.pv.moduleCount > bounds.maxSafeModules) {
+                issues.push({
+                    code: 'overload_dcac',
+                    step: 3,
+                    maxMods: bounds.maxSafeModules,
+                    text: `Sobrecarga DC/AC (${ci.dcAcPct}%): la potencia de paneles excede el límite admisible del inversor (${inv.pacKw} kW).`
+                });
+            }
+        }
+
+        if (!c.cabling.allRebtCompliant) {
+            const badSegs = [];
+            if (!c.cabling.dc.compliant) badSegs.push(`DC → mín. ${c.cabling.dc.minCompliantSection} mm²`);
+            if (!c.cabling.ac.compliant) badSegs.push(`AC → mín. ${c.cabling.ac.minCompliantSection} mm²`);
+            if (st.batterySystem.enabled && !c.cabling.battery.compliant) badSegs.push(`Batería → mín. ${c.cabling.battery.minCompliantSection} mm²`);
+            issues.push({
+                code: 'rebt_cabling',
+                step: 4,
+                text: `Sección de cable insuficiente según REBT (${badSegs.join(', ')}).`
+            });
+        }
+
+        return { issues, bounds };
+    },
+
+    /* Autocorrección inteligente en 1 clic:
+       - strategy === 'keep_inverter': ajusta nº de módulos (ej. subir al mínimo de 4 paneles) y strings para que funcione CON el inversor actual
+       - strategy === 'smart': sube al mínimo de módulos si hay insuficiencia, re-reparte strings, escala inversor si hay sobrecarga y ajusta secciones REBT */
+    fixAllIssues(strategy = 'smart') {
+        const st = Store.state;
+        const pv = st.pvModules;
+        const inv = st.inverterAndStrings;
+        const actionsTaken = [];
+
+        let bounds = this.getInverterBounds(inv, pv);
+
+        // 1. Si el módulo supera corriente/tensión unitaria del inversor actual
+        if (!bounds.canAcceptModule) {
+            if (inv.mode === 'catalog' && strategy !== 'keep_inverter_strict') {
+                const bestInv = this.findBestCatalogInverter(pv.moduleCount, pv, st.consumptionAndTariff, st.batterySystem);
+                if (bestInv) {
+                    this.applyCatalogInverterToState(bestInv.id, bestInv.dist.slots);
+                    bounds = bestInv.dist.bounds;
+                    actionsTaken.push(`inversor compatible (${bestInv.spec.nombre.split('(')[0].trim()})`);
+                }
+            } else {
+                inv.mode = 'custom';
+                if (bounds.maxNp < 1) {
+                    inv.iMaxMppt = +(Number(pv.imp) * 1.15).toFixed(1);
+                    inv.iScMppt = +(Number(pv.isc) * 1.25).toFixed(1);
+                }
+                bounds = this.getInverterBounds(inv, pv);
+                actionsTaken.push('límites de entrada MPPT adaptados');
+            }
+        }
+
+        // 2. Insuficiencia de módulos para el inversor seleccionado (ej. mínimo 4 módulos para arrancar)
+        if (bounds.canAcceptModule && pv.moduleCount < bounds.minViableModules) {
+            pv.moduleCount = bounds.minViableModules;
+            pv.useRecommendedCount = false;
+            actionsTaken.push(`configurado mínimo de ${bounds.minViableModules} módulos en serie`);
+        }
+
+        // 3. Exceso / sobrecarga de módulos respecto al inversor actual
+        if (bounds.canAcceptModule && (pv.moduleCount > bounds.maxSafeModules || ((pv.moduleCount * pv.wp) / 1000 / inv.pacKw) > 1.45)) {
+            if (strategy === 'keep_inverter' || inv.mode === 'custom') {
+                pv.moduleCount = Math.max(bounds.minViableModules, bounds.maxSafeModules);
+                pv.useRecommendedCount = false;
+                actionsTaken.push(`ajustado a ${pv.moduleCount} módulos máximos para este inversor`);
+            } else {
+                const bestInv = this.findBestCatalogInverter(pv.moduleCount, pv, st.consumptionAndTariff, st.batterySystem);
+                if (bestInv && bestInv.dist.exact && bestInv.dcAc <= 1.45) {
+                    this.applyCatalogInverterToState(bestInv.id, bestInv.dist.slots);
+                    bounds = bestInv.dist.bounds;
+                    actionsTaken.push(`inversor escalado a ${bestInv.spec.pacKw} kW`);
+                } else {
+                    pv.moduleCount = Math.max(bounds.minViableModules, bounds.maxSafeModules);
+                    pv.useRecommendedCount = false;
+                    actionsTaken.push(`ajustado a ${pv.moduleCount} módulos admisibles`);
+                }
+            }
+        }
+
+        // 4. Reparto exacto de strings en MPPTs sin paneles huérfanos ni sobretensión
+        let dist = this.solveMpptDistribution(pv.moduleCount, inv, pv);
+        if (!dist.exact && bounds.canAcceptModule) {
+            // Buscar cantidad exacta más próxima (ej. +1 módulo si cae en hueco entre 1 y 2 strings)
+            for (let delta = 1; delta <= bounds.minNs; delta++) {
+                const up = pv.moduleCount + delta;
+                if (up <= bounds.maxSafeModules) {
+                    const dUp = this.solveMpptDistribution(up, inv, pv);
+                    if (dUp.exact) {
+                        pv.moduleCount = up;
+                        pv.useRecommendedCount = false;
+                        dist = dUp;
+                        actionsTaken.push(`ajustado a ${up} módulos simétricos`);
+                        break;
+                    }
+                }
+                const down = pv.moduleCount - delta;
+                if (down >= bounds.minViableModules) {
+                    const dDown = this.solveMpptDistribution(down, inv, pv);
+                    if (dDown.exact) {
+                        pv.moduleCount = down;
+                        pv.useRecommendedCount = false;
+                        dist = dDown;
+                        actionsTaken.push(`ajustado a ${down} módulos simétricos`);
+                        break;
+                    }
+                }
+            }
+        }
+        this.writeSlotsToState(dist.slots, bounds.numMppts);
+        if (actionsTaken.length === 0) {
+            actionsTaken.push('reparto MPPT optimizado');
+        }
+
+        // 5. Auto-dimensionado normativo de todos los tramos de conductores REBT ITC-BT-19/20/40
+        PhysicsEngine.recalculateAll();
+        if (!Store.computed.cabling.allRebtCompliant) {
+            actionsTaken.push('secciones de cable REBT corregidas');
+        }
+        this.autoSizeAllCables();
+
+        return actionsTaken;
+    }
+};
+
+/* ============================================================================
    6. CONTROLADOR DEL WIZARD PASO A PASO (8 PANTALLAS: PASO 0 A PASO 7)
    ============================================================================ */
 const Wizard = {
@@ -4612,6 +5590,23 @@ const Wizard = {
             sum.textContent = `${fmtNum(c.pv.totalKwp, 2)} kWp • ${fmtNum(c.pv.annualGenKwh)} kWh/a • ${rebtTxt}`;
         }
 
+        const btnGlobalFix = document.getElementById('btnGlobalAutoFix');
+        const lblGlobalFix = document.getElementById('lblGlobalAutoFix');
+        if (btnGlobalFix && typeof AutoOptimizer !== 'undefined') {
+            const diag = AutoOptimizer.diagnoseIssues();
+            if (diag.issues.length > 0) {
+                btnGlobalFix.classList.remove('hidden');
+                if (lblGlobalFix) {
+                    lblGlobalFix.textContent = en
+                        ? `Auto-fix (${diag.issues.length})`
+                        : `Autocorregir (${diag.issues.length})`;
+                }
+                btnGlobalFix.title = diag.issues.map(i => i.text).join(' | ');
+            } else {
+                btnGlobalFix.classList.add('hidden');
+            }
+        }
+
         if (lblNext) {
             if (cur === 7) {
                 lblNext.textContent = en ? '📄 Export PDF Report' : '📄 Generar Informe PDF';
@@ -4631,6 +5626,61 @@ const Actions = {
     refresh() {
         PhysicsEngine.recalculateAll();
         UI.renderAll();
+    },
+
+    /* --- PILOTO AUTOMÁTICO INTEGRAL Y AUTOCORRECCIÓN EN 1 CLIC --- */
+    toggleAutoPilot() {
+        const meta = Store.state.projectMeta;
+        meta.autoPilot = meta.autoPilot === false ? true : false;
+        if (meta.autoPilot) {
+            AutoOptimizer.cascadeFromStep2();
+            this.refresh();
+            UI.showToast(meta.lang === 'en' ? "⚡ Auto-Pilot ON: inverter, MPPT strings & REBT cables synced." : "⚡ Auto-Ajuste activado: inversor, strings y secciones REBT sincronizados.", "ok");
+        } else {
+            this.refresh();
+            UI.showToast(meta.lang === 'en' ? "Manual lock enabled: automatic equipment scaling paused." : "Modo Manual activado: escalado automático en pausa.", "warn");
+        }
+    },
+
+    autoFixAllErrors(strategy = 'smart') {
+        const actions = AutoOptimizer.fixAllIssues(strategy);
+        this.refresh();
+        const en = Store.state.projectMeta.lang === 'en';
+        const summary = actions.length > 0 ? actions.join(' • ') : (en ? 'Configuration verified' : 'Configuración verificada');
+        UI.showToast(en ? `🔧 Auto-fixed: ${summary}` : `🔧 Autocorrección aplicada: ${summary}`, "ok");
+    },
+
+    autoSelectOptimalInverter() {
+        const st = Store.state;
+        const best = AutoOptimizer.findBestCatalogInverter(st.pvModules.moduleCount, st.pvModules, st.consumptionAndTariff, st.batterySystem);
+        if (!best) {
+            UI.showToast("No se encontró inversor compatible en catálogo para este módulo.", "warn");
+            return;
+        }
+        AutoOptimizer.applyCatalogInverterToState(best.id, best.dist.slots);
+        if (!best.dist.exact && st.pvModules.moduleCount < best.dist.bounds.minViableModules) {
+            st.pvModules.moduleCount = best.dist.bounds.minViableModules;
+            st.pvModules.useRecommendedCount = false;
+            const d2 = AutoOptimizer.solveMpptDistribution(st.pvModules.moduleCount, st.inverterAndStrings, st.pvModules);
+            AutoOptimizer.writeSlotsToState(d2.slots, d2.bounds.numMppts);
+        }
+        if (st.batterySystem.enabled && st.batterySystem.mode === 'catalog' && !st.batterySystem.offGridMode) {
+            AutoOptimizer.applyOptimalBattery();
+        }
+        AutoOptimizer.autoSizeAllCables();
+        this.refresh();
+        UI.showToast(`⚡ Inversor óptimo asignado: ${best.spec.nombre}`, "ok");
+    },
+
+    autoSelectOptimalBattery() {
+        const bat = Store.state.batterySystem;
+        bat.enabled = true;
+        bat.mode = 'catalog';
+        bat.offGridMode = false;
+        AutoOptimizer.applyOptimalBattery();
+        AutoOptimizer.autoSizeAllCables();
+        this.refresh();
+        UI.showToast(`⚡ Batería óptima asignada: ${bat.modelName}`, "ok");
     },
 
     /* --- PASO 0: METADATOS Y ARRANQUE --- */
@@ -4690,7 +5740,9 @@ const Actions = {
             const pSum = pat.reduce((a, b) => a + b, 0) || 1;
             ct.monthlyKwh = pat.map(w => Math.round((ct.annualKwh * w) / pSum));
         }
-        if (Store.state.pvModules.useRecommendedCount) {
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        } else if (Store.state.pvModules.useRecommendedCount) {
             PhysicsEngine.recalculateAll();
             this.syncStringsToGeneratorSilently();
         }
@@ -4713,6 +5765,9 @@ const Actions = {
             const pSum = pat.reduce((a, b) => a + b, 0) || 1;
             ct.monthlyKwh = pat.map(w => Math.round((ct.annualKwh * w) / pSum));
         }
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        }
         this.refresh();
     },
 
@@ -4725,7 +5780,9 @@ const Actions = {
         ct.monthlyKwh[monthIdx] = v;
         ct.seasonalityMode = 'mensual_manual';
         ct.annualKwh = Math.max(50, ct.monthlyKwh.reduce((a, b) => a + b, 0));
-        if (Store.state.pvModules.useRecommendedCount) {
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        } else if (Store.state.pvModules.useRecommendedCount) {
             PhysicsEngine.recalculateAll();
             this.syncStringsToGeneratorSilently();
         }
@@ -4736,6 +5793,9 @@ const Actions = {
         const ct = Store.state.consumptionAndTariff;
         ct.monthlyKwh = DIAS_MES.map(d => Math.round((ct.annualKwh * d) / 365));
         ct.seasonalityMode = 'mensual_manual';
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        }
         this.refresh();
     },
 
@@ -4765,9 +5825,13 @@ const Actions = {
         ct.customMonthlyCurves24 = null;
         ct.customDaysCompact = "";
         ct.datadisMeta = null;
-        PhysicsEngine.recalculateAll();
-        if (Store.state.pvModules.useRecommendedCount) {
-            this.syncStringsToGeneratorSilently();
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        } else {
+            PhysicsEngine.recalculateAll();
+            if (Store.state.pvModules.useRecommendedCount) {
+                this.syncStringsToGeneratorSilently();
+            }
         }
         this.refresh();
     },
@@ -4782,9 +5846,13 @@ const Actions = {
         ct.customDaysCompact = "";
         ct.datadisMeta = null;
         if (ct.seasonalityMode === 'datadis_real') ct.seasonalityMode = 'neutro';
-        PhysicsEngine.recalculateAll();
-        if (Store.state.pvModules.useRecommendedCount) {
-            this.syncStringsToGeneratorSilently();
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        } else {
+            PhysicsEngine.recalculateAll();
+            if (Store.state.pvModules.useRecommendedCount) {
+                this.syncStringsToGeneratorSilently();
+            }
         }
         this.refresh();
     },
@@ -4796,7 +5864,9 @@ const Actions = {
         } else {
             ct.diurnalShareOverridePct = Math.max(15, Math.min(85, Math.round(Number(val) || 48)));
         }
-        if (Store.state.pvModules.useRecommendedCount) {
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        } else if (Store.state.pvModules.useRecommendedCount) {
             PhysicsEngine.recalculateAll();
             this.syncStringsToGeneratorSilently();
         }
@@ -4842,16 +5912,23 @@ const Actions = {
                     ct.annualKwh = Math.round(parsed.estimatedAnnualKwh);
                 }
 
-                PhysicsEngine.recalculateAll();
-                if (Store.state.pvModules.useRecommendedCount) {
-                    this.syncStringsToGeneratorSilently();
+                if (Store.state.projectMeta.autoPilot !== false) {
+                    AutoOptimizer.cascadeFromStep1();
+                } else {
+                    PhysicsEngine.recalculateAll();
+                    if (Store.state.pvModules.useRecommendedCount) {
+                        this.syncStringsToGeneratorSilently();
+                    }
                 }
                 this.refresh();
 
                 const meta = parsed.datadisMeta;
+                const autoInfo = Store.state.projectMeta.autoPilot !== false
+                    ? ` → Auto-ajustado: ${Store.state.pvModules.moduleCount} paneles + ${Store.state.inverterAndStrings.pacKw} kW`
+                    : '';
                 const msg = meta && meta.daysCount > 0
-                    ? `Datadis importado: ${fmtNum(meta.rowsCount)} registros (${meta.daysCount} días • ${fmtNum(ct.annualKwh)} kWh/año)`
-                    : `Curva horaria cargada (${file.name})`;
+                    ? `Datadis importado: ${fmtNum(meta.rowsCount)} reg. (${fmtNum(ct.annualKwh)} kWh/a)${autoInfo}`
+                    : `Curva horaria cargada (${file.name})${autoInfo}`;
                 UI.showToast(msg, "ok");
             } catch (_) {
                 UI.showToast("Error al procesar el archivo de curva horaria / Datadis.", "err");
@@ -5280,6 +6357,9 @@ const Actions = {
         }
         const inp = document.getElementById('inpCsvCurveFile');
         if (inp) inp.value = "";
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+        }
         this.refresh();
         UI.showToast("Telemetría CSV eliminada; restaurado modo manual.", "ok");
     },
@@ -5290,6 +6370,9 @@ const Actions = {
             ct.tariffMode = mode;
             if (mode === '30td' && (Number(ct.contractedPowerKw) || 0) <= 15) {
                 ct.contractedPowerKw = 18.0;
+            }
+            if (Store.state.projectMeta.autoPilot !== false) {
+                AutoOptimizer.cascadeFromStep1();
             }
             this.refresh();
         }
@@ -5335,6 +6418,9 @@ const Actions = {
             return;
         }
         Store.state.pvModules.name = `Módulo Solar Custom (${Store.state.pvModules.wp} Wp)`;
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep2();
+        }
         this.refresh();
     },
 
@@ -5356,9 +6442,17 @@ const Actions = {
         pv.mismatchPct = m.mismatchPct || 1.0;
         pv.lengthMm = m.lengthMm;
         pv.widthMm = m.widthMm;
-        PhysicsEngine.recalculateAll();
-        if (pv.useRecommendedCount) {
-            this.syncStringsToGeneratorSilently();
+        if (Store.state.projectMeta.autoPilot !== false) {
+            if (pv.useRecommendedCount) {
+                AutoOptimizer.cascadeFromStep1();
+            } else {
+                AutoOptimizer.cascadeFromStep2();
+            }
+        } else {
+            PhysicsEngine.recalculateAll();
+            if (pv.useRecommendedCount) {
+                this.syncStringsToGeneratorSilently();
+            }
         }
         this.refresh();
     },
@@ -5371,20 +6465,32 @@ const Actions = {
         if (!isNaN(num)) {
             Store.state.pvModules[field] = num;
             Store.state.pvModules.name = `Módulo Solar Custom (${Store.state.pvModules.wp} Wp)`;
+            if (Store.state.projectMeta.autoPilot !== false) {
+                AutoOptimizer.cascadeFromStep2();
+            }
             this.refresh();
         }
     },
 
     useRecommendedModules() {
         Store.state.pvModules.useRecommendedCount = true;
-        PhysicsEngine.recalculateAll();
-        this.autoDistributeStrings();
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep1();
+            this.refresh();
+            UI.showToast(`⚡ Auto-ajustado a ${Store.state.pvModules.moduleCount} paneles e inversor óptimo (${Store.state.inverterAndStrings.pacKw} kW).`, "ok");
+        } else {
+            PhysicsEngine.recalculateAll();
+            this.autoDistributeStrings();
+        }
     },
 
     setModuleCount(val) {
         const n = Math.max(1, Math.min(1000, Math.round(Number(val) || 1)));
         Store.state.pvModules.moduleCount = n;
         Store.state.pvModules.useRecommendedCount = false;
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.cascadeFromStep2();
+        }
         this.refresh();
     },
 
@@ -5393,6 +6499,9 @@ const Actions = {
         Store.state.pvModules.tilt = optTilt;
         Store.state.pvModules.azimuth = 0;
         Store.state.pvModules.systemLossPct = 14.0;
+        if (Store.state.projectMeta.autoPilot !== false && Store.state.pvModules.useRecommendedCount) {
+            AutoOptimizer.cascadeFromStep1();
+        }
         this.refresh();
         UI.showToast(`Geometría óptima aplicada: Inclinación ${optTilt}° • Sur 0°`, "ok");
     },
@@ -5401,6 +6510,9 @@ const Actions = {
         const num = parseFloat(val);
         if (!isNaN(num)) {
             Store.state.pvModules[field] = num;
+            if (Store.state.projectMeta.autoPilot !== false && Store.state.pvModules.useRecommendedCount) {
+                AutoOptimizer.cascadeFromStep1();
+            }
             this.refresh();
         }
     },
@@ -5432,6 +6544,12 @@ const Actions = {
         inv.iScMppt = d.iscMppt;
         inv.efficiencyPct = d.rendimiento;
         this.syncStringsToGeneratorSilently();
+        if (Store.state.projectMeta.autoPilot !== false) {
+            if (Store.state.batterySystem.enabled && Store.state.batterySystem.mode === 'catalog' && !Store.state.batterySystem.offGridMode) {
+                AutoOptimizer.applyOptimalBattery();
+            }
+            AutoOptimizer.autoSizeAllCables();
+        }
         this.refresh();
     },
 
@@ -5446,15 +6564,22 @@ const Actions = {
             const num = parseFloat(val);
             if (!isNaN(num)) Store.state.inverterAndStrings[field] = num;
         }
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.autoSizeAllCables();
+        }
         this.refresh();
     },
 
     setNumMppts(val) {
-        const n = Math.max(1, Math.min(6, Math.round(Number(val) || 2)));
+        const n = Math.max(1, Math.min(12, Math.round(Number(val) || 2)));
         Store.state.inverterAndStrings.numMppts = n;
-        while (Store.state.inverterAndStrings.mppts.length < n) {
+        while (Store.state.inverterAndStrings.mppts.length < Math.max(12, n)) {
             const idx = Store.state.inverterAndStrings.mppts.length + 1;
-            Store.state.inverterAndStrings.mppts.push({ id: idx, name: `MPPT ${idx}`, stringsParallel: 1, modulesSeries: 6 });
+            Store.state.inverterAndStrings.mppts.push({ id: idx, name: `MPPT ${idx}`, stringsParallel: 0, modulesSeries: 0 });
+        }
+        if (Store.state.projectMeta.autoPilot !== false) {
+            this.syncStringsToGeneratorSilently();
+            AutoOptimizer.autoSizeAllCables();
         }
         this.refresh();
     },
@@ -5463,47 +6588,23 @@ const Actions = {
         const totalMods = Math.max(1, Math.round(Number(Store.state.pvModules.moduleCount) || 8));
         const inv = Store.state.inverterAndStrings;
         const pv = Store.state.pvModules;
-        const nMppt = Math.max(1, Math.min(6, Math.round(Number(inv.numMppts) || 2)));
+        const bounds = AutoOptimizer.getInverterBounds(inv, pv);
 
-        // Máximo de paneles en serie seguros a -10°C sin superar Vmax_inv ni VmpptMax
-        const betaVoc = -Math.abs(Number(pv.betaVoc) || 0.27);
-        const vocCold1 = (Number(pv.voc) || 41.5) * (1 + (betaVoc / 100) * (-35));
-        const maxNsSafe = Math.max(2, Math.floor(((Number(inv.vMaxInv) || 600) * 0.94) / vocCold1));
-        const minNsStart = Math.max(1, Math.ceil(((Number(inv.vStart) || 100) * 1.18) / (Number(pv.vmp) || 34.6)));
-
-        // Si pocos paneles y 2+ MPPTs quedarían por debajo del arranque, concentrar en 1 MPPT
-        if (totalMods < minNsStart * 2 && nMppt >= 2) {
-            inv.mppts[0].stringsParallel = 1;
-            inv.mppts[0].modulesSeries = Math.min(totalMods, maxNsSafe);
-            for (let i = 1; i < nMppt; i++) {
-                inv.mppts[i].stringsParallel = 0;
-                inv.mppts[i].modulesSeries = 0;
-            }
+        if (bounds.canAcceptModule && totalMods < bounds.minViableModules) {
+            // Mostrar los paneles actuales en el MPPT 1 para que se evidencie la insuficiencia térmica y el botón Autocorregir
+            AutoOptimizer.writeSlotsToState([{ np: 1, ns: totalMods }], bounds.numMppts);
             return;
         }
 
-        let remaining = totalMods;
-        for (let i = 0; i < nMppt; i++) {
-            const slotsLeft = nMppt - i;
-            const share = Math.round(remaining / slotsLeft);
-            remaining -= share;
-            if (share <= 0) {
-                inv.mppts[i].stringsParallel = 0;
-                inv.mppts[i].modulesSeries = 0;
-            } else if (share <= maxNsSafe) {
-                inv.mppts[i].stringsParallel = 1;
-                inv.mppts[i].modulesSeries = share;
-            } else {
-                const np = Math.ceil(share / maxNsSafe);
-                const ns = Math.max(minNsStart, Math.floor(share / np));
-                inv.mppts[i].stringsParallel = np;
-                inv.mppts[i].modulesSeries = ns;
-            }
-        }
+        const dist = AutoOptimizer.solveMpptDistribution(totalMods, inv, pv);
+        AutoOptimizer.writeSlotsToState(dist.slots, bounds.numMppts);
     },
 
     autoDistributeStrings() {
         this.syncStringsToGeneratorSilently();
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.autoSizeAllCables();
+        }
         this.refresh();
         UI.showToast("Strings repartidos óptimamente entre los seguidores MPPT.", "ok");
     },
@@ -5543,6 +6644,10 @@ const Actions = {
             const num = parseFloat(val);
             if (!isNaN(num)) seg[field] = num;
         }
+        if (field !== 'sectionMm2' && Store.state.projectMeta.autoPilot !== false) {
+            PhysicsEngine.recalculateAll();
+            seg.sectionMm2 = Store.computed.cabling[tab].minCompliantSection;
+        }
         this.refresh();
     },
 
@@ -5557,6 +6662,10 @@ const Actions = {
             seg.ft = PhysicsEngine.calculateTempFactorFt(num, seg.insulation, seg.installMethod === 'D');
         } else if (field === 'groupingCircuits') {
             seg.fa = PhysicsEngine.calculateGroupingFactorFa(num);
+        }
+        if (Store.state.projectMeta.autoPilot !== false) {
+            PhysicsEngine.recalculateAll();
+            seg.sectionMm2 = Store.computed.cabling[tab].minCompliantSection;
         }
         this.refresh();
     },
@@ -5587,6 +6696,9 @@ const Actions = {
             if (Store.state.legalAndFinancials.rd244Mode === 'aislada') {
                 Store.state.legalAndFinancials.rd244Mode = 'compensacion';
             }
+        } else if (Store.state.batterySystem.enabled && Store.state.projectMeta.autoPilot !== false && Store.state.batterySystem.mode === 'catalog') {
+            AutoOptimizer.applyOptimalBattery();
+            AutoOptimizer.autoSizeAllCables();
         }
         this.refresh();
     },
@@ -5614,6 +6726,9 @@ const Actions = {
         // Sincronizar tensión y corriente del tramo de cable de batería
         Store.state.cablingAndREBT.battery.nominalVoltageV = b.nominalVoltageV;
         Store.state.cablingAndREBT.battery.maxCurrentA = +((b.maxPowerKw * 1000) / b.nominalVoltageV).toFixed(1);
+        if (Store.state.projectMeta.autoPilot !== false) {
+            AutoOptimizer.autoSizeAllCables();
+        }
         this.refresh();
     },
 
@@ -5841,54 +6956,61 @@ const UI = {
             ).join('');
         }
 
-        // Catálogo Módulos FV (Organizado por gamas residencial e industrial)
+        // Catálogo Módulos FV (30 modelos Tier-1 organizados en 4 gamas)
         const selMod = document.getElementById('selModuleCatalog');
         if (selMod) {
-            const resi = [];
-            const ind = [];
+            const gCompact = [], gResiPlus = [], gComm = [], gInd = [];
             for (const [id, m] of Object.entries(MODULOS_FV)) {
-                const opt = `<option value="${escapeHtml(id)}">${escapeHtml(m.name)} — ${m.wp}Wp (η: ${m.efficiency}% • NOCT: ${m.noct}°C • Mismatch: ${m.mismatchPct}%)</option>`;
-                if (m.wp < 550) {
-                    resi.push(opt);
-                } else {
-                    ind.push(opt);
-                }
+                const opt = `<option value="${escapeHtml(id)}">${escapeHtml(m.name)} — ${m.wp}Wp (η: ${m.efficiency}% • Voc: ${m.voc}V • NOCT: ${m.noct}°C)</option>`;
+                if (m.seg === 'compact' || m.wp <= 455) gCompact.push(opt);
+                else if (m.seg === 'resi_plus' || m.wp <= 510) gResiPlus.push(opt);
+                else if (m.seg === 'commercial' || m.wp <= 600) gComm.push(opt);
+                else gInd.push(opt);
             }
             selMod.innerHTML = `
-                <optgroup label="Residencial y Cubiertas Ligeras (410 Wp – 500 Wp)">${resi.join('')}</optgroup>
-                <optgroup label="Comercial e Industrial / Alta Potencia (550 Wp – 690 Wp)">${ind.join('')}</optgroup>
+                <optgroup label="Compactos & Full Black Residencial (390 Wp – 455 Wp)">${gCompact.join('')}</optgroup>
+                <optgroup label="Residencial Alta Eficiencia & Bifacial (460 Wp – 505 Wp)">${gResiPlus.join('')}</optgroup>
+                <optgroup label="Comercial, PYME & Terciario (550 Wp – 595 Wp)">${gComm.join('')}</optgroup>
+                <optgroup label="Industrial Gran Escala N-Type / HJT G12 (620 Wp – 715 Wp)">${gInd.join('')}</optgroup>
             `;
         }
 
-        // Catálogo Inversores (Organizado por Monofásicos, Trifásicos e Industriales con rendimiento individual)
+        // Catálogo Inversores (46 modelos organizados en 4 gamas con rendimiento individual de ficha)
         const selInv = document.getElementById('selInverterCatalog');
         if (selInv) {
-            const mono = [];
-            const triResi = [];
-            const ind = [];
+            const gMicro = [], gMono = [], gTriResi = [], gInd = [];
             for (const [id, inv] of Object.entries(INVERSORES_COMERCIALES)) {
-                const opt = `<option value="${escapeHtml(id)}">${escapeHtml(inv.nombre)} — Rendimiento: ${inv.rendimiento}%</option>`;
-                if (inv.tipoRed === 'monofasico') {
-                    mono.push(opt);
-                } else if (inv.pacKw <= 20) {
-                    triResi.push(opt);
-                } else {
-                    ind.push(opt);
-                }
+                const opt = `<option value="${escapeHtml(id)}">${escapeHtml(inv.nombre)} — η: ${inv.rendimiento}% (${inv.numMppts} MPPT)</option>`;
+                if (inv.vdcMax <= 70) gMicro.push(opt);
+                else if (inv.tipoRed === 'monofasico') gMono.push(opt);
+                else if (inv.pacKw <= 25) gTriResi.push(opt);
+                else gInd.push(opt);
             }
             selInv.innerHTML = `
-                <optgroup label="Monofásicos Residenciales (1F • 230V • 2 a 6 kW)">${mono.join('')}</optgroup>
-                <optgroup label="Trifásicos Residencial / Terciario (3F • 400V • 4 a 20 kW)">${triResi.join('')}</optgroup>
-                <optgroup label="Comercial / Industrial Gran Escala (3F • 400V • 33 a 100 kW)">${ind.join('')}</optgroup>
+                <optgroup label="Microinversores & Baja Tensión Arranque (1–4 paneles • 0.8 a 2.0 kW)">${gMicro.join('')}</optgroup>
+                <optgroup label="Monofásicos Residenciales String/Híbridos (230V • 2.0 a 10.0 kW)">${gMono.join('')}</optgroup>
+                <optgroup label="Trifásicos Residenciales y PYME (400V • 4.0 a 25.0 kW)">${gTriResi.join('')}</optgroup>
+                <optgroup label="Comerciales e Industriales 3.0TD (400V • 30 a 125 kW • hasta 12 MPPT)">${gInd.join('')}</optgroup>
             `;
         }
 
-        // Catálogo Baterías (Con eficiencia Round-Trip individual)
+        // Catálogo Baterías (30 modelos LiFePO4 organizados por arquitectura LV / HV / AC / C&I)
         const selBat = document.getElementById('selBatteryCatalog');
         if (selBat) {
-            selBat.innerHTML = Object.entries(BATERIAS_CATALOGO).map(([id, b]) =>
-                `<option value="${escapeHtml(id)}">${escapeHtml(b.name)} — Round-Trip: ${b.roundTripEffPct}% (Pérdida: ${(100 - b.roundTripEffPct).toFixed(1)}%)</option>`
-            ).join('');
+            const gLv = [], gHv = [], gAc = [], gCi = [];
+            for (const [id, b] of Object.entries(BATERIAS_CATALOGO)) {
+                const opt = `<option value="${escapeHtml(id)}">${escapeHtml(b.name)} — η Round-Trip: ${b.roundTripEffPct}% (${b.nominalKwh} kWh)</option>`;
+                if (b.nominalKwh >= 28) gCi.push(opt);
+                else if (b.bus === 'ac' || b.coupling === 'AC') gAc.push(opt);
+                else if (b.bus === 'lv' || b.nominalVoltageV <= 60) gLv.push(opt);
+                else gHv.push(opt);
+            }
+            selBat.innerHTML = `
+                <optgroup label="Baja Tensión Modular 48V / 51.2V (LV • 3.5 a 16 kWh)">${gLv.join('')}</optgroup>
+                <optgroup label="Alta Tensión Híbrida Residencial (HV • 5.0 a 22.1 kWh)">${gHv.join('')}</optgroup>
+                <optgroup label="All-in-One & Acoplamiento AC Retrofit (1.2 a 13.5 kWh)">${gAc.join('')}</optgroup>
+                <optgroup label="Almacenamiento Comercial e Industrial C&I (30 a 60 kWh)">${gCi.join('')}</optgroup>
+            `;
         }
     },
 
@@ -6024,6 +7146,20 @@ const UI = {
         const c = Store.computed || PhysicsEngine.recalculateAll();
 
         this.updateHeaderProjectBadge();
+
+        // Indicador global de Piloto Automático en cabecera
+        const btnAuto = document.getElementById('btnAutoPilotToggle');
+        const lblAutoShort = document.getElementById('lblAutoPilotShort');
+        const lblAutoFull = document.getElementById('lblAutoPilotFull');
+        const isAutoOn = st.projectMeta.autoPilot !== false;
+        const isEn = st.projectMeta.lang === 'en';
+        if (btnAuto) {
+            btnAuto.className = isAutoOn
+                ? "btn-press inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-mono font-bold bg-[#10B981]/12 text-[#10B981] border border-[#10B981]/30 whitespace-nowrap transition"
+                : "btn-press inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-mono font-bold bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/35 whitespace-nowrap transition";
+            if (lblAutoShort) lblAutoShort.textContent = isAutoOn ? "⚡ Auto" : "🔒 Manual";
+            if (lblAutoFull) lblAutoFull.textContent = isAutoOn ? (isEn ? "⚡ Auto-Pilot: ON" : "⚡ Auto-Ajuste: ON") : (isEn ? "🔒 Manual Mode" : "🔒 Modo Manual");
+        }
 
         /* --- PASO 0 --- */
         this.setVal('inpProjName', st.projectMeta.projectName);
@@ -6224,7 +7360,38 @@ const UI = {
 
         this.setText('s2RecCountHint', `Recomendado en Paso 1: ${c.pvgis.recPanels} módulos (${fmtNum(c.pvgis.recKwp, 2)} kWp)`);
         this.setVal('inpModCount', c.pv.moduleCount);
-        this.setVal('rngModCount', Math.min(60, c.pv.moduleCount));
+        this.setVal('rngModCount', Math.min(120, c.pv.moduleCount));
+
+        // Estado vivo de sincronización automática con Inversor / MPPT / REBT + Botón Autocorregir
+        const s2Banner = document.getElementById('s2AutoStatusBanner');
+        const s2Txt = document.getElementById('s2AutoStatusText');
+        const btnS2Fix = document.getElementById('btnS2AutoFix');
+        if (s2Banner && s2Txt && typeof AutoOptimizer !== 'undefined') {
+            const diagS2 = AutoOptimizer.diagnoseIssues();
+            const s3Errs = diagS2.issues.filter(i => i.step === 3);
+            if (s3Errs.length > 0) {
+                s2Banner.className = "p-3 rounded-xl text-xs border bg-[#EF4444]/10 border-[#EF4444]/35 flex flex-col sm:flex-row sm:items-center justify-between gap-2";
+                s2Txt.className = "text-[#EF4444] font-semibold";
+                s2Txt.textContent = `⚠️ ${s3Errs[0].text}`;
+                if (btnS2Fix) {
+                    btnS2Fix.classList.remove('hidden');
+                    if (s3Errs[0].code === 'insufficient_modules') {
+                        btnS2Fix.textContent = `🔧 Configurar mínimo (${s3Errs[0].minMods} módulos)`;
+                        btnS2Fix.setAttribute('onclick', "Actions.autoFixAllErrors('keep_inverter')");
+                    } else {
+                        btnS2Fix.textContent = "🔧 Autocorregir";
+                        btnS2Fix.setAttribute('onclick', "Actions.autoFixAllErrors('smart')");
+                    }
+                }
+            } else {
+                const invShortS2 = (st.inverterAndStrings.modelName || 'Inversor').split('(')[0].trim();
+                const mpptStr = c.inverter.activeMppts.filter(m => m.isUsed).map(m => `${m.stringsParallel}×${m.modulesSeries}`).join(' + ') || '—';
+                s2Banner.className = "p-3 rounded-xl text-xs border bg-[#10B981]/8 border-[#10B981]/25 flex flex-col sm:flex-row sm:items-center justify-between gap-2";
+                s2Txt.className = "text-[var(--text-secondary)] font-medium";
+                s2Txt.textContent = `⚡ Auto-sincronizado: ${invShortS2} (${st.inverterAndStrings.pacKw} kW • Strings ${mpptStr}) • REBT DC ${st.cablingAndREBT.dc.sectionMm2} mm² / AC ${st.cablingAndREBT.ac.sectionMm2} mm²`;
+                btnS2Fix?.classList.add('hidden');
+            }
+        }
 
         this.setVal('inpTilt', pv.tilt);
         this.setVal('rngTilt', pv.tilt);
@@ -6516,19 +7683,52 @@ const UI = {
             `;
         }).join('');
 
-        // Banner explicativo inferior en Paso 3
+        // Banner explicativo inferior en Paso 3 con botón de Autocorrección en 1 clic
         const alertEl = document.getElementById('s3AlertBanner');
         if (!alertEl) return;
-        const issues = [];
-        if (!ci.allVocOk) issues.push(`Sobretensión destructiva en frío (-10 °C): Voc supera Vmax del inversor (${inv.vMaxInv} V). Reduce paneles en serie (Ns).`);
-        if (!ci.allStartOk) issues.push(`Tensión insuficiente de arranque en verano (+70 °C < ${inv.vStart} V). Aumenta paneles en serie (Ns).`);
-        else if (!ci.allMpptWinOk) issues.push(`Tensión de trabajo Vmp fuera de la ventana MPPT (${inv.vMpptMin} – ${inv.vMpptMax} V).`);
-        if (!ci.allCurrentOk) issues.push(`Corriente de strings en paralelo supera el límite por MPPT (${inv.iMaxMppt} A Imp / ${inv.iScMppt} A Isc).`);
-        if (ci.dcAcStatus === 'error') issues.push(`Ratio DC/AC (${ci.dcAcPct}%) fuera de rango seguro. Selecciona un inversor acorde a ${fmtNum(Store.computed.pv.totalKwp, 2)} kWp.`);
+        const diag = typeof AutoOptimizer !== 'undefined' ? AutoOptimizer.diagnoseIssues() : { issues: [], bounds: {} };
+        const s3Issues = diag.issues.filter(i => i.step === 3);
 
-        if (issues.length > 0) {
-            alertEl.className = "p-3.5 rounded-2xl text-xs font-semibold border bg-[#EF4444]/10 border-[#EF4444]/35 text-[#EF4444]";
-            alertEl.textContent = "⚠️ " + issues.join(" • ");
+        if (s3Issues.length > 0) {
+            alertEl.className = "p-4 rounded-2xl text-xs font-semibold border bg-[#EF4444]/10 border-[#EF4444]/35 text-[#EF4444] flex flex-col sm:flex-row sm:items-center justify-between gap-3";
+            const msgHtml = s3Issues.map(i => `<div>⚠️ ${escapeHtml(i.text)}</div>`).join('');
+            const insuf = s3Issues.find(i => i.code === 'insufficient_modules');
+            const over = s3Issues.find(i => i.code === 'overload_dcac' || i.code === 'module_current_incompatible' || i.code === 'module_voltage_incompatible');
+
+            let btnsHtml = '';
+            if (insuf) {
+                btnsHtml = `
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <button type="button" id="btnS3AutoFix" onclick="Actions.autoFixAllErrors('keep_inverter')" class="btn-press px-3.5 py-2 rounded-xl text-xs font-bold bg-[#EF4444] text-white shadow-sm whitespace-nowrap">
+                            🔧 Configurar mínimo (${insuf.minMods} módulos)
+                        </button>
+                        <button type="button" id="btnS3AutoSelectMicro" onclick="Actions.autoSelectOptimalInverter()" class="btn-press px-3 py-2 rounded-xl text-xs font-bold bento-subtle text-[var(--text-primary)] whitespace-nowrap">
+                            ⚡ Buscar otro inversor
+                        </button>
+                    </div>
+                `;
+            } else if (over) {
+                btnsHtml = `
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <button type="button" id="btnS3AutoFix" onclick="Actions.autoFixAllErrors('smart')" class="btn-press px-3.5 py-2 rounded-xl text-xs font-bold bg-[#EF4444] text-white shadow-sm whitespace-nowrap">
+                            🔧 Autocorregir (escalar inversor)
+                        </button>
+                        ${diag.bounds.maxSafeModules >= diag.bounds.minViableModules ? `
+                        <button type="button" onclick="Actions.autoFixAllErrors('keep_inverter')" class="btn-press px-3 py-2 rounded-xl text-xs font-bold bento-subtle text-[var(--text-primary)] whitespace-nowrap">
+                            Limitar a ${diag.bounds.maxSafeModules} paneles
+                        </button>` : ''}
+                    </div>
+                `;
+            } else {
+                btnsHtml = `
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <button type="button" id="btnS3AutoFix" onclick="Actions.autoFixAllErrors('keep_inverter')" class="btn-press px-3.5 py-2 rounded-xl text-xs font-bold bg-[#EF4444] text-white shadow-sm whitespace-nowrap">
+                            🔧 Autocorregir Strings MPPT
+                        </button>
+                    </div>
+                `;
+            }
+            alertEl.innerHTML = `<div class="space-y-1 flex-1 min-w-0">${msgHtml}</div>${btnsHtml}`;
         } else {
             alertEl.className = "p-3.5 rounded-2xl text-xs font-medium border bg-[#10B981]/10 border-[#10B981]/25 text-[var(--text-primary)]";
             alertEl.textContent = "✅ Todos los seguidores MPPT verifican tensión dieléctrica a -10 °C, arranque térmico a +70 °C y corriente máxima por entrada (UNE-HD 60364-7-712).";
