@@ -619,88 +619,50 @@
         </section>
 
         <!-- ======================================================================
-             PASO 1: PERFIL DE CONSUMO, TARIFAS Y ESTIMACIÓN INTUITIVA (VISTA B2C)
+             PASO 1: DATOS DE PARTIDA (PVGIS, DEMANDA, CURVA REAL Y TARIFA) → SÍNTESIS
              ====================================================================== -->
         <section id="step-1" class="wizard-step space-y-6" aria-labelledby="step1Heading">
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                 <div>
-                    <span class="text-xs font-mono font-bold uppercase text-[#0066FF]">PASO 1 • DEMANDA Y PVGIS</span>
-                    <h2 id="step1Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Consumo, Tarifas y Pre-Estimación PVGIS</h2>
+                    <span class="text-xs font-mono font-bold uppercase text-[#0066FF]">PASO 1 • DATOS DE PARTIDA DEL SUMINISTRO</span>
+                    <h2 id="step1Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Ubicación PVGIS, Demanda y Tarifas</h2>
+                    <p class="text-xs text-[var(--text-muted)] mt-0.5">Introduce primero localización, telemetría/consumos mensuales y precios tarifarios; abajo obtendrás el pre-dimensionado resultante.</p>
                 </div>
                 <span id="s1BadgePvgis" class="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#10B981]/12 text-[#10B981] border border-[#10B981]/25 whitespace-nowrap">
                     PVGIS JRC Conectado
                 </span>
             </div>
 
-            <!-- 3 Tarjetas KPI Gigantes en Tiempo Real -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bento-card p-5 sm:p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Potencia Solar Recomendada</span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#0066FF]"></span>
-                    </div>
-                    <div class="inline-flex items-baseline">
-                        <span id="s1KpiRecKwp" class="kpi-giant text-[#0066FF]">3.60</span>
-                        <span class="kpi-unit">kWp</span>
-                    </div>
-                    <p id="s1KpiRecSub" class="text-xs text-[var(--text-muted)] mt-2 font-mono">Cobertura óptima sobre demanda anual</p>
-                </div>
-
-                <div class="bento-card p-5 sm:p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Nº Estimado de Paneles</span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#F59E0B]"></span>
-                    </div>
-                    <div class="inline-flex items-baseline">
-                        <span id="s1KpiRecPanels" class="kpi-giant">8</span>
-                        <span class="kpi-unit" id="s1KpiPanelWpUnit">uds (450 Wp)</span>
-                    </div>
-                    <p id="s1KpiYieldSub" class="text-xs text-[var(--text-muted)] mt-2 font-mono">Irradiación local: 1.640 kWh/kWp</p>
-                </div>
-
-                <div class="bento-card p-5 sm:p-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Ahorro Preliminar Anual</span>
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span>
-                    </div>
-                    <div class="inline-flex items-baseline">
-                        <span id="s1KpiPrelimSavings" class="kpi-giant text-[#10B981]">685</span>
-                        <span class="kpi-unit">€ / año</span>
-                    </div>
-                    <p id="s1KpiBillCompare" class="text-xs text-[var(--text-muted)] mt-2 font-mono">Reducción estimada en factura</p>
-                </div>
-            </div>
-
-            <!-- Grid Principal Paso 1: Inputs (5 cols) + Gráfica Interactiva 24h (7 cols) -->
+            <!-- BLOQUE SUPERIOR: INTRODUCCIÓN CAUSAL DE DATOS (1. Ubicación + 3. Tarifa | 2. Demanda, Meses y Curva) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-                <!-- Columna Izquierda: Ubicación PVGIS + Consumo + Tarifas -->
+                <!-- Columna Izquierda (5 cols): 1. Ubicación PVGIS + 3. Estructura Tarifaria (Fija / 2.0TD / 3.0TD) -->
                 <div class="lg:col-span-5 space-y-5">
 
-                    <!-- Tarjeta 1A: Ubicación / PVGIS -->
+                    <!-- Tarjeta 1A: Ubicación / PVGIS (50 provincias y 2 ciudades autónomas) -->
                     <div class="bento-card p-5 space-y-4">
                         <div class="flex items-center justify-between">
                             <h3 class="font-display font-bold text-sm flex items-center gap-2">
-                                <svg class="w-4 h-4 text-[#0066FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                                <span>Ubicación & Coordenadas PVGIS</span>
+                                <span class="w-5 h-5 rounded-md bg-[#0066FF]/12 text-[#0066FF] font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">1</span>
+                                <span>Ubicación & Radiación Solar PVGIS</span>
                             </h3>
-                            <button type="button" onclick="PVGISService.useGPS()" id="btnUseGps" class="btn-press px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#0066FF]/10 text-[#0066FF] hover:bg-[#0066FF]/20 inline-flex items-center gap-1" aria-label="Obtener coordenadas por GPS">
+                            <button type="button" onclick="PVGISService.useGPS()" id="btnUseGps" class="btn-press px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#0066FF]/10 text-[#0066FF] hover:bg-[#0066FF]/20 inline-flex items-center gap-1 whitespace-nowrap" aria-label="Obtener coordenadas por GPS">
                                 <span>📍 GPS</span>
                             </button>
                         </div>
 
-                        <!-- Buscador Municipio + Selector Rápido Provincia -->
+                        <!-- Buscador Municipio + Selector Rápido Territorio -->
                         <div class="relative">
                             <label for="inpSearchCity" class="sr-only">Buscar municipio o código postal</label>
-                            <input id="inpSearchCity" type="text" class="showroom-input w-full" placeholder="Buscar municipio (ej. Madrid, Sevilla, Las Palmas...)" oninput="PVGISService.onSearchInput(this.value)" onkeydown="PVGISService.onSearchKeydown(event)">
+                            <input id="inpSearchCity" type="text" class="showroom-input w-full" placeholder="Buscar municipio (ej. Madrid, Sevilla, Ceuta, Las Palmas...)" oninput="PVGISService.onSearchInput(this.value)" onkeydown="PVGISService.onSearchKeydown(event)">
                             <div id="cityDropdown" class="hidden absolute left-0 right-0 top-full mt-1.5 z-30 bento-card !rounded-xl max-h-56 overflow-y-auto divide-y divide-[var(--border-hairline)]"></div>
                         </div>
 
                         <div class="grid grid-cols-3 gap-2.5">
                             <div class="col-span-1">
-                                <label for="selQuickProvince" class="block text-[11px] font-semibold text-[var(--text-muted)] mb-1">Provincia Rápida</label>
+                                <label for="selQuickProvince" class="block text-[11px] font-semibold text-[var(--text-muted)] mb-1">Provincia / C. Aut.</label>
                                 <select id="selQuickProvince" class="showroom-input w-full !px-2 text-xs" onchange="PVGISService.selectProvince(this.value)">
-                                    <!-- Poblado con las 52 provincias PVGIS -->
+                                    <!-- Poblado con las 50 provincias y 2 ciudades autónomas -->
                                 </select>
                             </div>
                             <div>
@@ -714,106 +676,37 @@
                         </div>
 
                         <div class="bento-subtle p-3 flex items-center justify-between text-xs font-mono">
-                            <div>
+                            <div class="min-w-0 pr-2">
                                 <span class="text-[var(--text-muted)] block text-[10px] font-sans uppercase">Localidad Activa</span>
-                                <strong id="s1LocLabel" class="text-[var(--text-primary)]">Madrid (40.42°, -3.70°)</strong>
+                                <strong id="s1LocLabel" class="text-[var(--text-primary)] block truncate">Madrid (40.42°, -3.70°)</strong>
                             </div>
-                            <div class="text-right">
-                                <span class="text-[var(--text-muted)] block text-[10px] font-sans uppercase">Producción Base PVGIS</span>
+                            <div class="text-right shrink-0">
+                                <span class="text-[var(--text-muted)] block text-[10px] font-sans uppercase">Recurso Local PVGIS</span>
                                 <strong id="s1BaseYieldLabel" class="text-[#F59E0B]">1.640 kWh/kWp</strong>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tarjeta 1B: Curva de Carga y Consumo -->
+                    <!-- Tarjeta 1C: Estructura Tarifaria (Fija 24h | 2.0TD 3P | 3.0TD Comercial/Ind. 6P) -->
                     <div class="bento-card p-5 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-display font-bold text-sm">Demanda Eléctrica & Perfil Horario</h3>
-                            <span class="text-[11px] font-mono text-[#10B981] font-semibold" id="s1ProfileBadge">Estándar REE</span>
+                        <div class="flex items-center justify-between gap-2">
+                            <h3 class="font-display font-bold text-sm flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-md bg-[#10B981]/12 text-[#10B981] font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">3</span>
+                                <span>Tarifa Eléctrica y Precios de Energía</span>
+                            </h3>
+                            <span id="s1FiscalPill" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#0066FF]/10 text-[#0066FF] whitespace-nowrap">IVA 21% + IEE</span>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label for="inpAnnualKwh" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Consumo Anual (kWh)</label>
-                                <input id="inpAnnualKwh" type="number" min="300" max="500000" step="50" class="showroom-input w-full font-mono font-bold text-[#0066FF]" oninput="Actions.setAnnualConsumption(this.value)">
-                            </div>
-                            <div>
-                                <label for="inpMonthlyKwh" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Promedio Mensual (kWh)</label>
-                                <input id="inpMonthlyKwh" type="number" min="25" max="42000" step="10" class="showroom-input w-full font-mono font-semibold" oninput="Actions.setMonthlyConsumption(this.value)">
-                            </div>
-                        </div>
-                        <input id="rngAnnualKwh" type="range" min="1000" max="20000" step="100" value="4200" aria-label="Deslizador de consumo anual" oninput="Actions.setAnnualConsumption(this.value)" style="--thumb-accent: #0066FF;">
-
-                        <!-- Plantillas rápidas -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px]">
-                            <button type="button" onclick="Actions.applyConsumptionPreset('piso')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
-                                <span class="font-bold block">Piso</span>
-                                <span class="font-mono text-[var(--text-muted)]">2.800 kWh</span>
+                        <!-- Segmented Control de 3 Tarifas -->
+                        <div class="segmented-group w-full grid grid-cols-3" role="tablist" aria-label="Tipo de tarifa eléctrica">
+                            <button type="button" id="tabTariffFixed" role="tab" onclick="Actions.setTariffMode('fija')" class="segmented-btn text-center !px-2 text-xs">
+                                Fija (24h)
                             </button>
-                            <button type="button" onclick="Actions.applyConsumptionPreset('teletrabajo')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
-                                <span class="font-bold block">Teletrabajo</span>
-                                <span class="font-mono text-[var(--text-muted)]">3.800 kWh</span>
+                            <button type="button" id="tabTariff20TD" role="tab" onclick="Actions.setTariffMode('20td')" class="segmented-btn active text-center !px-2 text-xs">
+                                2.0TD (3P)
                             </button>
-                            <button type="button" onclick="Actions.applyConsumptionPreset('chalet')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
-                                <span class="font-bold block">Chalet</span>
-                                <span class="font-mono text-[var(--text-muted)]">4.800 kWh</span>
-                            </button>
-                            <button type="button" onclick="Actions.applyConsumptionPreset('ve')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
-                                <span class="font-bold block">Hogar + VE</span>
-                                <span class="font-mono text-[var(--text-muted)]">6.500 kWh</span>
-                            </button>
-                        </div>
-
-                        <!-- Selector Visual de Perfil de Curva Horaria -->
-                        <div>
-                            <span class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Curva de Hábito Horario:</span>
-                            <div class="grid grid-cols-2 gap-2 text-xs">
-                                <button type="button" id="profBtn_diurno" onclick="Actions.setProfileType('diurno')" class="btn-press p-2.5 rounded-xl border text-left transition">
-                                    <span class="font-bold block">☀️ Diurno Comercial</span>
-                                    <span class="text-[11px] text-[var(--text-muted)] font-mono">Pico 10:00 – 16:00</span>
-                                </button>
-                                <button type="button" id="profBtn_estandar" onclick="Actions.setProfileType('estandar')" class="btn-press p-2.5 rounded-xl border text-left transition">
-                                    <span class="font-bold block">⚖️ Residencial REE</span>
-                                    <span class="text-[11px] text-[var(--text-muted)] font-mono">Curva nacional 2.0TD</span>
-                                </button>
-                                <button type="button" id="profBtn_nocturno" onclick="Actions.setProfileType('nocturno')" class="btn-press p-2.5 rounded-xl border text-left transition">
-                                    <span class="font-bold block">🌙 Tarde – Noche</span>
-                                    <span class="text-[11px] text-[var(--text-muted)] font-mono">Pico 19:00 – 23:00</span>
-                                </button>
-                                <button type="button" id="profBtn_electrificado" onclick="Actions.setProfileType('electrificado')" class="btn-press p-2.5 rounded-xl border text-left transition">
-                                    <span class="font-bold block">⚡ VE + Aerotermia</span>
-                                    <span class="text-[11px] text-[var(--text-muted)] font-mono">Valle + Climatización</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Importador CSV / Datadis -->
-                        <div class="pt-2 border-t border-[var(--border-hairline)] flex items-center justify-between gap-2 text-xs">
-                            <input type="file" id="inpCsvCurveFile" accept=".csv,.txt,.json" class="hidden" onchange="Actions.handleCurveUpload(this.files[0])">
-                            <button type="button" onclick="document.getElementById('inpCsvCurveFile').click()" class="btn-press px-3 py-1.5 rounded-xl bento-subtle hover:border-[#0066FF]/40 font-semibold inline-flex items-center gap-1.5">
-                                <span>📂 Importar CSV / Datadis</span>
-                            </button>
-                            <div class="flex items-center gap-2">
-                                <button type="button" onclick="Actions.downloadCsvTemplate()" class="text-[#0066FF] hover:underline font-mono text-[11px]">Plantilla 24h</button>
-                                <button type="button" id="btnResetCustomCurve" onclick="Actions.resetCustomCurve()" class="hidden text-[#EF4444] hover:underline font-mono text-[11px]">Reset CSV</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tarjeta 1C: Estructura Tarifaria (Segmented Control Fija vs 2.0TD 3 Periodos) -->
-                    <div class="bento-card p-5 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h3 class="font-display font-bold text-sm">Estructura Tarifaria Eléctrica</h3>
-                            <span id="s1FiscalPill" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#0066FF]/10 text-[#0066FF]">IVA 21%</span>
-                        </div>
-
-                        <!-- Segmented Control -->
-                        <div class="segmented-group w-full grid grid-cols-2" role="tablist" aria-label="Tipo de tarifa eléctrica">
-                            <button type="button" id="tabTariffFixed" role="tab" onclick="Actions.setTariffMode('fija')" class="segmented-btn text-center">
-                                Tarifa Fija (24h)
-                            </button>
-                            <button type="button" id="tabTariff20TD" role="tab" onclick="Actions.setTariffMode('20td')" class="segmented-btn active text-center">
-                                Discriminación 2.0TD (3P)
+                            <button type="button" id="tabTariff30TD" role="tab" onclick="Actions.setTariffMode('30td')" class="segmented-btn text-center !px-2 text-xs">
+                                3.0TD (6P)
                             </button>
                         </div>
 
@@ -826,79 +719,301 @@
                             </div>
                         </div>
 
-                        <!-- Panel Tarifa 2.0TD (3 Periodos Diferenciados Visualmente) -->
-                        <div id="panelTariff20TD" class="grid grid-cols-3 gap-2.5">
-                            <div class="p-3 rounded-2xl border border-[#EF4444]/25 bg-[#EF4444]/5">
-                                <label for="inpP1Rate" class="block text-[11px] font-bold text-[#EF4444] uppercase mb-1">Punta (P1)</label>
-                                <input id="inpP1Rate" type="number" step="0.005" min="0.03" max="1.00" class="showroom-input w-full !px-2 !py-1.5 font-mono font-bold text-sm" oninput="Actions.updateTariff('p1Eur', this.value)">
-                                <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1KwhP1">--</span> kWh/a</span>
+                        <!-- Panel Tarifa 2.0TD (≤ 15 kW, 3 Periodos) -->
+                        <div id="panelTariff20TD" class="space-y-2">
+                            <div class="grid grid-cols-3 gap-2.5">
+                                <div class="p-2.5 rounded-2xl border border-[#EF4444]/25 bg-[#EF4444]/5">
+                                    <label for="inpP1Rate" class="block text-[11px] font-bold text-[#EF4444] uppercase mb-1">Punta (P1)</label>
+                                    <input id="inpP1Rate" type="number" step="0.005" min="0.03" max="1.00" class="showroom-input w-full !px-2 !py-1.5 font-mono font-bold text-sm" oninput="Actions.updateTariff('p1Eur', this.value)">
+                                    <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1KwhP1">--</span> kWh/a</span>
+                                </div>
+                                <div class="p-2.5 rounded-2xl border border-[#F59E0B]/25 bg-[#F59E0B]/5">
+                                    <label for="inpP2Rate" class="block text-[11px] font-bold text-[#F59E0B] uppercase mb-1">Llano (P2)</label>
+                                    <input id="inpP2Rate" type="number" step="0.005" min="0.03" max="1.00" class="showroom-input w-full !px-2 !py-1.5 font-mono font-bold text-sm" oninput="Actions.updateTariff('p2Eur', this.value)">
+                                    <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1KwhP2">--</span> kWh/a</span>
+                                </div>
+                                <div class="p-2.5 rounded-2xl border border-[#10B981]/25 bg-[#10B981]/5">
+                                    <label for="inpP3Rate" class="block text-[11px] font-bold text-[#10B981] uppercase mb-1">Valle (P3)</label>
+                                    <input id="inpP3Rate" type="number" step="0.005" min="0.02" max="1.00" class="showroom-input w-full !px-2 !py-1.5 font-mono font-bold text-sm" oninput="Actions.updateTariff('p3Eur', this.value)">
+                                    <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1KwhP3">--</span> kWh/a</span>
+                                </div>
                             </div>
-                            <div class="p-3 rounded-2xl border border-[#F59E0B]/25 bg-[#F59E0B]/5">
-                                <label for="inpP2Rate" class="block text-[11px] font-bold text-[#F59E0B] uppercase mb-1">Llano (P2)</label>
-                                <input id="inpP2Rate" type="number" step="0.005" min="0.03" max="1.00" class="showroom-input w-full !px-2 !py-1.5 font-mono font-bold text-sm" oninput="Actions.updateTariff('p2Eur', this.value)">
-                                <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1KwhP2">--</span> kWh/a</span>
+                            <p class="text-[11px] text-[var(--text-muted)] font-mono">Peaje BT ≤ 15 kW: P1 (10-14, 18-22h) • P2 (08-10, 14-18, 22-24h) • P3 (00-08h + Finde)</p>
+                        </div>
+
+                        <!-- Panel Tarifa Comercial / Industrial 3.0TD (> 15 kW, 6 Periodos Circular 3/2020 CNMC) -->
+                        <div id="panelTariff30TD" class="hidden space-y-2.5">
+                            <div class="grid grid-cols-3 gap-2">
+                                <div class="p-2.5 rounded-xl border border-[#EF4444]/30 bg-[#EF4444]/5">
+                                    <label for="inp30P1Rate" class="block text-[10px] font-bold text-[#EF4444] uppercase mb-1">P1 (Alta) €/kWh</label>
+                                    <input id="inp30P1Rate" type="number" step="0.005" min="0.02" max="1.00" class="showroom-input w-full !px-2 !py-1 font-mono font-bold text-xs" oninput="Actions.updateTariff('p30_1Eur', this.value)">
+                                    <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1Kwh30P1">--</span> kWh</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl border border-[#F97316]/30 bg-[#F97316]/5">
+                                    <label for="inp30P2Rate" class="block text-[10px] font-bold text-[#F97316] uppercase mb-1">P2 €/kWh</label>
+                                    <input id="inp30P2Rate" type="number" step="0.005" min="0.02" max="1.00" class="showroom-input w-full !px-2 !py-1 font-mono font-bold text-xs" oninput="Actions.updateTariff('p30_2Eur', this.value)">
+                                    <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1Kwh30P2">--</span> kWh</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl border border-[#F59E0B]/30 bg-[#F59E0B]/5">
+                                    <label for="inp30P3Rate" class="block text-[10px] font-bold text-[#F59E0B] uppercase mb-1">P3 €/kWh</label>
+                                    <input id="inp30P3Rate" type="number" step="0.005" min="0.02" max="1.00" class="showroom-input w-full !px-2 !py-1 font-mono font-bold text-xs" oninput="Actions.updateTariff('p30_3Eur', this.value)">
+                                    <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1Kwh30P3">--</span> kWh</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl border border-[#0066FF]/25 bg-[#0066FF]/5">
+                                    <label for="inp30P4Rate" class="block text-[10px] font-bold text-[#0066FF] uppercase mb-1">P4 €/kWh</label>
+                                    <input id="inp30P4Rate" type="number" step="0.005" min="0.02" max="1.00" class="showroom-input w-full !px-2 !py-1 font-mono font-bold text-xs" oninput="Actions.updateTariff('p30_4Eur', this.value)">
+                                    <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1Kwh30P4">--</span> kWh</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl border border-[#06B6D4]/25 bg-[#06B6D4]/5">
+                                    <label for="inp30P5Rate" class="block text-[10px] font-bold text-[#06B6D4] uppercase mb-1">P5 €/kWh</label>
+                                    <input id="inp30P5Rate" type="number" step="0.005" min="0.02" max="1.00" class="showroom-input w-full !px-2 !py-1 font-mono font-bold text-xs" oninput="Actions.updateTariff('p30_5Eur', this.value)">
+                                    <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1Kwh30P5">--</span> kWh</span>
+                                </div>
+                                <div class="p-2.5 rounded-xl border border-[#10B981]/30 bg-[#10B981]/5">
+                                    <label for="inp30P6Rate" class="block text-[10px] font-bold text-[#10B981] uppercase mb-1">P6 (Valle) €/kWh</label>
+                                    <input id="inp30P6Rate" type="number" step="0.005" min="0.02" max="1.00" class="showroom-input w-full !px-2 !py-1 font-mono font-bold text-xs" oninput="Actions.updateTariff('p30_6Eur', this.value)">
+                                    <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1Kwh30P6">--</span> kWh</span>
+                                </div>
                             </div>
-                            <div class="p-3 rounded-2xl border border-[#10B981]/25 bg-[#10B981]/5">
-                                <label for="inpP3Rate" class="block text-[11px] font-bold text-[#10B981] uppercase mb-1">Valle (P3)</label>
-                                <input id="inpP3Rate" type="number" step="0.005" min="0.02" max="1.00" class="showroom-input w-full !px-2 !py-1.5 font-mono font-bold text-sm" oninput="Actions.updateTariff('p3Eur', this.value)">
-                                <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1KwhP3">--</span> kWh/a</span>
-                            </div>
+                            <p class="text-[11px] text-[var(--text-muted)] font-mono">Circular 3/2020 CNMC (&gt;15 kW Comercial/PYME): calendario estacional de 4 temporadas + noches (00-08h) y fines de semana en P6.</p>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3 pt-1">
                             <div>
                                 <label for="inpContractedPower" class="block text-[11px] font-semibold text-[var(--text-muted)] mb-1">Potencia Contratada (kW)</label>
-                                <input id="inpContractedPower" type="number" step="0.1" min="1.0" max="100" class="showroom-input w-full font-mono text-xs" oninput="Actions.updateTariff('contractedPowerKw', this.value)">
+                                <input id="inpContractedPower" type="number" step="0.1" min="1.0" max="500" class="showroom-input w-full font-mono text-xs" oninput="Actions.updateTariff('contractedPowerKw', this.value)">
                             </div>
                             <div>
                                 <label for="selFiscalRegionS1" class="block text-[11px] font-semibold text-[var(--text-muted)] mb-1">Zona Fiscal</label>
                                 <select id="selFiscalRegionS1" class="showroom-input w-full text-xs" onchange="Actions.setFiscalRegion(this.value)">
                                     <option value="peninsula">Península y Baleares (IVA 21%)</option>
                                     <option value="canarias">Islas Canarias (IGIC 0%/3%)</option>
+                                    <option value="ceuta_melilla">Ceuta y Melilla (IPSI 4%/1%)</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Columna Derecha: Gráfica Interactiva Demanda vs Solar PVGIS (7 cols) -->
+                <!-- Columna Derecha (7 cols): 2. Demanda, Telemetría Real Datadis, Variabilidad Mensual y Curva -->
                 <div class="lg:col-span-7 space-y-5">
-                    <div class="bento-card p-5 sm:p-6 space-y-4">
-                        <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="bento-card p-5 sm:p-6 space-y-5">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="font-display font-bold text-sm sm:text-base flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-md bg-[#F59E0B]/15 text-[#F59E0B] font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">2</span>
+                                <span>Demanda Eléctrica, Variabilidad Mensual y Curva de Carga</span>
+                            </h3>
+                            <span class="px-2.5 py-0.5 rounded-md text-[11px] font-mono bg-[#10B981]/12 text-[#10B981] font-bold whitespace-nowrap" id="s1ProfileBadge">Estándar REE</span>
+                        </div>
+
+                        <!-- 2A. VÍA PRIORITARIA: TELEMETRÍA REAL DATADIS / DISTRIBUIDORA -->
+                        <div class="bento-subtle p-4 space-y-2.5 border border-[#0066FF]/25">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-bold text-[var(--text-primary)] block">Opción A (Recomendada): Importar Curva Real de Contador (Datadis / Distribuidora)</span>
+                                    <span class="text-[11px] text-[var(--text-muted)] block mt-0.5">Acepta directamente el CSV o JSON oficial descargado de Datadis (horaria o cuartohoraria, `;` y coma decimal `,`).</span>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-2 shrink-0">
+                                    <input type="file" id="inpCsvCurveFile" accept=".csv,.txt,.json" class="hidden" onchange="Actions.handleCurveUpload(this.files[0])">
+                                    <button type="button" onclick="document.getElementById('inpCsvCurveFile').click()" class="btn-press px-3.5 py-2 rounded-xl text-xs font-bold bg-[#0066FF] text-white hover:bg-[#0052CC] shadow-sm inline-flex items-center gap-1.5 whitespace-nowrap">
+                                        <span>📂 Importar Datadis / CSV</span>
+                                    </button>
+                                    <button type="button" onclick="Actions.downloadCsvTemplate()" class="btn-press px-2.5 py-2 rounded-xl text-[11px] font-mono bento-subtle hover:border-[#0066FF]/40 whitespace-nowrap">Plantilla</button>
+                                    <button type="button" id="btnResetCustomCurve" onclick="Actions.resetCustomCurve()" class="hidden btn-press px-2.5 py-2 rounded-xl text-[11px] font-mono font-bold text-[#EF4444] bg-[#EF4444]/10 whitespace-nowrap">Quitar CSV</button>
+                                </div>
+                            </div>
+                            <div id="boxDatadisStatus" class="hidden p-2.5 rounded-xl bg-[#10B981]/10 border border-[#10B981]/30 text-xs font-mono text-[#10B981]"></div>
+                        </div>
+
+                        <!-- 2B. VOLUMEN DE CONSUMO Y VARIABILIDAD MENSUAL REAL (12 MESES) -->
+                        <div class="space-y-3">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label for="inpAnnualKwh" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Consumo Anual Total (kWh/año)</label>
+                                    <input id="inpAnnualKwh" type="number" min="100" max="1000000" step="50" class="showroom-input w-full font-mono font-bold text-[#0066FF]" oninput="Actions.setAnnualConsumption(this.value)">
+                                </div>
+                                <div>
+                                    <label for="inpMonthlyKwh" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1">Media Mensual Equivalente (kWh/mes)</label>
+                                    <input id="inpMonthlyKwh" type="number" min="10" max="85000" step="10" class="showroom-input w-full font-mono font-semibold" oninput="Actions.setMonthlyConsumption(this.value)">
+                                </div>
+                            </div>
+                            <input id="rngAnnualKwh" type="range" min="1000" max="30000" step="100" value="4200" aria-label="Deslizador de consumo anual" oninput="Actions.setAnnualConsumption(this.value)" style="--thumb-accent: #0066FF;">
+
+                            <!-- Presets rápidos (Residencial + Comercial 3.0TD) -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px]">
+                                <button type="button" onclick="Actions.applyConsumptionPreset('piso')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
+                                    <span class="font-bold block">Piso (2.0TD)</span>
+                                    <span class="font-mono text-[var(--text-muted)]">2.800 kWh</span>
+                                </button>
+                                <button type="button" onclick="Actions.applyConsumptionPreset('chalet')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
+                                    <span class="font-bold block">Vivienda Familiar</span>
+                                    <span class="font-mono text-[var(--text-muted)]">4.800 kWh</span>
+                                </button>
+                                <button type="button" onclick="Actions.applyConsumptionPreset('ve')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
+                                    <span class="font-bold block">Hogar + Aero/VE</span>
+                                    <span class="font-mono text-[var(--text-muted)]">6.500 kWh</span>
+                                </button>
+                                <button type="button" onclick="Actions.applyConsumptionPreset('pyme')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
+                                    <span class="font-bold block text-[#0066FF]">Comercio (3.0TD)</span>
+                                    <span class="font-mono text-[var(--text-muted)]">18.500 kWh</span>
+                                </button>
+                            </div>
+
+                            <!-- Distribución Mensual / Estacionalidad (Sin sesgo artificial por defecto) -->
+                            <div class="pt-2 border-t border-[var(--border-hairline)] space-y-2.5">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                    <div>
+                                        <label for="selSeasonalityMode" class="block text-xs font-semibold text-[var(--text-secondary)]">Variabilidad Mensual del Consumo (Ene – Dic)</label>
+                                        <span class="text-[11px] text-[var(--text-muted)]">No generalices más consumo en verano: introduce tus 12 facturas o elige el régimen real.</span>
+                                    </div>
+                                    <select id="selSeasonalityMode" class="showroom-input !py-1.5 !px-2.5 text-xs font-semibold sm:w-64 shrink-0" onchange="Actions.setSeasonalityMode(this.value)">
+                                        <option value="neutro">⚖️ Neutro (Sin sesgo estacional)</option>
+                                        <option value="mensual_manual">📝 12 Facturas Mensuales (Manual)</option>
+                                        <option value="invierno">❄️ Invierno mayor (Calefacción)</option>
+                                        <option value="verano">☀️ Verano mayor (Clima / 2ª Res.)</option>
+                                        <option value="bimodal">🔄 Bimodal (Invierno + Verano)</option>
+                                        <option value="datadis_real" id="optSeasonDatadis" disabled>📊 Extraído mes a mes de Datadis</option>
+                                    </select>
+                                </div>
+
+                                <!-- Editor de 12 Meses Reales (Visible en modo manual o para inspeccionar/ajustar meses) -->
+                                <div id="boxMonthly12Editor" class="hidden bento-subtle p-3 space-y-2">
+                                    <div class="flex items-center justify-between text-[11px]">
+                                        <span class="font-semibold text-[var(--text-secondary)]">Consumo mensual declarado (kWh/mes):</span>
+                                        <button type="button" onclick="Actions.distributeAnnualUniformly()" class="text-[#0066FF] hover:underline font-mono">Repartir anual neutro</button>
+                                    </div>
+                                    <div id="gridMonthly12Inputs" class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                                        <!-- Renderizado reactivamente Ene..Dic -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2C. CURVA HORARIA SINTÉTICA CON NOTA DE CAUTELA METODOLÓGICA -->
+                        <div id="boxSyntheticProfiles" class="pt-2 border-t border-[var(--border-hairline)] space-y-3">
+                            <div class="p-3 rounded-xl bg-[#F59E0B]/10 border border-[#F59E0B]/30 flex items-start gap-2.5 text-[11px] leading-relaxed text-[var(--text-secondary)]">
+                                <span class="text-sm shrink-0 leading-none mt-0.5">⚠️</span>
+                                <div class="flex-1 min-w-0">
+                                    <strong class="text-[var(--text-primary)]">Cautela metodológica con curvas estándar:</strong> Tipificar un hogar o socio por características generales (ocupantes, superficie o equipos) rara vez reproduce su curva horaria real, y los hábitos declarados suelen diferir de la telemetría del contador. Usa estos perfiles únicamente como estimación orientativa a falta de fichero <strong>Datadis</strong>.
+                                </div>
+                            </div>
+
                             <div>
-                                <h3 class="font-display font-bold text-base sm:text-lg">Curva Horaria 24h: Demanda vs. Generación Solar PVGIS</h3>
-                                <p class="text-xs text-[var(--text-muted)]">Simulación horaria para la potencia orientativa recomendada</p>
+                                <span class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Aproximación Horaria Orientativa (si no hay Datadis):</span>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <button type="button" id="profBtn_diurno" onclick="Actions.setProfileType('diurno')" class="btn-press p-2.5 rounded-xl border text-left transition">
+                                        <span class="font-bold block">🏢 Diurno Comercial / PYME</span>
+                                        <span class="text-[11px] text-[var(--text-muted)] font-mono">Actividad 09:00 – 18:00</span>
+                                    </button>
+                                    <button type="button" id="profBtn_estandar" onclick="Actions.setProfileType('estandar')" class="btn-press p-2.5 rounded-xl border text-left transition">
+                                        <span class="font-bold block">⚖️ Perfil Medio Agregado REE</span>
+                                        <span class="text-[11px] text-[var(--text-muted)] font-mono">Referencia estadística BT</span>
+                                    </button>
+                                    <button type="button" id="profBtn_nocturno" onclick="Actions.setProfileType('nocturno')" class="btn-press p-2.5 rounded-xl border text-left transition">
+                                        <span class="font-bold block">🌙 Presencia Tarde – Noche</span>
+                                        <span class="text-[11px] text-[var(--text-muted)] font-mono">Mayor peso 19:00 – 23:00</span>
+                                    </button>
+                                    <button type="button" id="profBtn_electrificado" onclick="Actions.setProfileType('electrificado')" class="btn-press p-2.5 rounded-xl border text-left transition">
+                                        <span class="font-bold block">⚡ Cargas Nocturnas / VE</span>
+                                        <span class="text-[11px] text-[var(--text-muted)] font-mono">Acumulación valle 00h – 07h</span>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="segmented-group" role="group" aria-label="Estación climática visualizada">
-                                <button type="button" id="btnSeasonAnual" onclick="Actions.setSeason('anual')" class="segmented-btn active !px-3 !py-1 text-xs">Anual</button>
-                                <button type="button" id="btnSeasonVerano" onclick="Actions.setSeason('verano')" class="segmented-btn !px-3 !py-1 text-xs">Verano</button>
-                                <button type="button" id="btnSeasonInvierno" onclick="Actions.setSeason('invierno')" class="segmented-btn !px-3 !py-1 text-xs">Invierno</button>
+
+                            <!-- Control explícito de Simultaneidad Diurna (08:00–18:00) para corregir arquetipos -->
+                            <div class="bento-subtle p-3 space-y-1.5">
+                                <div class="flex items-center justify-between text-xs">
+                                    <label for="rngDiurnalShare" class="font-semibold text-[var(--text-secondary)]">Fracción de consumo en ventana solar (08:00–18:00):</label>
+                                    <div class="flex items-center gap-2">
+                                        <strong id="lblDiurnalShareVal" class="font-mono text-[#0066FF]">48%</strong>
+                                        <button type="button" id="btnResetDiurnalShare" onclick="Actions.setDiurnalShareOverride(null)" class="hidden text-[10px] font-mono text-[var(--text-muted)] hover:text-[#0066FF] underline">Auto</button>
+                                    </div>
+                                </div>
+                                <input id="rngDiurnalShare" type="range" min="15" max="85" step="1" value="48" aria-label="Porcentaje de consumo en horario solar 08 a 18 horas" oninput="Actions.setDiurnalShareOverride(this.value)" style="--thumb-accent: #F59E0B;">
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="h-[340px] sm:h-[380px] w-full relative">
-                            <canvas id="chartStep1Hourly"></canvas>
+            <!-- ==================================================================
+                 BLOQUE INFERIOR: SÍNTESIS PRELIMINAR Y GRÁFICA (DERIVADO DE LOS DATOS)
+                 ================================================================== -->
+            <div class="pt-2 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-[var(--border-hairline)] pt-5">
+                    <div>
+                        <span class="text-[11px] font-mono font-bold uppercase text-[#10B981]">SÍNTESIS PRELIMINAR RESULTANTE DE TUS DATOS</span>
+                        <h3 class="font-display font-bold text-lg sm:text-xl">Pre-Dimensionado Orientativo y Balance Estacional / Horario</h3>
+                    </div>
+                    <span class="text-xs text-[var(--text-muted)] font-mono">El modelo y nº exacto de paneles se elige en el Paso 2 →</span>
+                </div>
+
+                <!-- 3 Tarjetas KPI Derivadas (Sin presuponer modelo ni nº de paneles antes del Paso 2) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bento-card p-5 sm:p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Potencia Solar Orientativa</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#0066FF]"></span>
                         </div>
+                        <div class="inline-flex items-baseline">
+                            <span id="s1KpiRecKwp" class="kpi-giant text-[#0066FF]">3.60</span>
+                            <span class="kpi-unit">kWp</span>
+                        </div>
+                        <p id="s1KpiYieldSub" class="text-xs text-[var(--text-muted)] mt-2 font-mono">Recurso local: 1.640 kWh/kWp • Nº paneles en Paso 2</p>
+                    </div>
 
-                        <!-- Leyenda de Franjas 2.0TD -->
-                        <div class="grid grid-cols-3 gap-2 pt-3 border-t border-[var(--border-hairline)] text-xs font-mono">
-                            <div class="bento-subtle p-2.5 flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#10B981] shrink-0"></span>
-                                <span class="truncate">Valle P3: 00h–08h + Finde</span>
+                    <div class="bento-card p-5 sm:p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Cobertura Directa Estimada</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#F59E0B]"></span>
+                        </div>
+                        <div class="inline-flex items-baseline">
+                            <span id="s1KpiPrelimAutarky" class="kpi-giant">46</span>
+                            <span class="kpi-unit" id="s1KpiPanelWpUnit">% s/ demanda</span>
+                        </div>
+                        <p id="s1KpiRecSub" class="text-xs text-[var(--text-muted)] mt-2 font-mono">Sin acumulador (Paso 5 evalúa baterías)</p>
+                    </div>
+
+                    <div class="bento-card p-5 sm:p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Ahorro Preliminar s/ Tarifa</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span>
+                        </div>
+                        <div class="inline-flex items-baseline">
+                            <span id="s1KpiPrelimSavings" class="kpi-giant text-[#10B981]">685</span>
+                            <span class="kpi-unit">€ / año</span>
+                        </div>
+                        <p id="s1KpiBillCompare" class="text-xs text-[var(--text-muted)] mt-2 font-mono">Calculado con tu tarifa activa</p>
+                    </div>
+                </div>
+
+                <!-- Gráfica Dual Paso 1: Variabilidad 12 Meses vs Inspección Horaria por Mes -->
+                <div class="bento-card p-5 sm:p-6 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                            <h4 id="s1ChartTitle" class="font-display font-bold text-base sm:text-lg">Balance Mensual (12 Meses): Consumo vs. Generación PVGIS</h4>
+                            <p id="s1ChartSubtitle" class="text-xs text-[var(--text-muted)]">Simulación mes a mes (evitando promediar todo el año en una única curva anual optimista)</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="segmented-group" role="group" aria-label="Modo de gráfica en Paso 1">
+                                <button type="button" id="btnChartModeMonthly" onclick="Actions.setStep1ChartMode('mensual')" class="segmented-btn active !px-3 !py-1 text-xs">12 Meses (kWh)</button>
+                                <button type="button" id="btnChartModeHourly" onclick="Actions.setStep1ChartMode('horaria')" class="segmented-btn !px-3 !py-1 text-xs">Perfil 24h por Mes</button>
                             </div>
-                            <div class="bento-subtle p-2.5 flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#F59E0B] shrink-0"></span>
-                                <span class="truncate">Llano P2: 08–10, 14–18, 22–24h</span>
-                            </div>
-                            <div class="bento-subtle p-2.5 flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#EF4444] shrink-0"></span>
-                                <span class="truncate">Punta P1: 10–14h y 18–22h</span>
+                            <div id="boxInspectMonthSelector" class="hidden segmented-group" role="group" aria-label="Mes inspeccionado en 24h">
+                                <button type="button" id="btnInspMonth_0" onclick="Actions.setInspectMonth(0)" class="segmented-btn active !px-2.5 !py-1 text-xs">Ene</button>
+                                <button type="button" id="btnInspMonth_3" onclick="Actions.setInspectMonth(3)" class="segmented-btn !px-2.5 !py-1 text-xs">Abr</button>
+                                <button type="button" id="btnInspMonth_6" onclick="Actions.setInspectMonth(6)" class="segmented-btn !px-2.5 !py-1 text-xs">Jul</button>
+                                <button type="button" id="btnInspMonth_9" onclick="Actions.setInspectMonth(9)" class="segmented-btn !px-2.5 !py-1 text-xs">Oct</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Resumen Intuitivo para el Cliente -->
-                    <div class="bento-card p-5 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                    <div class="h-[320px] sm:h-[360px] w-full relative">
+                        <canvas id="chartStep1Hourly"></canvas>
+                    </div>
+
+                    <!-- Resumen Intuitivo Inferior -->
+                    <div class="pt-3 border-t border-[var(--border-hairline)] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                         <div>
                             <span class="text-[var(--text-muted)] block">Factura Actual Sin Solar</span>
                             <strong id="s1SummaryBillBefore" class="font-display font-bold text-lg tabular-nums">920 €/año</strong>
@@ -908,11 +1023,11 @@
                             <strong id="s1SummaryBillAfter" class="font-display font-bold text-lg text-[#10B981] tabular-nums">235 €/año</strong>
                         </div>
                         <div>
-                            <span class="text-[var(--text-muted)] block">Autoconsumo Directo</span>
+                            <span class="text-[var(--text-muted)] block">Aprovechamiento Generación</span>
                             <strong id="s1SummarySelfCons" class="font-display font-bold text-lg text-[#0066FF] tabular-nums">52%</strong>
                         </div>
                         <div>
-                            <span class="text-[var(--text-muted)] block">Independencia (Autarquía)</span>
+                            <span class="text-[var(--text-muted)] block">Cobertura Demanda (Autarquía)</span>
                             <strong id="s1SummaryAutarky" class="font-display font-bold text-lg tabular-nums">64%</strong>
                         </div>
                     </div>
@@ -1889,6 +2004,7 @@
                             <select id="selFiscalRegionS6" class="showroom-input w-full text-xs font-semibold" onchange="Actions.setFiscalRegion(this.value)">
                                 <option value="peninsula">Península y Baleares (IVA 21% + IEE)</option>
                                 <option value="canarias">Canarias (IGIC 0% Inv. / 3% Luz)</option>
+                                <option value="ceuta_melilla">Ceuta y Melilla (IPSI 4% Inv. / 1% Luz)</option>
                             </select>
                         </div>
                     </div>
@@ -2258,14 +2374,9 @@
                     <span class="text-[11px] font-mono text-[var(--text-muted)]">Capacidad del Dimensionador Solar</span>
                 </div>
             </div>
-            <button type="button" onclick="UI.closeFeatureModal()" aria-label="Cerrar ventana de información" class="w-7 h-7 rounded-lg bento-subtle flex items-center justify-center font-bold text-xs hover:text-[#0066FF]">✕</button>
+            <button type="button" onclick="UI.closeFeatureModal()" aria-label="Cerrar ventana de información" class="w-8 h-8 rounded-xl bento-subtle flex items-center justify-center font-bold text-xs hover:text-[#0066FF]">✕</button>
         </div>
         <p id="modalFeatureDesc" class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed"></p>
-        <div class="pt-2 flex justify-end">
-            <button type="button" onclick="UI.closeFeatureModal()" class="btn-press px-4 py-2 rounded-xl text-xs font-bold bg-[#0066FF] text-white shadow-md shadow-[#0066FF]/25">
-                Cerrar
-            </button>
-        </div>
     </div>
 </div>
 
@@ -2300,6 +2411,7 @@ function fmtNum(val, dec = 0) {
    2. BASES DE DATOS PRESERVADAS E INTEGRADAS (PVGIS, PANELES, INVERSORES, REBT)
    ============================================================================ */
 const PVGIS_MATRIZ_PROVINCIAS = {
+    "Alava": { lat: 42.85, lon: -2.67, kwh_kwp: 1320, tilt: 36, weights: [0.04, 0.05, 0.08, 0.09, 0.12, 0.12, 0.14, 0.13, 0.09, 0.07, 0.04, 0.03] },
     "Albacete": { lat: 38.99, lon: -1.86, kwh_kwp: 1680, tilt: 35, weights: [0.05, 0.06, 0.08, 0.09, 0.11, 0.12, 0.13, 0.12, 0.09, 0.07, 0.04, 0.04] },
     "Alicante": { lat: 38.35, lon: -0.48, kwh_kwp: 1690, tilt: 33, weights: [0.06, 0.06, 0.08, 0.09, 0.11, 0.12, 0.12, 0.12, 0.09, 0.07, 0.05, 0.04] },
     "Almeria": { lat: 36.84, lon: -2.46, kwh_kwp: 1780, tilt: 32, weights: [0.06, 0.06, 0.08, 0.09, 0.11, 0.12, 0.12, 0.11, 0.09, 0.07, 0.05, 0.04] },
@@ -2313,6 +2425,7 @@ const PVGIS_MATRIZ_PROVINCIAS = {
     "Cadiz": { lat: 36.53, lon: -6.29, kwh_kwp: 1770, tilt: 32, weights: [0.06, 0.06, 0.08, 0.09, 0.11, 0.12, 0.12, 0.11, 0.09, 0.07, 0.05, 0.04] },
     "Cantabria": { lat: 43.46, lon: -3.81, kwh_kwp: 1220, tilt: 36, weights: [0.04, 0.05, 0.08, 0.09, 0.12, 0.12, 0.14, 0.13, 0.09, 0.07, 0.04, 0.03] },
     "Castellon": { lat: 39.99, lon: -0.05, kwh_kwp: 1630, tilt: 34, weights: [0.05, 0.06, 0.08, 0.09, 0.11, 0.12, 0.13, 0.12, 0.09, 0.07, 0.04, 0.04] },
+    "Ceuta": { lat: 35.89, lon: -5.32, kwh_kwp: 1730, tilt: 31, weights: [0.06, 0.06, 0.08, 0.09, 0.11, 0.12, 0.12, 0.12, 0.09, 0.07, 0.05, 0.04] },
     "Ciudad Real": { lat: 38.99, lon: -3.93, kwh_kwp: 1690, tilt: 35, weights: [0.05, 0.06, 0.08, 0.09, 0.11, 0.12, 0.13, 0.12, 0.09, 0.07, 0.04, 0.04] },
     "Cordoba": { lat: 37.89, lon: -4.78, kwh_kwp: 1730, tilt: 33, weights: [0.05, 0.06, 0.08, 0.09, 0.11, 0.12, 0.13, 0.12, 0.09, 0.07, 0.04, 0.04] },
     "Cuenca": { lat: 40.07, lon: -2.14, kwh_kwp: 1630, tilt: 35, weights: [0.05, 0.06, 0.08, 0.09, 0.11, 0.12, 0.13, 0.12, 0.09, 0.07, 0.04, 0.04] },
@@ -2331,6 +2444,7 @@ const PVGIS_MATRIZ_PROVINCIAS = {
     "Lugo": { lat: 43.01, lon: -7.56, kwh_kwp: 1260, tilt: 36, weights: [0.04, 0.05, 0.08, 0.09, 0.12, 0.12, 0.14, 0.13, 0.09, 0.07, 0.04, 0.03] },
     "Madrid": { lat: 40.42, lon: -3.70, kwh_kwp: 1640, tilt: 34, weights: [0.05, 0.06, 0.08, 0.09, 0.11, 0.12, 0.13, 0.12, 0.09, 0.07, 0.04, 0.04] },
     "Malaga": { lat: 36.72, lon: -4.42, kwh_kwp: 1750, tilt: 32, weights: [0.06, 0.06, 0.08, 0.09, 0.11, 0.12, 0.12, 0.11, 0.09, 0.07, 0.05, 0.04] },
+    "Melilla": { lat: 35.29, lon: -2.94, kwh_kwp: 1740, tilt: 31, weights: [0.06, 0.06, 0.08, 0.09, 0.11, 0.12, 0.12, 0.12, 0.09, 0.07, 0.05, 0.04] },
     "Murcia": { lat: 37.99, lon: -1.13, kwh_kwp: 1710, tilt: 33, weights: [0.06, 0.06, 0.08, 0.09, 0.11, 0.12, 0.12, 0.12, 0.09, 0.07, 0.05, 0.04] },
     "Navarra": { lat: 42.81, lon: -1.65, kwh_kwp: 1440, tilt: 36, weights: [0.04, 0.05, 0.08, 0.09, 0.12, 0.12, 0.14, 0.13, 0.09, 0.07, 0.04, 0.03] },
     "Ourense": { lat: 42.34, lon: -7.86, kwh_kwp: 1390, tilt: 36, weights: [0.04, 0.05, 0.08, 0.09, 0.12, 0.12, 0.14, 0.13, 0.09, 0.07, 0.04, 0.03] },
@@ -2366,6 +2480,62 @@ const PERFIL_BASE_REE_24H = [
 
 const DIAS_MES = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const MESES_NOMBRES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+/* Patrones opcionales de estacionalidad mensual del consumo (12 meses Ene..Dic)
+   Por defecto 'neutro' reparte exactamente por días del mes SIN sesgo artificial hacia verano ni invierno */
+const PATRONES_ESTACIONALES_DEMANDA = {
+    neutro: DIAS_MES.map(d => d / 365),
+    invierno: [0.125, 0.110, 0.095, 0.078, 0.065, 0.058, 0.056, 0.055, 0.064, 0.079, 0.098, 0.117],
+    verano: [0.065, 0.060, 0.068, 0.072, 0.085, 0.105, 0.128, 0.128, 0.092, 0.070, 0.063, 0.064],
+    bimodal: [0.102, 0.092, 0.076, 0.066, 0.068, 0.086, 0.106, 0.104, 0.074, 0.066, 0.076, 0.084]
+};
+
+/* Calendario Oficial Circular 3/2020 CNMC para Tarifa 3.0TD (> 15 kW, 6 Periodos P1–P6)
+   Cada entrada de los 12 meses define [PeriodoPunta (09-14,18-22), PeriodoLlano (08-09,14-18,22-24), PeriodoValle (00-08)] en laborables */
+const CNMC_30TD_CALENDARIO = {
+    peninsula: [
+        ['P1', 'P2', 'P6'], // Ene (Alta)
+        ['P1', 'P2', 'P6'], // Feb (Alta)
+        ['P2', 'P3', 'P6'], // Mar (Media-Alta)
+        ['P4', 'P5', 'P6'], // Abr (Baja)
+        ['P4', 'P5', 'P6'], // May (Baja)
+        ['P3', 'P4', 'P6'], // Jun (Media)
+        ['P1', 'P2', 'P6'], // Jul (Alta)
+        ['P3', 'P4', 'P6'], // Ago (Media)
+        ['P3', 'P4', 'P6'], // Sep (Media)
+        ['P4', 'P5', 'P6'], // Oct (Baja)
+        ['P2', 'P3', 'P6'], // Nov (Media-Alta)
+        ['P1', 'P2', 'P6']  // Dic (Alta)
+    ],
+    canarias: [
+        ['P3', 'P4', 'P6'], // Ene (Media)
+        ['P3', 'P4', 'P6'], // Feb (Media)
+        ['P3', 'P4', 'P6'], // Mar (Media)
+        ['P4', 'P5', 'P6'], // Abr (Baja)
+        ['P4', 'P5', 'P6'], // May (Baja)
+        ['P4', 'P5', 'P6'], // Jun (Baja)
+        ['P1', 'P2', 'P6'], // Jul (Alta)
+        ['P1', 'P2', 'P6'], // Ago (Alta)
+        ['P1', 'P2', 'P6'], // Sep (Alta)
+        ['P1', 'P2', 'P6'], // Oct (Alta)
+        ['P2', 'P3', 'P6'], // Nov (Media-Alta)
+        ['P2', 'P3', 'P6']  // Dic (Media-Alta)
+    ],
+    ceuta_melilla: [
+        ['P1', 'P2', 'P6'], // Ene (Alta)
+        ['P1', 'P2', 'P6'], // Feb (Alta)
+        ['P3', 'P4', 'P6'], // Mar (Media)
+        ['P4', 'P5', 'P6'], // Abr (Baja)
+        ['P4', 'P5', 'P6'], // May (Baja)
+        ['P4', 'P5', 'P6'], // Jun (Baja)
+        ['P2', 'P3', 'P6'], // Jul (Media-Alta)
+        ['P1', 'P2', 'P6'], // Ago (Alta)
+        ['P1', 'P2', 'P6'], // Sep (Alta)
+        ['P2', 'P3', 'P6'], // Oct (Media-Alta)
+        ['P3', 'P4', 'P6'], // Nov (Media)
+        ['P3', 'P4', 'P6']  // Dic (Media)
+    ]
+};
 
 const MODULOS_FV = {
     longi_450: {
@@ -2683,18 +2853,32 @@ function createDefaultState() {
         },
         consumptionAndTariff: {
             annualKwh: 4200,
+            seasonalityMode: "neutro", // 'neutro' | 'mensual_manual' | 'invierno' | 'verano' | 'bimodal' | 'datadis_real'
+            monthlyKwh: [357, 322, 357, 345, 357, 345, 357, 357, 345, 357, 345, 356],
             profileType: "estandar",
+            diurnalShareOverridePct: null,
             customCurve24h: null,
             customCurveName: "",
+            customMonthlyCurves24: null,
+            customDaysCompact: "",
+            datadisMeta: null,
+            step1ChartMode: "mensual", // 'mensual' | 'horaria'
+            inspectMonth: 0, // 0=Ene, 3=Abr, 6=Jul, 9=Oct
             seasonView: "anual",
-            tariffMode: "20td", // 'fija' | '20td'
+            tariffMode: "20td", // 'fija' | '20td' | '30td'
             flatRateEur: 0.145,
             p1Eur: 0.185,
             p2Eur: 0.135,
             p3Eur: 0.090,
+            p30_1Eur: 0.198,
+            p30_2Eur: 0.168,
+            p30_3Eur: 0.142,
+            p30_4Eur: 0.122,
+            p30_5Eur: 0.106,
+            p30_6Eur: 0.089,
             contractedPowerKw: 4.6,
             powerRateP1Year: 34.0,
-            fiscalRegion: "peninsula" // 'peninsula' | 'canarias'
+            fiscalRegion: "peninsula" // 'peninsula' | 'canarias' | 'ceuta_melilla'
         },
         pvModules: {
             mode: "catalog", // 'catalog' | 'custom'
@@ -2894,7 +3078,8 @@ const PVGISService = {
 
     checkAutoFiscalRegion(provName, lat, lon) {
         const isCanarias = provName === "Las Palmas" || provName === "Santa Cruz de Tenerife" || (lat > 27 && lat < 29.6 && lon < -13 && lon > -18.5);
-        Store.state.consumptionAndTariff.fiscalRegion = isCanarias ? "canarias" : "peninsula";
+        const isCeutaMelilla = provName === "Ceuta" || provName === "Melilla";
+        Store.state.consumptionAndTariff.fiscalRegion = isCanarias ? "canarias" : (isCeutaMelilla ? "ceuta_melilla" : "peninsula");
     },
 
     onSearchInput(query) {
@@ -2906,7 +3091,7 @@ const PVGISService = {
             return;
         }
 
-        // Coincidencias instantáneas locales de la matriz de 52 provincias
+        // Coincidencias instantáneas locales de las 50 provincias y 2 ciudades autónomas
         const qNorm = q.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         const localMatches = Object.entries(PVGIS_MATRIZ_PROVINCIAS)
             .filter(([name]) => name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(qNorm))
@@ -3140,7 +3325,7 @@ const PVGISService = {
             }
             throw new Error("Modo local / sin proxy Pages");
         } catch (_) {
-            // Respaldo determinista sobre matriz oficial JRC de 52 provincias españolas
+            // Respaldo determinista sobre matriz oficial JRC de 50 provincias y 2 ciudades autónomas
             const nearest = this.findNearestProvince(loc.lat, loc.lon);
             loc.baseKwhKwp = nearest.data.kwh_kwp;
             loc.monthlyWeights = [...nearest.data.weights];
@@ -3178,16 +3363,21 @@ const PhysicsEngine = {
         return `Noreste (${az}°)`;
     },
 
-    getHourlyDemandWeights() {
+    getHourlyDemandWeights(monthIdx = null) {
         const ct = Store.state.consumptionAndTariff;
+        if (monthIdx !== null && Array.isArray(ct.customMonthlyCurves24) && Array.isArray(ct.customMonthlyCurves24[monthIdx])) {
+            const mArr = ct.customMonthlyCurves24[monthIdx];
+            const mSum = mArr.reduce((a, b) => a + Math.max(0, Number(b) || 0), 0);
+            if (mSum > 0) return mArr.map(v => Math.max(0, Number(v) || 0) / mSum);
+        }
         if (Array.isArray(ct.customCurve24h) && ct.customCurve24h.length === 24) {
             const sum = ct.customCurve24h.reduce((a, b) => a + Math.max(0, Number(b) || 0), 0);
             if (sum > 0) return ct.customCurve24h.map(v => Math.max(0, Number(v) || 0) / sum);
         }
 
-        const raw = PERFIL_BASE_REE_24H.map((base, h) => {
+        let raw = PERFIL_BASE_REE_24H.map((base, h) => {
             if (ct.profileType === 'diurno') {
-                return (h >= 9 && h <= 17) ? base * 1.85 : base * 0.55;
+                return (h >= 9 && h <= 17) ? base * 1.95 : base * 0.50;
             }
             if (ct.profileType === 'nocturno') {
                 return (h >= 19 || h <= 1) ? base * 1.75 : (h >= 9 && h <= 16 ? base * 0.65 : base);
@@ -3197,14 +3387,100 @@ const PhysicsEngine = {
             }
             return base;
         });
-        const total = raw.reduce((a, b) => a + b, 0);
-        return raw.map(v => v / total);
+
+        let total = raw.reduce((a, b) => a + b, 0) || 1;
+        let weights = raw.map(v => v / total);
+
+        // Ajuste explícito de simultaneidad diurna (08:00 a 18:00) si el usuario lo modifica sobre el arquetipo
+        if (ct.diurnalShareOverridePct !== null && ct.diurnalShareOverridePct !== undefined && !ct.customCurve24h) {
+            const targetDay = Math.max(0.10, Math.min(0.90, Number(ct.diurnalShareOverridePct) / 100));
+            const curDay = weights.reduce((acc, w, h) => acc + ((h >= 8 && h < 18) ? w : 0), 0);
+            const curNight = Math.max(1e-6, 1 - curDay);
+            if (curDay > 1e-6) {
+                weights = weights.map((w, h) => (h >= 8 && h < 18) ? w * (targetDay / curDay) : w * ((1 - targetDay) / curNight));
+            }
+        }
+        return weights;
+    },
+
+    getEffectiveDiurnalSharePct() {
+        const w = this.getHourlyDemandWeights(null);
+        const daySum = w.reduce((acc, v, h) => acc + ((h >= 8 && h < 18) ? v : 0), 0);
+        return Math.round(daySum * 100);
+    },
+
+    getMonthlyDemandVector() {
+        const ct = Store.state.consumptionAndTariff;
+        const mode = ct.seasonalityMode || 'neutro';
+        if ((mode === 'mensual_manual' || mode === 'datadis_real') && Array.isArray(ct.monthlyKwh) && ct.monthlyKwh.length === 12) {
+            const clean = ct.monthlyKwh.map(v => Math.max(0, Number(v) || 0));
+            const sum = clean.reduce((a, b) => a + b, 0);
+            if (sum >= 50) return clean;
+        }
+        const annual = Math.max(100, Number(ct.annualKwh) || 4200);
+        const pat = PATRONES_ESTACIONALES_DEMANDA[mode] || PATRONES_ESTACIONALES_DEMANDA.neutro;
+        const patSum = pat.reduce((a, b) => a + b, 0) || 1;
+        return pat.map(w => (annual * w) / patSum);
+    },
+
+    getSolarCurveForMonth(m) {
+        if (m === 11 || m === 0) return CURVAS_SOLARES_ESTACIONALES.invierno;
+        if (m === 1 || m === 10) {
+            return CURVAS_SOLARES_ESTACIONALES.invierno.map((v, h) => 0.5 * v + 0.5 * CURVAS_SOLARES_ESTACIONALES.anual[h]);
+        }
+        if (m >= 4 && m <= 7) return CURVAS_SOLARES_ESTACIONALES.verano;
+        return CURVAS_SOLARES_ESTACIONALES.anual;
     },
 
     getTariffPeriodWeekday(hour) {
         if (hour >= 0 && hour < 8) return 'P3';
         if ((hour >= 8 && hour < 10) || (hour >= 14 && hour < 18) || (hour >= 22 && hour < 24)) return 'P2';
         return 'P1';
+    },
+
+    getTariffPeriod30TD(monthIdx, hour, isWeekend, fiscalRegion = 'peninsula') {
+        if (isWeekend || (hour >= 0 && hour < 8)) return 'P6';
+        const cal = CNMC_30TD_CALENDARIO[fiscalRegion] || CNMC_30TD_CALENDARIO.peninsula;
+        const [pPunta, pLlano, pValle] = cal[monthIdx] || ['P3', 'P4', 'P6'];
+        if ((hour >= 9 && hour < 14) || (hour >= 18 && hour < 22)) return pPunta;
+        if ((hour >= 8 && hour < 9) || (hour >= 14 && hour < 18) || (hour >= 22 && hour < 24)) return pLlano;
+        return pValle;
+    },
+
+    getRateFor30TD(period, ct) {
+        const map = {
+            P1: Number(ct.p30_1Eur) || 0.198,
+            P2: Number(ct.p30_2Eur) || 0.168,
+            P3: Number(ct.p30_3Eur) || 0.142,
+            P4: Number(ct.p30_4Eur) || 0.122,
+            P5: Number(ct.p30_5Eur) || 0.106,
+            P6: Number(ct.p30_6Eur) || 0.089
+        };
+        return map[period] || 0.122;
+    },
+
+    decodeDatadisCompactDays(compactStr) {
+        if (!compactStr || typeof compactStr !== 'string' || compactStr.length < 20) return null;
+        const rawDays = compactStr.split('|');
+        const out = [];
+        for (const item of rawDays) {
+            const sep = item.indexOf(';');
+            if (sep < 8) continue;
+            const dStr = item.slice(0, sep);
+            const vals = item.slice(sep + 1).split(',').map(Number);
+            if (vals.length !== 24) continue;
+            const parts = dStr.split('-');
+            if (parts.length !== 3) continue;
+            const y = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10) - 1;
+            const d = parseInt(parts[2], 10);
+            if (isNaN(m) || m < 0 || m > 11) continue;
+            const dt = new Date(Date.UTC(y, m, d));
+            const dow = dt.getUTCDay();
+            const isWe = (dow === 0 || dow === 6);
+            out.push({ monthIdx: m, isWeekend: isWe, h24: vals });
+        }
+        return out.length >= 14 ? out : null;
     },
 
     calculateTempFactorFt(tempAmb, insulation, isBuried) {
@@ -3350,22 +3626,28 @@ const PhysicsEngine = {
         return 240;
     },
 
-    /* Simulación Horaria 12 Meses × 24 Horas (2.0TD / Fija + Batería LiFePO4 + RD 244/2019) */
+    /* Simulación Energética Mes a Mes / Día a Día Datadis (2.0TD / 3.0TD / Fija + Batería LiFePO4 + RD 244/2019) */
     simulateAnnualDispatch(kwpInstalled, specificYield, includeBattery, cablingLossPct = 0) {
         const ct = Store.state.consumptionAndTariff;
         const loc = Store.state.locationAndPVGIS;
         const bat = Store.state.batterySystem;
         const fin = Store.state.legalAndFinancials;
 
-        const annualDemand = Math.max(100, Number(ct.annualKwh) || 4200);
-        const demandWeights24 = this.getHourlyDemandWeights();
+        const monthlyDemandTarget = this.getMonthlyDemandVector();
+        const annualDemand = Math.max(50, monthlyDemandTarget.reduce((a, b) => a + b, 0));
+
         const extraCableDerate = Math.max(0.88, Math.min(1.02, 1 - Math.max(0, cablingLossPct - 1.2) / 100));
         const annualGenKwh = Math.max(0, kwpInstalled * specificYield * extraCableDerate);
 
         const isCanarias = ct.fiscalRegion === 'canarias';
-        const billTaxMult = isCanarias ? 1.03 : (1.0511269632 * 1.21); // Canarias IGIC 3% sin IEE vs Península IEE + IVA 21%
+        const isCeutaMelilla = ct.fiscalRegion === 'ceuta_melilla';
+        const billTaxMult = isCanarias
+            ? 1.03
+            : (isCeutaMelilla ? (1.0511269632 * 1.01) : (1.0511269632 * 1.21));
 
-        const fixedPowerTermYearBase = (Number(ct.contractedPowerKw) || 4.6) * (Number(ct.powerRateP1Year) || 34.0) + 14.0; // + alquiler contador
+        const powerRateYr = ct.tariffMode === '30td' ? 42.0 : (Number(ct.powerRateP1Year) || 34.0);
+        const meterRentalYr = ct.tariffMode === '30td' ? 54.0 : 14.0;
+        const fixedPowerTermYearBase = (Number(ct.contractedPowerKw) || 4.6) * powerRateYr + meterRentalYr;
 
         const usableBatKwh = includeBattery
             ? Math.max(0, (Number(bat.nominalKwh) || 0) * ((Number(bat.dodPct) || 95) / 100))
@@ -3374,6 +3656,7 @@ const PhysicsEngine = {
         const rtEff = includeBattery ? Math.max(0.70, Math.min(0.99, (Number(bat.roundTripEffPct) || 95) / 100)) : 1.0;
         const etaChg = Math.sqrt(rtEff);
         const etaDis = Math.sqrt(rtEff);
+        const surplusPrice = Math.max(0, Number(fin.surplusEurKwh) || 0.065);
 
         let totalSelfDirect = 0;
         let totalBatDischarge = 0;
@@ -3384,129 +3667,221 @@ const PhysicsEngine = {
         let annualBillAfterBase = fixedPowerTermYearBase;
 
         let kwhP1 = 0, kwhP2 = 0, kwhP3 = 0;
+        const kwh30 = { P1: 0, P2: 0, P3: 0, P4: 0, P5: 0, P6: 0 };
+
         const monthlyGen = [];
         const monthlyDemand = [];
         const monthlySurplus = [];
         const monthlySelf = [];
         let cappedMonthsCount = 0;
 
-        // Curvas representativas 24h para gráficas (Anual, Verano, Invierno)
+        const repMonths24 = Array.from({ length: 12 }, () => ({
+            demand: Array(24).fill(0),
+            solar: Array(24).fill(0),
+            soc: Array(24).fill(0)
+        }));
         const rep24 = {
             anual: { demand: Array(24).fill(0), solar: Array(24).fill(0), soc: Array(24).fill(0) },
             verano: { demand: Array(24).fill(0), solar: Array(24).fill(0), soc: Array(24).fill(0) },
             invierno: { demand: Array(24).fill(0), solar: Array(24).fill(0), soc: Array(24).fill(0) }
         };
 
+        // Agrupar serie real diaria de Datadis por mes si existe
+        const realDaysAll = (ct.seasonalityMode === 'datadis_real' && ct.customDaysCompact)
+            ? this.decodeDatadisCompactDays(ct.customDaysCompact)
+            : null;
+        const realDaysByMonth = Array.from({ length: 12 }, () => []);
+        if (realDaysAll) {
+            for (const dObj of realDaysAll) {
+                realDaysByMonth[dObj.monthIdx].push(dObj);
+            }
+        }
+
+        let soc = usableBatKwh * 0.25;
+
         for (let m = 0; m < 12; m++) {
-            const days = DIAS_MES[m];
+            const daysInMonth = DIAS_MES[m];
             const mSolarKwh = annualGenKwh * (loc.monthlyWeights[m] || (1 / 12));
-            // Ligera estacionalidad residencial realista
-            const mDemandFactor = (m === 0 || m === 1 || m === 6 || m === 7 || m === 11) ? 1.08 : 0.94;
-            const mDemandKwh = (annualDemand / 365) * days * mDemandFactor;
+            const mDemandKwh = monthlyDemandTarget[m];
 
-            const seasonCurve = (m >= 4 && m <= 8)
-                ? CURVAS_SOLARES_ESTACIONALES.verano
-                : ((m === 10 || m === 11 || m === 0 || m === 1) ? CURVAS_SOLARES_ESTACIONALES.invierno : CURVAS_SOLARES_ESTACIONALES.anual);
+            const seasonCurve = this.getSolarCurveForMonth(m);
             const curveSum = seasonCurve.reduce((a, b) => a + b, 0) || 1;
+            const dailySolar = mSolarKwh / daysInMonth;
 
-            const dailySolar = mSolarKwh / days;
-            const dailyDemand = mDemandKwh / days;
-
-            // Simular 2 iteraciones diarias para estabilizar SoC cíclico de batería
-            let soc = usableBatKwh * 0.25;
-            let daySelf = 0, dayBatOut = 0, dayImport = 0, dayExport = 0;
-            const hourlySoc = Array(24).fill(0);
-            const hourlySolar = Array(24).fill(0);
-            const hourlyDemand = Array(24).fill(0);
-
-            for (let pass = 0; pass < 2; pass++) {
-                daySelf = 0; dayBatOut = 0; dayImport = 0; dayExport = 0;
-                for (let h = 0; h < 24; h++) {
-                    const sH = dailySolar * (seasonCurve[h] / curveSum);
-                    const dH = dailyDemand * demandWeights24[h];
-                    hourlySolar[h] = sH;
-                    hourlyDemand[h] = dH;
-
-                    const direct = Math.min(sH, dH);
-                    let excess = Math.max(0, sH - dH);
-                    let deficit = Math.max(0, dH - sH);
-
-                    if (includeBattery && usableBatKwh > 0) {
-                        if (excess > 0 && soc < usableBatKwh) {
-                            const canTakeGridSide = Math.min(excess, maxBatKw, (usableBatKwh - soc) / etaChg);
-                            soc += canTakeGridSide * etaChg;
-                            excess -= canTakeGridSide;
-                        } else if (deficit > 0 && soc > 0) {
-                            const canDeliver = Math.min(deficit, maxBatKw, soc * etaDis);
-                            soc -= canDeliver / etaDis;
-                            deficit -= canDeliver;
-                            dayBatOut += canDeliver;
-                        }
-                    }
-
-                    daySelf += direct;
-                    dayImport += deficit;
-                    dayExport += excess;
-                    hourlySoc[h] = soc;
-                }
-            }
-
-            if (m === 6) {
-                rep24.verano = { demand: hourlyDemand, solar: hourlySolar, soc: hourlySoc };
-            } else if (m === 0) {
-                rep24.invierno = { demand: hourlyDemand, solar: hourlySolar, soc: hourlySoc };
-            }
-            for (let h = 0; h < 24; h++) {
-                rep24.anual.demand[h] += hourlyDemand[h] / 12;
-                rep24.anual.solar[h] += hourlySolar[h] / 12;
-                rep24.anual.soc[h] += hourlySoc[h] / 12;
-            }
-
-            // Valoración económica mensual (5/7 laborables + 2/7 fines de semana Valle P3)
+            let mSelfDirect = 0;
+            let mBatOut = 0;
+            let mImport = 0;
+            let mExport = 0;
             let mCostBefore = 0;
             let mCostImportAfter = 0;
 
-            for (let h = 0; h < 24; h++) {
-                const dH = hourlyDemand[h];
-                const sH = hourlySolar[h];
-                // Fracción importada en esta hora tras directo + batería proporcional
-                const netDeficitRatio = dayImport > 0 && Math.max(0, dH - sH) > 0
-                    ? Math.min(1, dayImport / Math.max(0.001, hourlyDemand.reduce((acc, val, idx) => acc + Math.max(0, val - hourlySolar[idx]), 0)))
-                    : 0;
-                const impH = Math.max(0, dH - sH) * netDeficitRatio;
+            const realDaysM = realDaysByMonth[m];
 
-                const pWeekday = this.getTariffPeriodWeekday(h);
-                if (pWeekday === 'P1') kwhP1 += dH * days * (5 / 7);
-                else if (pWeekday === 'P2') kwhP2 += dH * days * (5 / 7);
-                else kwhP3 += dH * days * (5 / 7);
-                kwhP3 += dH * days * (2 / 7);
+            if (realDaysM && realDaysM.length >= 7) {
+                // MODO A: Simulación horaria día a día sobre telemetría real Datadis en el mes m
+                const scaleFactorM = daysInMonth / realDaysM.length;
+                for (const dObj of realDaysM) {
+                    const isWe = dObj.isWeekend;
+                    for (let h = 0; h < 24; h++) {
+                        const sH = dailySolar * (seasonCurve[h] / curveSum);
+                        const dH = Math.max(0, Number(dObj.h24[h]) || 0);
 
-                let rateAvgH = Number(ct.flatRateEur) || 0.145;
-                if (ct.tariffMode === '20td') {
-                    const rW = pWeekday === 'P1' ? (Number(ct.p1Eur) || 0.185) : (pWeekday === 'P2' ? (Number(ct.p2Eur) || 0.135) : (Number(ct.p3Eur) || 0.090));
-                    const rWe = Number(ct.p3Eur) || 0.090;
-                    rateAvgH = (5 / 7) * rW + (2 / 7) * rWe;
+                        const direct = Math.min(sH, dH);
+                        let excess = Math.max(0, sH - dH);
+                        let deficit = Math.max(0, dH - sH);
+                        let batDeliv = 0;
+
+                        if (includeBattery && usableBatKwh > 0) {
+                            if (excess > 0 && soc < usableBatKwh) {
+                                const canTake = Math.min(excess, maxBatKw, (usableBatKwh - soc) / etaChg);
+                                soc += canTake * etaChg;
+                                excess -= canTake;
+                            } else if (deficit > 0 && soc > 0) {
+                                canDeliverLabel: {
+                                    const canDeliver = Math.min(deficit, maxBatKw, soc * etaDis);
+                                    soc -= canDeliver / etaDis;
+                                    deficit -= canDeliver;
+                                    batDeliv = canDeliver;
+                                }
+                            }
+                        }
+
+                        mSelfDirect += direct * scaleFactorM;
+                        mBatOut += batDeliv * scaleFactorM;
+                        mImport += deficit * scaleFactorM;
+                        mExport += excess * scaleFactorM;
+
+                        repMonths24[m].solar[h] += sH / realDaysM.length;
+                        repMonths24[m].demand[h] += dH / realDaysM.length;
+                        repMonths24[m].soc[h] += soc / realDaysM.length;
+
+                        // Periodos 2.0TD y 3.0TD sobre cada hora real
+                        const p20 = isWe ? 'P3' : this.getTariffPeriodWeekday(h);
+                        if (p20 === 'P1') kwhP1 += dH * scaleFactorM;
+                        else if (p20 === 'P2') kwhP2 += dH * scaleFactorM;
+                        else kwhP3 += dH * scaleFactorM;
+
+                        const p30 = this.getTariffPeriod30TD(m, h, isWe, ct.fiscalRegion);
+                        kwh30[p30] = (kwh30[p30] || 0) + dH * scaleFactorM;
+
+                        let rateH = Number(ct.flatRateEur) || 0.145;
+                        if (ct.tariffMode === '20td') {
+                            rateH = p20 === 'P1' ? (Number(ct.p1Eur) || 0.185) : (p20 === 'P2' ? (Number(ct.p2Eur) || 0.135) : (Number(ct.p3Eur) || 0.090));
+                        } else if (ct.tariffMode === '30td') {
+                            rateH = this.getRateFor30TD(p30, ct);
+                        }
+
+                        mCostBefore += dH * scaleFactorM * rateH;
+                        mCostImportAfter += deficit * scaleFactorM * rateH;
+                    }
+                }
+            } else {
+                // MODO B: Simulación mensual independiente (Laborables 5/7 + Fines de semana 2/7) sin promediar todo el año
+                const demandWeights24 = this.getHourlyDemandWeights(m);
+                const dailyDemand = mDemandKwh / daysInMonth;
+
+                let daySelf = 0, dayBatOut = 0, dayImport = 0, dayExport = 0;
+                const hourlySoc = Array(24).fill(0);
+                const hourlySolar = Array(24).fill(0);
+                const hourlyDemand = Array(24).fill(0);
+                const hourlyNetImport = Array(24).fill(0);
+
+                for (let pass = 0; pass < 2; pass++) {
+                    daySelf = 0; dayBatOut = 0; dayImport = 0; dayExport = 0;
+                    for (let h = 0; h < 24; h++) {
+                        const sH = dailySolar * (seasonCurve[h] / curveSum);
+                        const dH = dailyDemand * demandWeights24[h];
+                        hourlySolar[h] = sH;
+                        hourlyDemand[h] = dH;
+
+                        const direct = Math.min(sH, dH);
+                        let excess = Math.max(0, sH - dH);
+                        let deficit = Math.max(0, dH - sH);
+
+                        if (includeBattery && usableBatKwh > 0) {
+                            if (excess > 0 && soc < usableBatKwh) {
+                                const canTake = Math.min(excess, maxBatKw, (usableBatKwh - soc) / etaChg);
+                                soc += canTake * etaChg;
+                                excess -= canTake;
+                            } else if (deficit > 0 && soc > 0) {
+                                const canDeliver = Math.min(deficit, maxBatKw, soc * etaDis);
+                                soc -= canDeliver / etaDis;
+                                deficit -= canDeliver;
+                                dayBatOut += canDeliver;
+                            }
+                        }
+
+                        daySelf += direct;
+                        dayImport += deficit;
+                        dayExport += excess;
+                        hourlyNetImport[h] = deficit;
+                        hourlySoc[h] = soc;
+                    }
                 }
 
-                mCostBefore += dH * days * rateAvgH;
-                mCostImportAfter += impH * days * rateAvgH;
+                repMonths24[m] = { demand: hourlyDemand, solar: hourlySolar, soc: hourlySoc };
+                mSelfDirect = daySelf * daysInMonth;
+                mBatOut = dayBatOut * daysInMonth;
+                mImport = dayImport * daysInMonth;
+                mExport = dayExport * daysInMonth;
+
+                const wkFrac = 5 / 7;
+                const weFrac = 2 / 7;
+
+                for (let h = 0; h < 24; h++) {
+                    const dH = hourlyDemand[h];
+                    const impH = hourlyNetImport[h];
+
+                    // Acumuladores 2.0TD
+                    const p20W = this.getTariffPeriodWeekday(h);
+                    if (p20W === 'P1') kwhP1 += dH * daysInMonth * wkFrac;
+                    else if (p20W === 'P2') kwhP2 += dH * daysInMonth * wkFrac;
+                    else kwhP3 += dH * daysInMonth * wkFrac;
+                    kwhP3 += dH * daysInMonth * weFrac;
+
+                    // Acumuladores 3.0TD (Circular 3/2020 CNMC por mes y tramo horario)
+                    const p30W = this.getTariffPeriod30TD(m, h, false, ct.fiscalRegion);
+                    kwh30[p30W] += dH * daysInMonth * wkFrac;
+                    kwh30.P6 += dH * daysInMonth * weFrac;
+
+                    let rateAvgH = Number(ct.flatRateEur) || 0.145;
+                    if (ct.tariffMode === '20td') {
+                        const rW = p20W === 'P1' ? (Number(ct.p1Eur) || 0.185) : (p20W === 'P2' ? (Number(ct.p2Eur) || 0.135) : (Number(ct.p3Eur) || 0.090));
+                        const rWe = Number(ct.p3Eur) || 0.090;
+                        rateAvgH = wkFrac * rW + weFrac * rWe;
+                    } else if (ct.tariffMode === '30td') {
+                        const rW = this.getRateFor30TD(p30W, ct);
+                        const rWe = this.getRateFor30TD('P6', ct);
+                        rateAvgH = wkFrac * rW + weFrac * rWe;
+                    }
+
+                    mCostBefore += dH * daysInMonth * rateAvgH;
+                    mCostImportAfter += impH * daysInMonth * rateAvgH;
+                }
             }
 
-            const mExportKwh = dayExport * days;
-            const surplusPrice = Math.max(0, Number(fin.surplusEurKwh) || 0.065);
-            let mNetEnergyTermAfter = mCostImportAfter;
+            // Vistas de compatibilidad (Julio / Enero / Media)
+            if (m === 6) rep24.verano = repMonths24[6];
+            if (m === 0) rep24.invierno = repMonths24[0];
+            for (let h = 0; h < 24; h++) {
+                rep24.anual.demand[h] += repMonths24[m].demand[h] / 12;
+                rep24.anual.solar[h] += repMonths24[m].solar[h] / 12;
+                rep24.anual.soc[h] += repMonths24[m].soc[h] / 12;
+            }
 
+            // Liquidación mensual independiente según RD 244/2019 (Tope mensual estricto mes a mes)
+            let mNetEnergyTermAfter = mCostImportAfter;
             if (fin.rd244Mode === 'compensacion') {
-                const credit = mExportKwh * surplusPrice;
+                const credit = mExport * surplusPrice;
                 if (credit > mCostImportAfter && mCostImportAfter > 0) cappedMonthsCount++;
-                mNetEnergyTermAfter = Math.max(0, mCostImportAfter - credit); // Tope legal RD 244/2019 Art. 14
-                totalSurplusExport += mExportKwh;
+                mNetEnergyTermAfter = Math.max(0, mCostImportAfter - credit);
+                totalSurplusExport += mExport;
             } else if (fin.rd244Mode === 'venta_mercado') {
-                const poolNetRevenue = mExportKwh * surplusPrice * 0.93; // Descuento IVPEE 7%
+                const poolNetRevenue = mExport * surplusPrice * 0.93;
                 mNetEnergyTermAfter = mCostImportAfter - poolNetRevenue;
-                totalSurplusExport += mExportKwh;
+                totalSurplusExport += mExport;
             } else if (fin.rd244Mode === 'sin_excedentes') {
-                totalCurtailed += mExportKwh;
+                totalCurtailed += mExport;
             } else if (fin.rd244Mode === 'aislada' || bat.offGridMode) {
                 mNetEnergyTermAfter = 0;
             }
@@ -3514,21 +3889,30 @@ const PhysicsEngine = {
             annualBillBeforeBase += mCostBefore;
             annualBillAfterBase += mNetEnergyTermAfter;
 
-            totalSelfDirect += daySelf * days;
-            totalBatDischarge += dayBatOut * days;
-            totalGridImport += (fin.rd244Mode === 'aislada' || bat.offGridMode) ? 0 : (dayImport * days);
+            totalSelfDirect += mSelfDirect;
+            totalBatDischarge += mBatOut;
+            totalGridImport += (fin.rd244Mode === 'aislada' || bat.offGridMode) ? 0 : mImport;
 
             monthlyGen.push(Math.round(mSolarKwh));
             monthlyDemand.push(Math.round(mDemandKwh));
-            monthlySurplus.push(Math.round(fin.rd244Mode === 'sin_excedentes' ? 0 : mExportKwh));
-            monthlySelf.push(Math.round((daySelf + dayBatOut) * days));
+            monthlySurplus.push(Math.round(fin.rd244Mode === 'sin_excedentes' ? 0 : mExport));
+            monthlySelf.push(Math.round(mSelfDirect + mBatOut));
         }
 
-        // Normalizar suma exacta de demanda anual para coherencia de periodos
-        const sumPeriods = kwhP1 + kwhP2 + kwhP3 || 1;
-        kwhP1 = Math.round((kwhP1 / sumPeriods) * annualDemand);
-        kwhP2 = Math.round((kwhP2 / sumPeriods) * annualDemand);
+        // Normalizar suma de periodos sobre demanda anual real
+        const sum20 = kwhP1 + kwhP2 + kwhP3 || 1;
+        kwhP1 = Math.round((kwhP1 / sum20) * annualDemand);
+        kwhP2 = Math.round((kwhP2 / sum20) * annualDemand);
         kwhP3 = Math.max(0, Math.round(annualDemand - kwhP1 - kwhP2));
+
+        const sum30 = Object.values(kwh30).reduce((a, b) => a + b, 0) || 1;
+        const kwh30Rounded = {};
+        let acc30 = 0;
+        for (const p of ['P1', 'P2', 'P3', 'P4', 'P5']) {
+            kwh30Rounded[p] = Math.round((kwh30[p] / sum30) * annualDemand);
+            acc30 += kwh30Rounded[p];
+        }
+        kwh30Rounded.P6 = Math.max(0, Math.round(annualDemand - acc30));
 
         const billBeforeEur = Math.round(annualBillBeforeBase * billTaxMult);
         let billAfterEur = (fin.rd244Mode === 'aislada' || bat.offGridMode)
@@ -3542,7 +3926,7 @@ const PhysicsEngine = {
         const totalSolarUsed = totalSelfDirect + totalBatDischarge;
         const selfConsumptionPct = annualGenKwh > 0 ? Math.min(100, Math.round((totalSolarUsed / annualGenKwh) * 100)) : 0;
         const autarkyPct = (fin.rd244Mode === 'aislada' || bat.offGridMode)
-            ? Math.min(100, Math.round(((totalSolarUsed) / Math.max(1, annualDemand)) * 100))
+            ? Math.min(100, Math.round((totalSolarUsed / Math.max(1, annualDemand)) * 100))
             : Math.min(100, Math.round((totalSolarUsed / Math.max(1, totalSolarUsed + totalGridImport)) * 100));
 
         return {
@@ -3562,12 +3946,14 @@ const PhysicsEngine = {
             kwhP1,
             kwhP2,
             kwhP3,
+            kwh30: kwh30Rounded,
             cappedMonthsCount,
             monthlyGen,
             monthlyDemand,
             monthlySurplus,
             monthlySelf,
-            rep24
+            rep24,
+            repMonths24
         };
     },
 
@@ -3581,17 +3967,23 @@ const PhysicsEngine = {
         const bat = st.batterySystem;
         const fin = st.legalAndFinancials;
 
+        // Sincronizar annualKwh si se usan 12 meses manuales o Datadis real
+        if ((ct.seasonalityMode === 'mensual_manual' || ct.seasonalityMode === 'datadis_real') && Array.isArray(ct.monthlyKwh) && ct.monthlyKwh.length === 12) {
+            const sumM = Math.round(ct.monthlyKwh.reduce((a, b) => a + Math.max(0, Number(b) || 0), 0));
+            if (sumM >= 50) ct.annualKwh = sumM;
+        }
+
         // 1. Geometría & Rendimiento Específico PVGIS
         const geomFactor = this.computeGeomFactor(pv.tilt, pv.azimuth, loc.optimalTilt);
         const lossFactor = (1 - (Number(pv.systemLossPct) || 14) / 100) / (1 - 0.14);
         const specificYield = Math.max(550, Math.round((Number(loc.baseKwhKwp) || 1640) * geomFactor * lossFactor));
 
-        // 2. Dimensionamiento Recomendado Paso 1
-        const covTarget = ct.profileType === 'diurno' ? 0.96 : (ct.profileType === 'nocturno' ? 0.80 : (ct.profileType === 'electrificado' ? 0.94 : 0.88));
-        const rawRecKwp = Math.max(0.9, ((Number(ct.annualKwh) || 4200) * covTarget) / specificYield);
+        // 2. Dimensionamiento Orientativo Paso 1 (Independiente del modelo de panel del Paso 2)
+        const diurnalShare = this.getEffectiveDiurnalSharePct() / 100;
+        const covTarget = Math.max(0.72, Math.min(1.00, 0.62 + 0.52 * diurnalShare));
+        const recKwp = +Math.max(0.80, ((Number(ct.annualKwh) || 4200) * covTarget) / specificYield).toFixed(2);
         const modWp = Math.max(50, Number(pv.wp) || 450);
-        const recPanels = Math.max(2, Math.round((rawRecKwp * 1000) / modWp));
-        const recKwp = +((recPanels * modWp) / 1000).toFixed(2);
+        const recPanels = Math.max(2, Math.round((recKwp * 1000) / modWp));
 
         if (pv.useRecommendedCount) {
             pv.moduleCount = recPanels;
@@ -3730,7 +4122,8 @@ const PhysicsEngine = {
 
         // 7. Viabilidad Económica a 25 Años (Paso 6 y Paso 7)
         const isCanarias = ct.fiscalRegion === 'canarias';
-        const capexTaxRate = isCanarias ? 0.00 : 0.21; // IGIC 0% instalaciones solares Canarias vs IVA 21% Península
+        const isCeutaMelilla = ct.fiscalRegion === 'ceuta_melilla';
+        const capexTaxRate = isCanarias ? 0.00 : (isCeutaMelilla ? 0.04 : 0.21); // IGIC 0% Canarias | IPSI 4% Ceuta/Melilla | IVA 21% Península
 
         const baseEquipEur = Math.round(
             totalKwp * (Number(fin.costPerKwp) || 1120) +
@@ -3999,6 +4392,7 @@ const PhysicsEngine = {
             },
             financials: {
                 isCanarias,
+                isCeutaMelilla,
                 capexTaxRate,
                 capexBaseEur,
                 capexTaxEur,
@@ -4277,10 +4671,25 @@ const Actions = {
         UI.showToast("Proyecto recuperado desde LocalStorage.", "ok");
     },
 
-    /* --- PASO 1: CONSUMO, CURVAS Y TARIFAS --- */
+    /* --- PASO 1: CONSUMO, VARIABILIDAD MENSUAL, DATADIS Y TARIFAS --- */
     setAnnualConsumption(val) {
         const n = Math.max(100, Math.min(1000000, Number(val) || 0));
-        Store.state.consumptionAndTariff.annualKwh = Math.round(n);
+        const ct = Store.state.consumptionAndTariff;
+        ct.annualKwh = Math.round(n);
+        if (ct.seasonalityMode === 'mensual_manual' || ct.seasonalityMode === 'datadis_real') {
+            const curSum = (ct.monthlyKwh || []).reduce((a, b) => a + Math.max(0, Number(b) || 0), 0);
+            if (curSum > 0) {
+                const ratio = ct.annualKwh / curSum;
+                ct.monthlyKwh = ct.monthlyKwh.map(v => Math.round(Math.max(0, Number(v) || 0) * ratio));
+            } else {
+                ct.monthlyKwh = DIAS_MES.map(d => Math.round((ct.annualKwh * d) / 365));
+            }
+            if (ct.seasonalityMode === 'datadis_real') ct.seasonalityMode = 'mensual_manual';
+        } else {
+            const pat = PATRONES_ESTACIONALES_DEMANDA[ct.seasonalityMode] || PATRONES_ESTACIONALES_DEMANDA.neutro;
+            const pSum = pat.reduce((a, b) => a + b, 0) || 1;
+            ct.monthlyKwh = pat.map(w => Math.round((ct.annualKwh * w) / pSum));
+        }
         if (Store.state.pvModules.useRecommendedCount) {
             PhysicsEngine.recalculateAll();
             this.syncStringsToGeneratorSilently();
@@ -4293,19 +4702,69 @@ const Actions = {
         this.setAnnualConsumption(Math.round(m * 12));
     },
 
+    setSeasonalityMode(mode) {
+        const ct = Store.state.consumptionAndTariff;
+        const allowed = ['neutro', 'mensual_manual', 'invierno', 'verano', 'bimodal', 'datadis_real'];
+        if (!allowed.includes(mode)) return;
+        if (mode === 'datadis_real' && !ct.datadisMeta) return;
+        ct.seasonalityMode = mode;
+        if (mode !== 'mensual_manual' && mode !== 'datadis_real') {
+            const pat = PATRONES_ESTACIONALES_DEMANDA[mode] || PATRONES_ESTACIONALES_DEMANDA.neutro;
+            const pSum = pat.reduce((a, b) => a + b, 0) || 1;
+            ct.monthlyKwh = pat.map(w => Math.round((ct.annualKwh * w) / pSum));
+        }
+        this.refresh();
+    },
+
+    updateMonthKwh(monthIdx, val) {
+        const ct = Store.state.consumptionAndTariff;
+        if (!Array.isArray(ct.monthlyKwh) || ct.monthlyKwh.length !== 12) {
+            ct.monthlyKwh = DIAS_MES.map(d => Math.round((ct.annualKwh * d) / 365));
+        }
+        const v = Math.max(0, Math.min(200000, Math.round(Number(val) || 0)));
+        ct.monthlyKwh[monthIdx] = v;
+        ct.seasonalityMode = 'mensual_manual';
+        ct.annualKwh = Math.max(50, ct.monthlyKwh.reduce((a, b) => a + b, 0));
+        if (Store.state.pvModules.useRecommendedCount) {
+            PhysicsEngine.recalculateAll();
+            this.syncStringsToGeneratorSilently();
+        }
+        this.refresh();
+    },
+
+    distributeAnnualUniformly() {
+        const ct = Store.state.consumptionAndTariff;
+        ct.monthlyKwh = DIAS_MES.map(d => Math.round((ct.annualKwh * d) / 365));
+        ct.seasonalityMode = 'mensual_manual';
+        this.refresh();
+    },
+
     applyConsumptionPreset(preset) {
         const ct = Store.state.consumptionAndTariff;
         if (preset === 'piso') {
-            ct.annualKwh = 2800; ct.profileType = 'estandar';
+            ct.annualKwh = 2800; ct.profileType = 'estandar'; ct.seasonalityMode = 'neutro';
+            ct.tariffMode = '20td'; ct.contractedPowerKw = 3.45;
         } else if (preset === 'teletrabajo') {
-            ct.annualKwh = 3800; ct.profileType = 'diurno';
+            ct.annualKwh = 3800; ct.profileType = 'diurno'; ct.seasonalityMode = 'neutro';
+            ct.tariffMode = '20td'; ct.contractedPowerKw = 4.6;
         } else if (preset === 'chalet') {
-            ct.annualKwh = 4800; ct.profileType = 'nocturno';
+            ct.annualKwh = 4800; ct.profileType = 'nocturno'; ct.seasonalityMode = 'neutro';
+            ct.tariffMode = '20td'; ct.contractedPowerKw = 5.75;
         } else if (preset === 've') {
-            ct.annualKwh = 6500; ct.profileType = 'electrificado';
+            ct.annualKwh = 6500; ct.profileType = 'electrificado'; ct.seasonalityMode = 'invierno';
+            ct.tariffMode = '20td'; ct.contractedPowerKw = 5.75;
+        } else if (preset === 'pyme') {
+            ct.annualKwh = 18500; ct.profileType = 'diurno'; ct.seasonalityMode = 'neutro';
+            ct.tariffMode = '30td'; ct.contractedPowerKw = 22.0;
         }
+        const pat = PATRONES_ESTACIONALES_DEMANDA[ct.seasonalityMode] || PATRONES_ESTACIONALES_DEMANDA.neutro;
+        ct.monthlyKwh = pat.map(w => Math.round(ct.annualKwh * w));
+        ct.diurnalShareOverridePct = null;
         ct.customCurve24h = null;
         ct.customCurveName = "";
+        ct.customMonthlyCurves24 = null;
+        ct.customDaysCompact = "";
+        ct.datadisMeta = null;
         PhysicsEngine.recalculateAll();
         if (Store.state.pvModules.useRecommendedCount) {
             this.syncStringsToGeneratorSilently();
@@ -4314,11 +4773,31 @@ const Actions = {
     },
 
     setProfileType(type) {
-        Store.state.consumptionAndTariff.profileType = type;
-        Store.state.consumptionAndTariff.customCurve24h = null;
-        Store.state.consumptionAndTariff.customCurveName = "";
+        const ct = Store.state.consumptionAndTariff;
+        ct.profileType = type;
+        ct.diurnalShareOverridePct = null;
+        ct.customCurve24h = null;
+        ct.customCurveName = "";
+        ct.customMonthlyCurves24 = null;
+        ct.customDaysCompact = "";
+        ct.datadisMeta = null;
+        if (ct.seasonalityMode === 'datadis_real') ct.seasonalityMode = 'neutro';
         PhysicsEngine.recalculateAll();
         if (Store.state.pvModules.useRecommendedCount) {
+            this.syncStringsToGeneratorSilently();
+        }
+        this.refresh();
+    },
+
+    setDiurnalShareOverride(val) {
+        const ct = Store.state.consumptionAndTariff;
+        if (val === null || val === undefined || val === '') {
+            ct.diurnalShareOverridePct = null;
+        } else {
+            ct.diurnalShareOverridePct = Math.max(15, Math.min(85, Math.round(Number(val) || 48)));
+        }
+        if (Store.state.pvModules.useRecommendedCount) {
+            PhysicsEngine.recalculateAll();
             this.syncStringsToGeneratorSilently();
         }
         this.refresh();
@@ -4329,97 +4808,491 @@ const Actions = {
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
-                const text = String(e.target.result || '');
+                const buf = e.target.result;
+                let text = '';
+                if (buf instanceof ArrayBuffer) {
+                    try {
+                        text = new TextDecoder('utf-8', { fatal: true }).decode(buf);
+                    } catch (_) {
+                        text = new TextDecoder('windows-1252').decode(buf);
+                    }
+                } else {
+                    text = String(buf || '');
+                }
+
                 const parsed = this.parseHourlyCurveFile(text, file.name);
                 if (!parsed) {
-                    UI.showToast("Formato CSV no reconocido. Usa 24 filas horarias o formato Datadis.", "err");
+                    UI.showToast("No se pudo interpretar el archivo. Sube un CSV/JSON directo de Datadis o plantilla 24h.", "err");
                     return;
                 }
-                Store.state.consumptionAndTariff.customCurve24h = parsed.curve24;
-                Store.state.consumptionAndTariff.customCurveName = file.name;
-                if (parsed.estimatedAnnualKwh && parsed.estimatedAnnualKwh > 200) {
-                    Store.state.consumptionAndTariff.annualKwh = Math.round(parsed.estimatedAnnualKwh);
+
+                const ct = Store.state.consumptionAndTariff;
+                ct.customCurve24h = parsed.curve24;
+                ct.customCurveName = file.name;
+                ct.customMonthlyCurves24 = parsed.monthlyCurves24 || null;
+                ct.customDaysCompact = parsed.customDaysCompact || "";
+                ct.datadisMeta = parsed.datadisMeta || null;
+                ct.diurnalShareOverridePct = null;
+
+                if (Array.isArray(parsed.monthlyKwh) && parsed.monthlyKwh.length === 12) {
+                    ct.monthlyKwh = parsed.monthlyKwh;
+                    ct.seasonalityMode = 'datadis_real';
+                }
+                if (parsed.estimatedAnnualKwh && parsed.estimatedAnnualKwh >= 50) {
+                    ct.annualKwh = Math.round(parsed.estimatedAnnualKwh);
+                }
+
+                PhysicsEngine.recalculateAll();
+                if (Store.state.pvModules.useRecommendedCount) {
+                    this.syncStringsToGeneratorSilently();
                 }
                 this.refresh();
-                UI.showToast(`Curva horaria cargada (${file.name})`, "ok");
+
+                const meta = parsed.datadisMeta;
+                const msg = meta && meta.daysCount > 0
+                    ? `Datadis importado: ${fmtNum(meta.rowsCount)} registros (${meta.daysCount} días • ${fmtNum(ct.annualKwh)} kWh/año)`
+                    : `Curva horaria cargada (${file.name})`;
+                UI.showToast(msg, "ok");
             } catch (_) {
-                UI.showToast("Error al procesar el archivo de curva horaria.", "err");
+                UI.showToast("Error al procesar el archivo de curva horaria / Datadis.", "err");
             }
         };
-        reader.readAsText(file);
+        reader.readAsArrayBuffer(file);
+    },
+
+    splitCsvLine(line, delim) {
+        const out = [];
+        let cur = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+            if (ch === '"') {
+                if (inQuotes && line[i + 1] === '"') {
+                    cur += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (ch === delim && !inQuotes) {
+                out.push(cur.trim());
+                cur = '';
+            } else {
+                cur += ch;
+            }
+        }
+        out.push(cur.trim());
+        return out;
+    },
+
+    parseFlexibleNumber(raw) {
+        if (raw === null || raw === undefined) return NaN;
+        if (typeof raw === 'number') return raw;
+        let s = String(raw).replace(/^["']+|["']+$/g, '').replace(/\s+/g, '').replace(/kwh|wh/ig, '');
+        if (!s) return NaN;
+        const lastComma = s.lastIndexOf(',');
+        const lastDot = s.lastIndexOf('.');
+        if (lastComma !== -1 && lastDot !== -1) {
+            if (lastComma > lastDot) {
+                // Formato español con miles: 1.234,56 -> 1234.56
+                s = s.replace(/\./g, '').replace(',', '.');
+            } else {
+                // Formato anglosajón con miles: 1,234.56 -> 1234.56
+                s = s.replace(/,/g, '');
+            }
+        } else if (lastComma !== -1) {
+            s = s.replace(',', '.');
+        }
+        const n = parseFloat(s);
+        return Number.isFinite(n) ? n : NaN;
+    },
+
+    normalizeDatadisDate(rawDate) {
+        if (!rawDate) return null;
+        const clean = String(rawDate).replace(/^["']+|["']+$/g, '').trim().split(/[T\s]/)[0];
+        let m = clean.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+        if (m) {
+            const yr = parseInt(m[1], 10);
+            const mo = parseInt(m[2], 10);
+            const da = parseInt(m[3], 10);
+            if (mo >= 1 && mo <= 12 && da >= 1 && da <= 31) {
+                return `${yr}-${String(mo).padStart(2, '0')}-${String(da).padStart(2, '0')}`;
+            }
+        }
+        m = clean.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+        if (m) {
+            const da = parseInt(m[1], 10);
+            const mo = parseInt(m[2], 10);
+            let yr = parseInt(m[3], 10);
+            if (yr < 100) yr += 2000;
+            if (mo >= 1 && mo <= 12 && da >= 1 && da <= 31) {
+                return `${yr}-${String(mo).padStart(2, '0')}-${String(da).padStart(2, '0')}`;
+            }
+        }
+        return null;
+    },
+
+    parseRawTimeToken(rawTime) {
+        if (rawTime === null || rawTime === undefined) return null;
+        let s = String(rawTime).replace(/^["']+|["']+$/g, '').trim();
+        // Si viene timestamp completo "2025-01-15 14:00:00" o "2025-01-15T14:00"
+        if (/\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}[T\s]/.test(s) || /\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\s/.test(s)) {
+            const parts = s.split(/[T\s]+/);
+            s = parts[parts.length - 1] || s;
+        }
+        // Si viene rango horario "00:00 - 01:00" o "00:00-01:00", tomar inicio 0-indexado
+        const rangeMatch = s.match(/^(\d{1,2}):(\d{2})\s*[\-–]\s*(\d{1,2}):(\d{2})/);
+        if (rangeMatch) {
+            return { hh: parseInt(rangeMatch[1], 10), mm: parseInt(rangeMatch[2], 10), isSimpleInt: false, forceZeroBased: true };
+        }
+        // Limpiar sufijos de cambio horario DST español ("02:00 A", "02:00 B", "03:00h")
+        s = s.replace(/\s*[ABabHh]$/, '').trim();
+        const hm = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?/);
+        if (hm) {
+            return { hh: parseInt(hm[1], 10), mm: parseInt(hm[2], 10), isSimpleInt: false, forceZeroBased: false };
+        }
+        if (/^\d{1,2}$/.test(s)) {
+            const hInt = parseInt(s, 10);
+            if (hInt >= 0 && hInt <= 25) {
+                return { hh: hInt, mm: 0, isSimpleInt: true, forceZeroBased: false };
+            }
+        }
+        return null;
     },
 
     parseHourlyCurveFile(text, filename) {
-        const trimmed = text.trim();
-        if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
-            const j = JSON.parse(trimmed);
-            const arr = Array.isArray(j) ? j : j.curve24h;
-            if (Array.isArray(arr) && arr.length === 24) {
-                return { curve24: arr.map(Number), estimatedAnnualKwh: null };
+        const cleanText = String(text || '').replace(/^\uFEFF/, '').trim();
+        if (!cleanText) return null;
+
+        const rawRecords = [];
+        let detectedCups = '';
+
+        // 1. Soporte JSON (Array simple 24h, objeto proyecto o JSON oficial API Datadis)
+        if (cleanText.startsWith('[') || cleanText.startsWith('{')) {
+            try {
+                const j = JSON.parse(cleanText);
+                const direct24 = Array.isArray(j) ? j : j?.curve24h;
+                if (Array.isArray(direct24) && direct24.length === 24 && typeof direct24[0] === 'number') {
+                    return {
+                        curve24: direct24.map(v => Math.max(0, Number(v) || 0)),
+                        estimatedAnnualKwh: null,
+                        monthlyKwh: null,
+                        monthlyCurves24: null,
+                        customDaysCompact: "",
+                        datadisMeta: { rowsCount: 24, daysCount: 0, monthsCovered: 0, resolution: 'Curva JSON 24h', cups: '' }
+                    };
+                }
+                const list = Array.isArray(j) ? j : (Array.isArray(j?.consumptions) ? j.consumptions : (Array.isArray(j?.data) ? j.data : []));
+                for (const item of list) {
+                    if (!item || typeof item !== 'object') continue;
+                    const dKey = this.normalizeDatadisDate(item.date || item.fecha || item.Date || item.Fecha);
+                    const tTok = this.parseRawTimeToken((item.time || item.hora || item.Time || item.Hora) ?? item.hour);
+                    const kwh = this.parseFlexibleNumber(item.consumptionKWh ?? item.consumo_kWh ?? item.consumo ?? item.consumption ?? item.kwh ?? item.value);
+                    if (!detectedCups && (item.cups || item.CUPS)) detectedCups = String(item.cups || item.CUPS).trim();
+                    if (tTok && !isNaN(kwh) && kwh >= 0) {
+                        rawRecords.push({ dateKey: dKey, tTok, kwh });
+                    }
+                }
+            } catch (_) {
+                return null;
+            }
+        } else {
+            // 2. Soporte CSV / TXT (Portal oficial Datadis, e-distribución, i-DE, UFD, Viesgo y plantillas)
+            const lines = cleanText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+            if (lines.length === 0) return null;
+
+            // Detectar delimitador ANTES de convertir comas decimales (Crítico para Datadis: ';' + '0,432')
+            const sampleLines = lines.slice(0, Math.min(20, lines.length));
+            let semiCount = 0, tabCount = 0, commaCount = 0;
+            for (const sl of sampleLines) {
+                let inQ = false;
+                for (let i = 0; i < sl.length; i++) {
+                    const c = sl[i];
+                    if (c === '"') inQ = !inQ;
+                    else if (!inQ) {
+                        if (c === ';') semiCount++;
+                        else if (c === '\t') tabCount++;
+                        else if (c === ',') commaCount++;
+                    }
+                }
+            }
+            const delim = semiCount >= sampleLines.length ? ';' : (tabCount >= sampleLines.length ? '\t' : (semiCount > 0 && semiCount >= tabCount ? ';' : (tabCount > 0 ? '\t' : ',')));
+
+            // Localizar fila de cabecera (puede haber líneas de metadatos previas en CSVs de distribuidoras)
+            let headerIdx = -1;
+            let idxCups = -1, idxDate = -1, idxHour = -1, idxCons = -1;
+            let unitMult = 1.0;
+
+            for (let i = 0; i < Math.min(25, lines.length); i++) {
+                const cols = this.splitCsvLine(lines[i], delim);
+                if (cols.length < 2) continue;
+                const normCols = cols.map(c => c.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""));
+                const hasTimeCol = normCols.some(c => /\b(hora|time|hour|periodo|tramo|fecha|date|timestamp)\b/.test(c));
+                const hasConsCol = normCols.some(c => /(consumo|consumption|kwh|\bwh\b|ae_kwh|activa|energia|import)/.test(c));
+                if (hasTimeCol && hasConsCol) {
+                    headerIdx = i;
+                    idxCups = normCols.findIndex(c => c.includes('cups'));
+                    idxDate = normCols.findIndex(c => /\b(fecha|date|dia|day|fch)\b/.test(c));
+                    idxHour = normCols.findIndex(c => /\b(hora|time|hour|periodo|tramo|interval)\b/.test(c));
+                    // Si hay timestamp combinado sin columna hora separada
+                    if (idxHour === -1) {
+                        idxHour = normCols.findIndex(c => /(timestamp|fecha_hora|datetime|fecha|date)/.test(c));
+                    }
+                    // Elegir columna de Consumo excluyendo Excedentes / Vertido / Generación
+                    idxCons = normCols.findIndex(c =>
+                        /(consumo|consumption|ae_kwh|activa_entregada|energia_activa|import|consum)/.test(c) &&
+                        !/(excedent|vertid|as_kwh|export|generac|autoconsum)/.test(c)
+                    );
+                    if (idxCons === -1) {
+                        idxCons = normCols.findIndex(c => /(kwh|\bwh\b|energia|valor|value)/.test(c) && !/(excedent|vertid|export)/.test(c));
+                    }
+                    if (idxCons !== -1) {
+                        const rawConsHdr = normCols[idxCons];
+                        if (/\bwh\b/.test(rawConsHdr) && !/kwh/.test(rawConsHdr)) {
+                            unitMult = 0.001;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            const startRow = headerIdx >= 0 ? headerIdx + 1 : 0;
+
+            for (let i = startRow; i < lines.length; i++) {
+                const cols = this.splitCsvLine(lines[i], delim);
+                if (cols.length < 2) continue;
+
+                // Inferencia automática de columnas si el CSV no traía cabecera
+                if (headerIdx === -1 && idxCons === -1) {
+                    for (let c = 0; c < cols.length; c++) {
+                        const val = cols[c].replace(/^["']+|["']+$/g, '').trim();
+                        if (idxCups === -1 && /^ES\d{12,}/i.test(val)) { idxCups = c; continue; }
+                        if (idxDate === -1 && this.normalizeDatadisDate(val)) { idxDate = c; continue; }
+                        if (idxHour === -1 && this.parseRawTimeToken(val) && val.includes(':')) { idxHour = c; continue; }
+                    }
+                    if (idxHour === -1) {
+                        for (let c = 0; c < cols.length; c++) {
+                            if (c !== idxCups && c !== idxDate && this.parseRawTimeToken(cols[c])) { idxHour = c; break; }
+                        }
+                    }
+                    for (let c = 0; c < cols.length; c++) {
+                        if (c !== idxCups && c !== idxDate && c !== idxHour && !isNaN(this.parseFlexibleNumber(cols[c]))) {
+                            idxCons = c;
+                            break;
+                        }
+                    }
+                }
+
+                if (idxCons === -1 || idxCons >= cols.length) continue;
+
+                if (!detectedCups && idxCups >= 0 && cols[idxCups]) {
+                    const cClean = cols[idxCups].replace(/^["']+|["']+$/g, '').trim();
+                    if (cClean.length >= 10) detectedCups = cClean;
+                }
+
+                const rawDateStr = idxDate >= 0 && cols[idxDate] ? cols[idxDate] : (idxHour >= 0 ? cols[idxHour] : '');
+                const dKey = this.normalizeDatadisDate(rawDateStr);
+                const tTok = idxHour >= 0 && cols[idxHour] ? this.parseRawTimeToken(cols[idxHour]) : null;
+                const kwhVal = this.parseFlexibleNumber(cols[idxCons]) * unitMult;
+
+                if (tTok && !isNaN(kwhVal) && kwhVal >= 0) {
+                    rawRecords.push({ dateKey: dKey, tTok, kwh: kwhVal });
+                }
             }
         }
 
-        const lines = trimmed.split(/\r?\n/).filter(l => l.trim().length > 0);
-        const buckets = Array(24).fill(0);
-        const counts = Array(24).fill(0);
+        if (rawRecords.length < 12) return null;
 
-        for (const line of lines) {
-            if (/hora|hour|fecha|cups|consumo/i.test(line)) continue;
-            const parts = line.split(/[;,\t]/).map(s => s.trim().replace(',', '.'));
-            if (parts.length >= 2) {
-                // Caso Datadis: CUPS;FECHA;HORA;CONSUMO_KWH o HORA;CONSUMO
-                let hourVal = NaN;
-                let kwhVal = NaN;
-                if (parts.length >= 4 && !isNaN(parseFloat(parts[3]))) {
-                    const hRaw = parts[2].split(':')[0];
-                    hourVal = parseInt(hRaw, 10);
-                    if (hourVal === 24 || (hourVal >= 1 && hourVal <= 24 && lines.length > 25)) hourVal = (hourVal - 1 + 24) % 24;
-                    kwhVal = parseFloat(parts[3]);
+        // 3. Detectar convención horaria (Datadis España 01:00..24:00 / 00:15..24:00 fin de periodo vs 00:00..23:00 inicio)
+        let has24or25 = false;
+        let hasZeroStart = false;
+        let minHourSeen = 99;
+        let hasQuarterHour = false;
+
+        for (const r of rawRecords) {
+            const { hh, mm, forceZeroBased } = r.tTok;
+            if (mm === 15 || mm === 30 || mm === 45) hasQuarterHour = true;
+            if (hh === 24 || hh === 25) has24or25 = true;
+            if ((hh === 0 && mm === 0) || forceZeroBased) hasZeroStart = true;
+            if (hh < minHourSeen) minHourSeen = hh;
+        }
+
+        const useEndOfInterval = has24or25 || (!hasZeroStart && minHourSeen === 1);
+
+        // 4. Agrupar por (fecha, hora 0..23) sumando cuartohorarias dentro de cada hora exacta
+        const datedMap = new Map(); // dateKey -> Float64Array(24)
+        const undatedSums = Array(24).fill(0);
+        const undatedCounts = Array(24).fill(0);
+
+        for (const r of rawRecords) {
+            const { hh, mm, isSimpleInt, forceZeroBased } = r.tTok;
+            let hIdx = 0;
+            if (hh === 25) {
+                hIdx = 2; // Hora 25 del cambio horario de octubre -> bloque 02:00-03:00
+            } else if (useEndOfInterval && !forceZeroBased) {
+                if (isSimpleInt) {
+                    hIdx = Math.min(23, Math.max(0, hh - 1));
                 } else {
-                    const hRaw = parts[0].split(':')[0];
-                    hourVal = parseInt(hRaw, 10);
-                    kwhVal = parseFloat(parts[1]);
+                    const totalMin = hh * 60 + mm;
+                    hIdx = Math.min(23, Math.max(0, Math.floor((totalMin - 1) / 60)));
                 }
-                if (!isNaN(hourVal) && hourVal >= 0 && hourVal <= 23 && !isNaN(kwhVal) && kwhVal >= 0) {
-                    buckets[hourVal] += kwhVal;
-                    counts[hourVal] += 1;
+            } else {
+                hIdx = Math.min(23, Math.max(0, hh));
+            }
+
+            if (r.dateKey) {
+                let dayArr = datedMap.get(r.dateKey);
+                if (!dayArr) {
+                    dayArr = new Float64Array(24);
+                    datedMap.set(r.dateKey, dayArr);
                 }
+                dayArr[hIdx] += r.kwh;
+            } else {
+                undatedSums[hIdx] += r.kwh;
+                undatedCounts[hIdx] += 1;
             }
         }
 
-        const validHours = counts.filter(c => c > 0).length;
-        if (validHours < 12) return null;
+        // Caso sin fechas (Plantilla 24h simple)
+        if (datedMap.size === 0) {
+            const validH = undatedCounts.filter(c => c > 0).length;
+            if (validH < 12) return null;
+            const factorQuarter = hasQuarterHour ? 4 : 1;
+            const avg24 = undatedSums.map((s, h) => undatedCounts[h] > 0 ? +((s / undatedCounts[h]) * factorQuarter).toFixed(4) : 0.05);
+            const dailySum = avg24.reduce((a, b) => a + b, 0);
+            const estAnnual = rawRecords.length >= 24 * 30 ? Math.round(dailySum * 365) : null;
+            return {
+                curve24: avg24,
+                estimatedAnnualKwh: estAnnual,
+                monthlyKwh: null,
+                monthlyCurves24: null,
+                customDaysCompact: "",
+                datadisMeta: {
+                    rowsCount: rawRecords.length,
+                    daysCount: 0,
+                    monthsCovered: 0,
+                    dateFrom: '',
+                    dateTo: '',
+                    resolution: hasQuarterHour ? '15 min' : '24h agregada',
+                    cups: detectedCups
+                }
+            };
+        }
 
-        const avg24 = buckets.map((sum, h) => counts[h] > 0 ? sum / counts[h] : 0.05);
-        const dailySum = avg24.reduce((a, b) => a + b, 0);
-        const totalRows = counts.reduce((a, b) => a + b, 0);
-        const estimatedAnnual = totalRows >= 24 * 30 ? dailySum * 365 : null;
-        return { curve24: avg24, estimatedAnnualKwh: estimatedAnnual };
+        // Caso con fechas reales (Datadis / Distribuidora)
+        const sortedDates = Array.from(datedMap.keys()).sort();
+        const daysCount = sortedDates.length;
+        const globalHourSum = Array(24).fill(0);
+
+        const monthDayCounts = Array(12).fill(0);
+        const monthTotalKwhRaw = Array(12).fill(0);
+        const monthHourSums = Array.from({ length: 12 }, () => Array(24).fill(0));
+
+        for (const dKey of sortedDates) {
+            const arr = datedMap.get(dKey);
+            const mIdx = parseInt(dKey.slice(5, 7), 10) - 1;
+            let dayTotal = 0;
+            for (let h = 0; h < 24; h++) {
+                globalHourSum[h] += arr[h];
+                dayTotal += arr[h];
+                if (mIdx >= 0 && mIdx < 12) {
+                    monthHourSums[mIdx][h] += arr[h];
+                }
+            }
+            if (mIdx >= 0 && mIdx < 12) {
+                monthDayCounts[mIdx] += 1;
+                monthTotalKwhRaw[mIdx] += dayTotal;
+            }
+        }
+
+        const avg24 = globalHourSum.map(s => +(s / daysCount).toFixed(4));
+        const overallAvgDaily = avg24.reduce((a, b) => a + b, 0);
+        const monthsCovered = monthDayCounts.filter(c => c > 0).length;
+
+        // Vector real de 12 meses (normalizado a 1 año natural por mes medido; neutro en meses no presentes)
+        const monthlyKwh = DIAS_MES.map((dMes, m) => {
+            if (monthDayCounts[m] > 0) {
+                const avgDailyM = monthTotalKwhRaw[m] / monthDayCounts[m];
+                return Math.round(avgDailyM * dMes);
+            }
+            return Math.round(overallAvgDaily * dMes);
+        });
+
+        const monthlyCurves24 = monthHourSums.map((hSums, m) => {
+            if (monthDayCounts[m] > 0) {
+                return hSums.map(v => +(v / monthDayCounts[m]).toFixed(4));
+            }
+            return avg24;
+        });
+
+        const estimatedAnnualKwh = monthlyKwh.reduce((a, b) => a + b, 0);
+
+        // Serie diaria compacta de los últimos 365 días para simulación horaria exacta 8.760h
+        const recentDates = sortedDates.slice(-365);
+        const customDaysCompact = recentDates.map(dKey => {
+            const arr = datedMap.get(dKey);
+            const vals = Array.from(arr, v => +v.toFixed(3)).join(',');
+            return `${dKey};${vals}`;
+        }).join('|');
+
+        return {
+            curve24: avg24,
+            estimatedAnnualKwh,
+            monthlyKwh,
+            monthlyCurves24,
+            customDaysCompact,
+            datadisMeta: {
+                rowsCount: rawRecords.length,
+                daysCount,
+                monthsCovered,
+                dateFrom: sortedDates[0],
+                dateTo: sortedDates[sortedDates.length - 1],
+                resolution: hasQuarterHour ? '15 min (Cuartohoraria)' : '1 h (Horaria)',
+                cups: detectedCups
+            }
+        };
     },
 
     downloadCsvTemplate() {
-        const header = "hora;consumo_kwh\n";
-        const rows = PERFIL_BASE_REE_24H.map((w, h) => `${String(h).padStart(2, '0')}:00;${(w * 11.5).toFixed(3)}`).join('\n');
+        const header = "CUPS;Fecha;Hora;Consumo_kWh;Metodo_obtencion\n";
+        const rows = PERFIL_BASE_REE_24H.map((w, h) => {
+            const hStr = `${String(h + 1).padStart(2, '0')}:00`;
+            const valEs = (w * 11.5).toFixed(3).replace('.', ',');
+            return `ES0021000000000001AA;2025/01/15;${hStr};${valEs};Real`;
+        }).join('\n');
         const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = "plantilla_curva_24h_showroom_solar.csv";
+        a.download = "plantilla_datadis_showroom_solar.csv";
         a.click();
         URL.revokeObjectURL(a.href);
     },
 
     resetCustomCurve() {
-        Store.state.consumptionAndTariff.customCurve24h = null;
-        Store.state.consumptionAndTariff.customCurveName = "";
+        const ct = Store.state.consumptionAndTariff;
+        ct.customCurve24h = null;
+        ct.customCurveName = "";
+        ct.customMonthlyCurves24 = null;
+        ct.customDaysCompact = "";
+        ct.datadisMeta = null;
+        if (ct.seasonalityMode === 'datadis_real') {
+            ct.seasonalityMode = 'neutro';
+            ct.monthlyKwh = DIAS_MES.map(d => Math.round((ct.annualKwh * d) / 365));
+        }
         const inp = document.getElementById('inpCsvCurveFile');
         if (inp) inp.value = "";
         this.refresh();
-        UI.showToast("Curva horaria restaurada al perfil estándar.", "ok");
+        UI.showToast("Telemetría CSV eliminada; restaurado modo manual.", "ok");
     },
 
     setTariffMode(mode) {
-        Store.state.consumptionAndTariff.tariffMode = mode === 'fija' ? 'fija' : '20td';
-        this.refresh();
+        const ct = Store.state.consumptionAndTariff;
+        if (mode === 'fija' || mode === '20td' || mode === '30td') {
+            ct.tariffMode = mode;
+            if (mode === '30td' && (Number(ct.contractedPowerKw) || 0) <= 15) {
+                ct.contractedPowerKw = 18.0;
+            }
+            this.refresh();
+        }
     },
 
     updateTariff(field, val) {
@@ -4431,7 +5304,21 @@ const Actions = {
     },
 
     setFiscalRegion(region) {
-        Store.state.consumptionAndTariff.fiscalRegion = region === 'canarias' ? 'canarias' : 'peninsula';
+        if (['peninsula', 'canarias', 'ceuta_melilla'].includes(region)) {
+            Store.state.consumptionAndTariff.fiscalRegion = region;
+            this.refresh();
+        }
+    },
+
+    setStep1ChartMode(mode) {
+        Store.state.consumptionAndTariff.step1ChartMode = mode === 'horaria' ? 'horaria' : 'mensual';
+        this.refresh();
+    },
+
+    setInspectMonth(monthIdx) {
+        const m = Math.max(0, Math.min(11, parseInt(monthIdx, 10) || 0));
+        Store.state.consumptionAndTariff.inspectMonth = m;
+        Store.state.consumptionAndTariff.step1ChartMode = 'horaria';
         this.refresh();
     },
 
@@ -4819,14 +5706,14 @@ const siteI18n = {
         btnJsonPort: "Importar / Exportar .JSON",
         btnStartNew: "Iniciar Nuevo Proyecto Solar →",
         f1Title: "1. Simulación PVGIS",
-        f1Desc: "Conexión satelital JRC UE, 52 provincias españolas, geometría Tilt/Azimuth y curvas horarias reales.",
+        f1Desc: "Conexión satelital JRC UE, 50 provincias y 2 ciudades autónomas, geometría Tilt/Azimuth y telemetría horaria Datadis.",
         f2Title: "2. Ingeniería DC/AC",
         f2Desc: "Catálogo Tier-1 o módulo libre, arquitectura Multi-MPPT y validación térmica en frío (-10 °C) y calor (+70 °C).",
         f3Title: "3. REBT ITC-BT-19/20/40",
         f3Desc: "Cálculo riguroso de secciones Cu/Al, intensidad admisible Iz (UNE 60364-5-52), caída ΔV% y pérdidas Joule.",
         f4Title: "4. Viabilidad & PDF A4",
         f4Desc: "Simulación LiFePO4, compensación RD 244/2019, VAN, TIR, Cashflow a 25 años y memoria técnica imprimible.",
-        step1Heading: "Consumo, Tarifas y Pre-Estimación PVGIS",
+        step1Heading: "Ubicación PVGIS, Demanda y Tarifas",
         step2Heading: "Módulos Fotovoltaicos y Geometría",
         step3Heading: "Inversor y Strings por MPPT",
         step4Heading: "Cableado y Verificación REBT",
@@ -4848,14 +5735,14 @@ const siteI18n = {
         btnJsonPort: "Import / Export .JSON",
         btnStartNew: "Start New Solar Project →",
         f1Title: "1. PVGIS Simulation",
-        f1Desc: "EU JRC satellite data, 52 Spanish provinces, Tilt/Azimuth geometry and hourly load curves.",
+        f1Desc: "EU JRC satellite data, 50 Spanish provinces and 2 autonomous cities, Tilt/Azimuth geometry and Datadis telemetry.",
         f2Title: "2. DC/AC Engineering",
         f2Desc: "Tier-1 catalog or custom module, Multi-MPPT layout and thermal checks at -10 °C and +70 °C.",
         f3Title: "3. REBT / IEC 60364",
         f3Desc: "Strict Cu/Al cable sizing, ampacity Iz, impedance voltage drop ΔV% and Joule power losses.",
         f4Title: "4. Financials & A4 PDF",
         f4Desc: "LiFePO4 dispatch, RD 244/2019 surplus compensation, NPV, IRR, 25-year cashflow & printable A4 report.",
-        step1Heading: "Consumption, Tariffs & PVGIS",
+        step1Heading: "PVGIS Location, Demand & Tariffs",
         step2Heading: "PV Modules & Array Geometry",
         step3Heading: "Inverter & Strings per MPPT",
         step4Heading: "Cabling & REBT Compliance",
@@ -5145,16 +6032,10 @@ const UI = {
         this.setVal('inpEngineerName', st.projectMeta.engineerName);
         this.setVal('inpProjRef', st.projectMeta.projectRef);
 
-        /* --- PASO 1: CONSUMO, TARIFAS Y PVGIS --- */
+        /* --- PASO 1: UBICACIÓN PVGIS, DEMANDA, CURVA REAL Y TARIFAS --- */
         const ct = st.consumptionAndTariff;
         const loc = st.locationAndPVGIS;
         this.setText('s1BadgePvgis', loc.pvgisSource || 'PVGIS JRC Conectado');
-        this.setText('s1KpiRecKwp', fmtNum(c.pvgis.recKwp, 2));
-        this.setText('s1KpiRecPanels', String(c.pvgis.recPanels));
-        this.setText('s1KpiPanelWpUnit', `uds (${st.pvModules.wp} Wp)`);
-        this.setText('s1KpiYieldSub', `Producción local: ${fmtNum(c.pvgis.specificYield)} kWh/kWp`);
-        this.setText('s1KpiPrelimSavings', fmtNum(c.energy.prelim.annualSavingsEur));
-        this.setText('s1KpiBillCompare', `Factura: ${fmtNum(c.energy.prelim.billBeforeEur)}€ → ${fmtNum(c.energy.prelim.billAfterEur)}€/año`);
 
         this.setVal('selQuickProvince', loc.province);
         this.setVal('inpLat', loc.lat);
@@ -5164,26 +6045,94 @@ const UI = {
 
         this.setVal('inpAnnualKwh', ct.annualKwh);
         this.setVal('inpMonthlyKwh', Math.round(ct.annualKwh / 12));
-        this.setVal('rngAnnualKwh', Math.min(20000, Math.max(1000, ct.annualKwh)));
+        this.setVal('rngAnnualKwh', Math.min(30000, Math.max(1000, ct.annualKwh)));
 
-        const profNames = { diurno: '☀️ Diurno Comercial', estandar: '⚖️ Estándar REE', nocturno: '🌙 Tarde-Noche', electrificado: '⚡ VE + Aerotermia' };
-        this.setText('s1ProfileBadge', ct.customCurve24h ? `CSV: ${ct.customCurveName || '24h'}` : (profNames[ct.profileType] || 'Estándar REE'));
-        document.getElementById('btnResetCustomCurve')?.classList.toggle('hidden', !ct.customCurve24h);
+        const hasCustomCurve = Array.isArray(ct.customCurve24h) && ct.customCurve24h.length === 24;
+        const profNames = {
+            diurno: '🏢 Diurno Comercial',
+            estandar: '⚖️ Perfil Medio REE',
+            nocturno: '🌙 Tarde-Noche',
+            electrificado: '⚡ Cargas Valle / VE'
+        };
+        this.setText(
+            's1ProfileBadge',
+            hasCustomCurve
+                ? `📊 Datadis/CSV: ${ct.customCurveName || 'Real'}`
+                : `${profNames[ct.profileType] || 'Perfil Medio REE'} (Orientativo)`
+        );
+        document.getElementById('btnResetCustomCurve')?.classList.toggle('hidden', !hasCustomCurve);
 
+        const ddBox = document.getElementById('boxDatadisStatus');
+        if (ddBox) {
+            if (hasCustomCurve && ct.datadisMeta) {
+                const dm = ct.datadisMeta;
+                const cupsTxt = dm.cups ? ` • CUPS ${dm.cups.slice(0, 12)}…` : '';
+                const rangeTxt = (dm.dateFrom && dm.dateTo) ? ` (${dm.dateFrom} → ${dm.dateTo})` : '';
+                ddBox.textContent = dm.daysCount > 0
+                    ? `✓ Telemetría Datadis activa: ${fmtNum(dm.rowsCount)} registros (${dm.resolution}) • ${dm.daysCount} días (${dm.monthsCovered}/12 meses medidos)${rangeTxt}${cupsTxt}`
+                    : `✓ Curva personalizada activa (${ct.customCurveName || '24h'}): ${fmtNum(dm.rowsCount)} filas leídas`;
+                ddBox.classList.remove('hidden');
+            } else {
+                ddBox.classList.add('hidden');
+            }
+        }
+
+        const optDd = document.getElementById('optSeasonDatadis');
+        if (optDd) optDd.disabled = !(hasCustomCurve && ct.datadisMeta && ct.datadisMeta.daysCount > 0);
+        this.setVal('selSeasonalityMode', ct.seasonalityMode || 'neutro');
+
+        // Editor interactivo de 12 meses Ene..Dic
+        const showM12 = ct.seasonalityMode === 'mensual_manual' || ct.seasonalityMode === 'datadis_real';
+        const boxM12 = document.getElementById('boxMonthly12Editor');
+        if (boxM12) boxM12.classList.toggle('hidden', !showM12);
+        const gridM12 = document.getElementById('gridMonthly12Inputs');
+        if (gridM12) {
+            if (gridM12.children.length !== 12) {
+                gridM12.innerHTML = MESES_NOMBRES.map((mName, idx) => `
+                    <div>
+                        <label for="inpMonthKwh_${idx}" class="block text-[10px] font-bold text-[var(--text-muted)] uppercase mb-0.5">${mName}</label>
+                        <input id="inpMonthKwh_${idx}" type="number" min="0" max="200000" step="5"
+                            aria-label="Consumo kWh ${mName}"
+                            oninput="Actions.updateMonthKwh(${idx}, this.value)"
+                            class="showroom-input w-full !px-2 !py-1 font-mono text-xs font-semibold">
+                    </div>
+                `).join('');
+            }
+            const mVec = c.energy.prelim.monthlyDemand || ct.monthlyKwh || [];
+            for (let idx = 0; idx < 12; idx++) {
+                this.setVal(`inpMonthKwh_${idx}`, Math.round(mVec[idx] || 0));
+            }
+        }
+
+        // Bloque de perfiles sintéticos y fracción diurna
+        const synthBox = document.getElementById('boxSyntheticProfiles');
+        if (synthBox) {
+            synthBox.classList.toggle('opacity-50', hasCustomCurve);
+        }
         ['diurno', 'estandar', 'nocturno', 'electrificado'].forEach(p => {
             const b = document.getElementById(`profBtn_${p}`);
             if (!b) return;
-            const active = !ct.customCurve24h && ct.profileType === p;
+            const active = !hasCustomCurve && ct.profileType === p;
             b.className = active
                 ? "btn-press p-2.5 rounded-xl border border-[#0066FF] bg-[#0066FF]/10 text-left transition"
                 : "btn-press p-2.5 rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-subtle)] hover:border-[#0066FF]/40 text-left transition";
         });
 
-        const isFija = ct.tariffMode === 'fija';
-        document.getElementById('tabTariffFixed')?.classList.toggle('active', isFija);
-        document.getElementById('tabTariff20TD')?.classList.toggle('active', !isFija);
-        document.getElementById('panelTariffFixed')?.classList.toggle('hidden', !isFija);
-        document.getElementById('panelTariff20TD')?.classList.toggle('hidden', isFija);
+        const effDayPct = PhysicsEngine.getEffectiveDiurnalSharePct();
+        this.setVal('rngDiurnalShare', effDayPct);
+        this.setText('lblDiurnalShareVal', `${effDayPct}%`);
+        const rngDayEl = document.getElementById('rngDiurnalShare');
+        if (rngDayEl) rngDayEl.disabled = hasCustomCurve;
+        document.getElementById('btnResetDiurnalShare')?.classList.toggle('hidden', hasCustomCurve || ct.diurnalShareOverridePct === null || ct.diurnalShareOverridePct === undefined);
+
+        // Estructura Tarifaria: Fija | 2.0TD (3P) | 3.0TD (6P)
+        const tMode = ct.tariffMode || '20td';
+        document.getElementById('tabTariffFixed')?.classList.toggle('active', tMode === 'fija');
+        document.getElementById('tabTariff20TD')?.classList.toggle('active', tMode === '20td');
+        document.getElementById('tabTariff30TD')?.classList.toggle('active', tMode === '30td');
+        document.getElementById('panelTariffFixed')?.classList.toggle('hidden', tMode !== 'fija');
+        document.getElementById('panelTariff20TD')?.classList.toggle('hidden', tMode !== '20td');
+        document.getElementById('panelTariff30TD')?.classList.toggle('hidden', tMode !== '30td');
 
         this.setVal('inpFlatRate', ct.flatRateEur);
         this.setVal('inpP1Rate', ct.p1Eur);
@@ -5192,13 +6141,51 @@ const UI = {
         this.setText('s1KwhP1', fmtNum(c.energy.prelim.kwhP1));
         this.setText('s1KwhP2', fmtNum(c.energy.prelim.kwhP2));
         this.setText('s1KwhP3', fmtNum(c.energy.prelim.kwhP3));
+
+        for (let p = 1; p <= 6; p++) {
+            this.setVal(`inp30P${p}Rate`, ct[`p30_${p}Eur`]);
+            const k30 = c.energy.prelim.kwh30 ? c.energy.prelim.kwh30[`P${p}`] : 0;
+            this.setText(`s1Kwh30P${p}`, fmtNum(k30));
+        }
+
         this.setVal('inpContractedPower', ct.contractedPowerKw);
         this.setVal('selFiscalRegionS1', ct.fiscalRegion);
-        this.setText('s1FiscalPill', ct.fiscalRegion === 'canarias' ? 'Canarias IGIC 0%/3%' : 'IVA 21% + IEE');
+        const fiscalPillTxt = ct.fiscalRegion === 'canarias'
+            ? 'Canarias IGIC 0%/3%'
+            : (ct.fiscalRegion === 'ceuta_melilla' ? 'Ceuta/Melilla IPSI 4%/1%' : 'IVA 21% + IEE');
+        this.setText('s1FiscalPill', fiscalPillTxt);
 
-        ['Anual', 'Verano', 'Invierno'].forEach(s => {
-            document.getElementById(`btnSeason${s}`)?.classList.toggle('active', ct.seasonView === s.toLowerCase());
+        // Síntesis preliminar (abajo del Paso 1, derivada de los datos introducidos)
+        this.setText('s1KpiRecKwp', fmtNum(c.pvgis.recKwp, 2));
+        this.setText('s1KpiYieldSub', `Producción local: ${fmtNum(c.pvgis.specificYield)} kWh/kWp • Nº paneles en Paso 2`);
+        this.setText('s1KpiPrelimAutarky', String(c.energy.prelim.autarkyPct));
+        this.setText('s1KpiRecSub', `Gen. orientativa: ${fmtNum(c.energy.prelim.annualGenKwh)} kWh/año (${c.energy.prelim.selfConsumptionPct}% autoconsumo)`);
+        this.setText('s1KpiPrelimSavings', fmtNum(c.energy.prelim.annualSavingsEur));
+        const tLabelShort = tMode === '30td' ? '3.0TD' : (tMode === '20td' ? '2.0TD' : 'Fija');
+        this.setText('s1KpiBillCompare', `Tarifa ${tLabelShort}: ${fmtNum(c.energy.prelim.billBeforeEur)}€ → ${fmtNum(c.energy.prelim.billAfterEur)}€/año`);
+
+        // Controles de Gráfica Paso 1 (12 Meses vs Perfil 24h por Mes)
+        const isHourlyMode = ct.step1ChartMode === 'horaria';
+        document.getElementById('btnChartModeMonthly')?.classList.toggle('active', !isHourlyMode);
+        document.getElementById('btnChartModeHourly')?.classList.toggle('active', isHourlyMode);
+        document.getElementById('boxInspectMonthSelector')?.classList.toggle('hidden', !isHourlyMode);
+        const inspM = Number(ct.inspectMonth) || 0;
+        [0, 3, 6, 9].forEach(mIdx => {
+            document.getElementById(`btnInspMonth_${mIdx}`)?.classList.toggle('active', inspM === mIdx);
         });
+        const mNamesLong = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        this.setText(
+            's1ChartTitle',
+            isHourlyMode
+                ? `Perfil Horario 24h en ${mNamesLong[inspM]}: Demanda vs. Generación Solar`
+                : 'Balance Mensual (12 Meses): Consumo Declarado vs. Generación PVGIS'
+        );
+        this.setText(
+            's1ChartSubtitle',
+            isHourlyMode
+                ? `Día medio de ${mNamesLong[inspM]} (${hasCustomCurve ? 'curva real importada' : 'aproximación horaria seleccionada'})`
+                : 'Comparativa mes a mes sin presuponer curvas anuales homogéneas ni sesgos estacionales artificiales'
+        );
 
         this.setText('s1SummaryBillBefore', `${fmtNum(c.energy.prelim.billBeforeEur)} €/año`);
         this.setText('s1SummaryBillAfter', `${fmtNum(c.energy.prelim.billAfterEur)} €/año`);
@@ -5411,7 +6398,10 @@ const UI = {
         /* --- PASO 6: LEGAL Y FINANZAS --- */
         const fin = st.legalAndFinancials;
         const cf = c.financials;
-        this.setText('s6TaxBadge', cf.isCanarias ? 'Canarias • IGIC 0% Inv. / 3% Luz' : 'Península • IVA 21% + IEE');
+        const taxBadgeS6 = cf.isCanarias
+            ? 'Canarias • IGIC 0% Inv. / 3% Luz'
+            : (cf.isCeutaMelilla ? 'Ceuta y Melilla • IPSI 4% Inv. / 1% Luz' : 'Península • IVA 21% + IEE');
+        this.setText('s6TaxBadge', taxBadgeS6);
         this.setText('s6KpiPayback', cf.paybackYears >= 25 ? '>25' : fmtNum(cf.paybackYears, 1));
         this.setText('s6KpiCapexNetSub', `CAPEX neto: ${fmtNum(cf.capexNetEur)} €`);
         this.setText('s6KpiVan', `${cf.vanEur >= 0 ? '+' : ''}${fmtNum(cf.vanEur)}`);
@@ -5453,7 +6443,10 @@ const UI = {
         this.setVal('inpDiscountPct', fin.discountRatePct);
 
         this.setText('s6BreakBase', `${fmtNum(cf.capexBaseEur)} €`);
-        this.setText('s6BreakTaxLbl', cf.isCanarias ? 'Impuestos Canarias (IGIC 0% Solar):' : 'Impuestos Aplicables (IVA 21%):');
+        const taxLblS6 = cf.isCanarias
+            ? 'Impuestos Canarias (IGIC 0% Solar):'
+            : (cf.isCeutaMelilla ? 'Impuestos Ceuta/Melilla (IPSI 4%):' : 'Impuestos Aplicables (IVA 21%):');
+        this.setText('s6BreakTaxLbl', taxLblS6);
         this.setText('s6BreakTax', `${fmtNum(cf.capexTaxEur)} €`);
         this.setText('s6BreakSavingsY1', `${fmtNum(cf.netSavingsY1Eur)} €/año`);
 
@@ -5947,7 +6940,7 @@ const UI = {
                 <div class="grid grid-cols-2 gap-y-2 gap-x-4 py-1">
                     <div><span class="text-[var(--text-muted)] block">Almacenamiento:</span><strong class="font-semibold">${bat.enabled ? `${escapeHtml(bat.modelName)} (${fmtNum(bat.nominalKwh, 1)} kWh)` : 'Sin acumulación (Autoconsumo directo)'}</strong></div>
                     <div><span class="text-[var(--text-muted)] block">Modalidad Legal:</span><strong class="font-semibold">${rdNames[fin.rd244Mode] || fin.rd244Mode}</strong></div>
-                    <div><span class="text-[var(--text-muted)] block">Inversión Neta (CAPEX):</span><strong class="font-mono text-[#0066FF]">${fmtNum(cf.capexNetEur)} € (${cf.isCanarias ? 'IGIC 0%' : 'IVA 21% incl.'})</strong></div>
+                    <div><span class="text-[var(--text-muted)] block">Inversión Neta (CAPEX):</span><strong class="font-mono text-[#0066FF]">${fmtNum(cf.capexNetEur)} € (${cf.isCanarias ? 'IGIC 0%' : (cf.isCeutaMelilla ? 'IPSI 4% incl.' : 'IVA 21% incl.')})</strong></div>
                     <div><span class="text-[var(--text-muted)] block">Retorno / Rentabilidad:</span><strong class="font-mono text-[#10B981]">Payback ${fmtNum(cf.paybackYears, 1)} años • TIR ${fmtNum(cf.tirPct, 1)}%</strong></div>
                     <div><span class="text-[var(--text-muted)] block">VAN (Descontado 25a):</span><strong class="font-mono text-[#10B981]">${cf.vanEur >= 0 ? '+' : ''}${fmtNum(cf.vanEur)} €</strong></div>
                     <div><span class="text-[var(--text-muted)] block">Beneficio Neto 25 Años:</span><strong class="font-mono">${fmtNum(cf.netSavings25Eur)} € (LCOE ${fmtNum(cf.lcoeEurKwh, 3)} €/kWh)</strong></div>
@@ -6022,17 +7015,82 @@ const Charts = {
     renderStep1Chart() {
         const ctx = document.getElementById('chartStep1Hourly');
         if (!ctx) return;
-        const season = Store.state.consumptionAndTariff.seasonView || 'anual';
-        const data24 = Store.computed.energy.prelim.rep24[season] || Store.computed.energy.prelim.rep24.anual;
-        const labels = Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, '0')}:00`);
+        const ct = Store.state.consumptionAndTariff;
+        const prelim = Store.computed.energy.prelim;
+        const isHourly = ct.step1ChartMode === 'horaria';
+        const wantType = isHourly ? 'line' : 'bar';
         const tc = this.getThemeColors();
 
+        if (this.c1 && this.c1.config.type !== wantType) {
+            this.c1.destroy();
+            this.c1 = null;
+        }
+
+        if (!isHourly) {
+            const gen12 = prelim.monthlyGen || Array(12).fill(0);
+            const dem12 = prelim.monthlyDemand || Array(12).fill(0);
+
+            if (this.c1) {
+                this.c1.data.labels = MESES_NOMBRES;
+                this.c1.data.datasets[0].data = gen12;
+                this.c1.data.datasets[1].data = dem12;
+                this.c1.options.scales.x.ticks.color = tc.text;
+                this.c1.options.scales.y.ticks.color = tc.text;
+                this.c1.options.scales.y.grid.color = tc.grid;
+                this.c1.options.scales.y.title.color = tc.text;
+                this.c1.options.plugins.legend.labels.color = tc.text;
+                this.c1.resize();
+                this.c1.update('none');
+                return;
+            }
+
+            this.c1 = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: MESES_NOMBRES,
+                    datasets: [
+                        {
+                            label: 'Generación Solar PVGIS (kWh/mes)',
+                            data: gen12,
+                            backgroundColor: 'rgba(245, 158, 11, 0.85)',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Consumo Mensual Cliente (kWh/mes)',
+                            data: dem12,
+                            backgroundColor: 'rgba(0, 102, 255, 0.82)',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { position: 'top', labels: { color: tc.text, usePointStyle: true, boxWidth: 8 } }
+                    },
+                    scales: {
+                        x: { ticks: { color: tc.text }, grid: { display: false } },
+                        y: { beginAtZero: true, ticks: { color: tc.text }, grid: { color: tc.grid }, title: { display: true, text: 'kWh / mes', color: tc.text } }
+                    }
+                }
+            });
+            return;
+        }
+
+        const inspM = Math.max(0, Math.min(11, Number(ct.inspectMonth) || 0));
+        const data24 = (prelim.repMonths24 && prelim.repMonths24[inspM]) ? prelim.repMonths24[inspM] : prelim.rep24.anual;
+        const labels = Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, '0')}:00`);
+
         if (this.c1) {
+            this.c1.data.labels = labels;
             this.c1.data.datasets[0].data = data24.solar.map(v => +v.toFixed(2));
             this.c1.data.datasets[1].data = data24.demand.map(v => +v.toFixed(2));
             this.c1.options.scales.x.ticks.color = tc.text;
             this.c1.options.scales.y.ticks.color = tc.text;
             this.c1.options.scales.y.grid.color = tc.grid;
+            this.c1.options.scales.y.title.color = tc.text;
             this.c1.options.plugins.legend.labels.color = tc.text;
             this.c1.resize();
             this.c1.update('none');
@@ -6378,13 +7436,19 @@ const PrintReport = {
                 <table class="print-table">
                     <tbody>
                         <tr>
-                            <td><strong>Consumo Anual Declarado:</strong> ${fmtNum(ct.annualKwh)} kWh/año</td>
-                            <td><strong>Estructura Tarifaria:</strong> ${ct.tariffMode === 'fija' ? `Fija 24h (${ct.flatRateEur} €/kWh)` : `2.0TD (P1:${ct.p1Eur} | P2:${ct.p2Eur} | P3:${ct.p3Eur} €/kWh)`}</td>
-                            <td><strong>Potencia Contratada:</strong> ${ct.contractedPowerKw} kW (${cf.isCanarias ? 'Canarias IGIC' : 'Península IVA 21%'})</td>
+                            <td><strong>Consumo Anual Declarado:</strong> ${fmtNum(ct.annualKwh)} kWh/año (${escapeHtml(ct.seasonalityMode === 'datadis_real' ? '12 meses reales Datadis' : (ct.seasonalityMode === 'mensual_manual' ? '12 facturas mensuales' : `Estacionalidad: ${ct.seasonalityMode}`))})</td>
+                            <td><strong>Estructura Tarifaria:</strong> ${ct.tariffMode === 'fija'
+                                ? `Fija 24h (${ct.flatRateEur} €/kWh)`
+                                : (ct.tariffMode === '30td'
+                                    ? `3.0TD CNMC 6P (P1:${ct.p30_1Eur}|P2:${ct.p30_2Eur}|P3:${ct.p30_3Eur}|P4:${ct.p30_4Eur}|P5:${ct.p30_5Eur}|P6:${ct.p30_6Eur} €/kWh)`
+                                    : `2.0TD 3P (P1:${ct.p1Eur} | P2:${ct.p2Eur} | P3:${ct.p3Eur} €/kWh)`)}</td>
+                            <td><strong>Potencia Contratada:</strong> ${ct.contractedPowerKw} kW (${cf.isCanarias ? 'Canarias IGIC' : (cf.isCeutaMelilla ? 'Ceuta/Melilla IPSI' : 'Península IVA 21%')})</td>
                         </tr>
                         <tr>
-                            <td><strong>Geometría de Captación:</strong> Inclinación ${pv.tilt}° • Azimuth ${pv.azimuth}°</td>
-                            <td><strong>Pérdidas Sistema PVGIS:</strong> ${pv.systemLossPct}% (+ Joule real ${fmtNum(c.cabling.totalLossPct, 2)}%)</td>
+                            <td><strong>Origen Curva Horaria:</strong> ${ct.customCurve24h
+                                ? `Telemetría real (${escapeHtml(ct.customCurveName || 'Datadis CSV')}${ct.datadisMeta && ct.datadisMeta.daysCount ? `, ${ct.datadisMeta.daysCount} días` : ''})`
+                                : `Arquetipo sintético orientativo (${escapeHtml(ct.profileType)}) — Sujeto a variabilidad real del titular`}</td>
+                            <td><strong>Geometría & Pérdidas:</strong> Tilt ${pv.tilt}° • Az ${pv.azimuth}° • Sist. ${pv.systemLossPct}% (+ Joule ${fmtNum(c.cabling.totalLossPct, 2)}%)</td>
                             <td><strong>Superficie Neta Captación:</strong> ${fmtNum(c.pv.areaM2, 1)} m²</td>
                         </tr>
                     </tbody>
