@@ -845,24 +845,25 @@
                             <input id="rngAnnualKwh" type="range" min="1000" max="30000" step="100" value="4200" aria-label="Deslizador de consumo anual" oninput="Actions.setAnnualConsumption(this.value)" style="--thumb-accent: #0066FF;">
 
                             <!-- Presets rápidos (Residencial + Comercial 3.0TD) -->
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px]">
-                                <button type="button" onclick="Actions.applyConsumptionPreset('piso')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
+                            <div id="boxConsumptionPresets" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px] transition">
+                                <button type="button" id="btnPreset_piso" onclick="Actions.applyConsumptionPreset('piso')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
                                     <span class="font-bold block">Piso (2.0TD)</span>
                                     <span class="font-mono text-[var(--text-muted)]">2.800 kWh</span>
                                 </button>
-                                <button type="button" onclick="Actions.applyConsumptionPreset('chalet')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
+                                <button type="button" id="btnPreset_chalet" onclick="Actions.applyConsumptionPreset('chalet')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
                                     <span class="font-bold block">Vivienda Familiar</span>
                                     <span class="font-mono text-[var(--text-muted)]">4.800 kWh</span>
                                 </button>
-                                <button type="button" onclick="Actions.applyConsumptionPreset('ve')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
+                                <button type="button" id="btnPreset_ve" onclick="Actions.applyConsumptionPreset('ve')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
                                     <span class="font-bold block">Hogar + Aero/VE</span>
                                     <span class="font-mono text-[var(--text-muted)]">6.500 kWh</span>
                                 </button>
-                                <button type="button" onclick="Actions.applyConsumptionPreset('pyme')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
+                                <button type="button" id="btnPreset_pyme" onclick="Actions.applyConsumptionPreset('pyme')" class="btn-press p-2 rounded-xl bento-subtle hover:border-[#0066FF]/40 text-left">
                                     <span class="font-bold block text-[#0066FF]">Comercio (3.0TD)</span>
                                     <span class="font-mono text-[var(--text-muted)]">18.500 kWh</span>
                                 </button>
                             </div>
+                            <p id="lblPresetsDisabledNotice" class="hidden text-[11px] text-[#0066FF] font-medium font-mono">🔒 Presets y perfiles sintéticos en pausa: telemetría real Datadis / contador activa.</p>
 
                             <!-- Distribución Mensual / Estacionalidad (Sin sesgo artificial por defecto) -->
                             <div class="pt-2 border-t border-[var(--border-hairline)] space-y-2.5">
@@ -4398,12 +4399,21 @@ const PhysicsEngine = {
         const lossFactor = (1 - (Number(pv.systemLossPct) || 14) / 100) / (1 - 0.14);
         const specificYield = Math.max(550, Math.round((Number(loc.baseKwhKwp) || 1640) * geomFactor * lossFactor));
 
-        // 2. Dimensionamiento Orientativo Paso 1 (Independiente del modelo de panel del Paso 2)
-        const diurnalShare = this.getEffectiveDiurnalSharePct() / 100;
-        const covTarget = Math.max(0.72, Math.min(1.00, 0.62 + 0.52 * diurnalShare));
-        const recKwp = +Math.max(0.80, ((Number(ct.annualKwh) || 4200) * covTarget) / specificYield).toFixed(2);
+        // 2. Dimensionamiento Óptimo Económico Paso 1 (Técnico-financiero: VAN 25a, Payback, Cashflow)
         const modWp = Math.max(50, Number(pv.wp) || 450);
-        const recPanels = Math.max(2, Math.round((recKwp * 1000) / modWp));
+        let recPanels, recKwp;
+        const econOpt = (typeof AutoOptimizer !== 'undefined' && AutoOptimizer.findEconomicallyOptimalSizing)
+            ? AutoOptimizer.findEconomicallyOptimalSizing()
+            : null;
+        if (econOpt && econOpt.optimalPanels) {
+            recPanels = econOpt.optimalPanels;
+            recKwp = +((recPanels * modWp) / 1000).toFixed(2);
+        } else {
+            const diurnalShare = this.getEffectiveDiurnalSharePct() / 100;
+            const covTarget = Math.max(0.72, Math.min(1.00, 0.62 + 0.52 * diurnalShare));
+            recKwp = +Math.max(0.80, ((Number(ct.annualKwh) || 4200) * covTarget) / specificYield).toFixed(2);
+            recPanels = Math.max(2, Math.round((recKwp * 1000) / modWp));
+        }
 
         if (pv.useRecommendedCount) {
             pv.moduleCount = recPanels;
@@ -5156,9 +5166,95 @@ const AutoOptimizer = {
         PhysicsEngine.recalculateAll();
     },
 
-    /* Cascada integral desde Paso 1 (Curva / Consumo / Ubicación / Tarifa -> Paneles -> Inversor -> Strings -> Cables -> Batería -> CAPEX) */
+    /* Dimensionamiento técnico-económico de máxima rentabilidad (VAN, Payback, Cashflow 25a y Autoconsumo óptimo) */
+    findEconomicallyOptimalSizing() {
+        const st = Store.state;
+        const ct = st.consumptionAndTariff;
+        const pv = st.pvModules;
+        const loc = st.locationAndPVGIS;
+        const fin = st.legalAndFinancials;
+        const bat = st.batterySystem;
+
+        const geomFactor = PhysicsEngine.computeGeomFactor(pv.tilt, pv.azimuth, loc.optimalTilt);
+        const lossFactor = (1 - (Number(pv.systemLossPct) || 14) / 100) / (1 - 0.14);
+        const specYield = Math.max(550, Math.round((Number(loc.baseKwhKwp) || 1640) * geomFactor * lossFactor));
+        const modWp = Math.max(50, Number(pv.wp) || 450);
+        const annualKwh = Math.max(100, Number(ct.annualKwh) || 4200);
+
+        const diurnalShare = PhysicsEngine.getEffectiveDiurnalSharePct() / 100;
+        const targetDiurnalKwh = annualKwh * diurnalShare;
+
+        const minPanels = 2;
+        const maxPanels = Math.max(8, Math.min(350, Math.ceil((annualKwh * 1.35) / (modWp * specYield / 1000))));
+
+        const step = maxPanels > 100 ? 4 : (maxPanels > 40 ? 2 : 1);
+        const candidates = [];
+        for (let n = minPanels; n <= maxPanels; n += step) {
+            candidates.push(n);
+        }
+        if (!candidates.includes(maxPanels)) candidates.push(maxPanels);
+
+        const discRate = (Number(fin.discountRatePct) || 3.5) / 100;
+        const infRate = (Number(fin.energyInflationPct) || 2.5) / 100;
+        const degRate = (Number(fin.solarDegradationPct) || 0.5) / 100;
+        const opexBase = Math.max(0, Number(fin.maintenanceAnnualEur) || 60);
+        const costPerKwp = Number(fin.costPerKwp) || 1120;
+        const isCanarias = ct.fiscalRegion === 'canarias';
+        const isCeutaMelilla = ct.fiscalRegion === 'ceuta_melilla';
+        const capexTaxRate = isCanarias ? 0.00 : (isCeutaMelilla ? 0.04 : 0.21);
+
+        let bestN = Math.max(2, Math.round(((targetDiurnalKwh * 1.1) / specYield) * 1000 / modWp));
+        let bestScore = -Infinity;
+        let bestMetrics = null;
+
+        for (const n of candidates) {
+            const kwp = +((n * modWp) / 1000).toFixed(2);
+            const sim = PhysicsEngine.simulateAnnualDispatch(kwp, specYield, bat.enabled, 1.0);
+
+            const baseEquipEur = kwp * costPerKwp + (bat.enabled ? (Number(bat.nominalKwh) || 5) * (Number(fin.costPerKwhBat) || 480) : 0);
+            const capexGrossEur = baseEquipEur * (1 + capexTaxRate);
+            const capexNetEur = Math.max(100, capexGrossEur - (Number(fin.subsidyEur) || 0));
+
+            let van = -capexNetEur;
+            let cum = -capexNetEur;
+            let payback = null;
+            for (let y = 1; y <= 25; y++) {
+                const deg = Math.pow(1 - degRate, y - 1);
+                const inf = Math.pow(1 + infRate, y - 1);
+                const grossSavY = sim.annualSavingsEur * deg * inf;
+                const opexY = opexBase * Math.pow(1.02, y - 1);
+                const netFlowY = grossSavY - opexY;
+                cum += netFlowY;
+                if (payback === null && cum >= 0 && netFlowY > 0) {
+                    payback = (y - 1) + Math.abs(cum - netFlowY) / netFlowY;
+                }
+                van += netFlowY / Math.pow(1 + discRate, y);
+            }
+            if (payback === null) payback = 25.0;
+
+            const autarky = sim.autarkyPct;
+            const selfCons = sim.selfConsumptionPct;
+            const roiRatio = capexNetEur > 0 ? (van / capexNetEur) : 0;
+            const cappedPen = (sim.cappedMonthsCount || 0) * 80;
+
+            // Score multi-criterio: maximiza VAN en € y ROI, acelera Payback y prioriza alto autoconsumo
+            const score = (van * 0.45) + (roiRatio * 2000) + ((25 - payback) * 300) + (autarky * 20) + (selfCons * 15) - cappedPen;
+
+            if (score > bestScore && van > 0) {
+                bestScore = score;
+                bestN = n;
+                bestMetrics = { n, kwp, van: Math.round(van), payback: +payback.toFixed(1), autarky, selfCons };
+            }
+        }
+
+        return { optimalPanels: bestN, metrics: bestMetrics, specificYield: specYield };
+    },
+
+    /* Cascada integral desde Paso 1 (Curva / Datadis / Consumo / Ubicación / Tarifa -> Paneles Óptimos -> Inversor -> Strings -> Cables -> Batería -> CAPEX) */
     cascadeFromStep1() {
         const st = Store.state;
+        const opt = this.findEconomicallyOptimalSizing();
+        st.pvModules.moduleCount = opt.optimalPanels;
         st.pvModules.useRecommendedCount = true;
         PhysicsEngine.recalculateAll();
 
@@ -5912,6 +6008,20 @@ const Actions = {
                     ct.annualKwh = Math.round(parsed.estimatedAnnualKwh);
                 }
 
+                // Autodetección y selección automática de tarifa y bloques de energía (2.0TD vs 3.0TD)
+                const detectedTariff = parsed.detectedTariff || (ct.annualKwh > 15000 ? '30td' : '20td');
+                ct.tariffMode = detectedTariff;
+                if (detectedTariff === '30td') {
+                    if ((Number(ct.contractedPowerKw) || 0) <= 15) {
+                        const recP = parsed.maxObservedKw ? Math.max(18.0, Math.ceil(parsed.maxObservedKw * 1.15)) : 18.0;
+                        ct.contractedPowerKw = recP;
+                    }
+                } else if (detectedTariff === '20td') {
+                    if ((Number(ct.contractedPowerKw) || 0) > 15) {
+                        ct.contractedPowerKw = 5.75;
+                    }
+                }
+
                 if (Store.state.projectMeta.autoPilot !== false) {
                     AutoOptimizer.cascadeFromStep1();
                 } else {
@@ -5926,9 +6036,10 @@ const Actions = {
                 const autoInfo = Store.state.projectMeta.autoPilot !== false
                     ? ` → Auto-ajustado: ${Store.state.pvModules.moduleCount} paneles + ${Store.state.inverterAndStrings.pacKw} kW`
                     : '';
+                const tariffBadge = detectedTariff === '30td' ? '3.0TD (6 Periodos)' : '2.0TD (3 Periodos)';
                 const msg = meta && meta.daysCount > 0
-                    ? `Datadis importado: ${fmtNum(meta.rowsCount)} reg. (${fmtNum(ct.annualKwh)} kWh/a)${autoInfo}`
-                    : `Curva horaria cargada (${file.name})${autoInfo}`;
+                    ? `Datadis importado: ${fmtNum(meta.rowsCount)} reg. (${fmtNum(ct.annualKwh)} kWh/a) • Tarifa: ${tariffBadge}${autoInfo}`
+                    : `Curva horaria cargada (${file.name}) • Tarifa: ${tariffBadge}${autoInfo}`;
                 UI.showToast(msg, "ok");
             } catch (_) {
                 UI.showToast("Error al procesar el archivo de curva horaria / Datadis.", "err");
@@ -6055,7 +6166,9 @@ const Actions = {
                         monthlyKwh: null,
                         monthlyCurves24: null,
                         customDaysCompact: "",
-                        datadisMeta: { rowsCount: 24, daysCount: 0, monthsCovered: 0, resolution: 'Curva JSON 24h', cups: '' }
+                        detectedTariff: '20td',
+                        maxObservedKw: null,
+                        datadisMeta: { rowsCount: 24, daysCount: 0, monthsCovered: 0, resolution: 'Curva JSON 24h', cups: '', detectedTariff: '20td', maxObservedKw: null }
                     };
                 }
                 const list = Array.isArray(j) ? j : (Array.isArray(j?.consumptions) ? j.consumptions : (Array.isArray(j?.data) ? j.data : []));
@@ -6184,6 +6297,7 @@ const Actions = {
         let hasZeroStart = false;
         let minHourSeen = 99;
         let hasQuarterHour = false;
+        let maxObservedKw = 0;
 
         for (const r of rawRecords) {
             const { hh, mm, forceZeroBased } = r.tTok;
@@ -6192,6 +6306,16 @@ const Actions = {
             if ((hh === 0 && mm === 0) || forceZeroBased) hasZeroStart = true;
             if (hh < minHourSeen) minHourSeen = hh;
         }
+
+        const powerMultiplier = hasQuarterHour ? 4.0 : 1.0;
+        for (const r of rawRecords) {
+            const kw = (Number(r.kwh) || 0) * powerMultiplier;
+            if (kw > maxObservedKw) maxObservedKw = kw;
+        }
+
+        const txtSample = (cleanText.slice(0, 4000) + ' ' + (filename || '')).toLowerCase();
+        const matches30 = /(3[._-]?0\s*td|3[._-]?0\s*a|peaje.*3[._-]?0|tarifa.*3[._-]?0)/i.test(txtSample);
+        const matches20 = /(2[._-]?0\s*td|2[._-]?0\s*a|peaje.*2[._-]?0|tarifa.*2[._-]?0)/i.test(txtSample);
 
         const useEndOfInterval = has24or25 || (!hasZeroStart && minHourSeen === 1);
 
@@ -6237,12 +6361,22 @@ const Actions = {
             const avg24 = undatedSums.map((s, h) => undatedCounts[h] > 0 ? +((s / undatedCounts[h]) * factorQuarter).toFixed(4) : 0.05);
             const dailySum = avg24.reduce((a, b) => a + b, 0);
             const estAnnual = rawRecords.length >= 24 * 30 ? Math.round(dailySum * 365) : null;
+            let detectedTariff = '20td';
+            if (matches30 && !matches20) {
+                detectedTariff = '30td';
+            } else if (matches20 && !matches30) {
+                detectedTariff = '20td';
+            } else if (maxObservedKw > 15.0 || (estAnnual && estAnnual > 15000)) {
+                detectedTariff = '30td';
+            }
             return {
                 curve24: avg24,
                 estimatedAnnualKwh: estAnnual,
                 monthlyKwh: null,
                 monthlyCurves24: null,
                 customDaysCompact: "",
+                detectedTariff,
+                maxObservedKw: +maxObservedKw.toFixed(2),
                 datadisMeta: {
                     rowsCount: rawRecords.length,
                     daysCount: 0,
@@ -6250,7 +6384,9 @@ const Actions = {
                     dateFrom: '',
                     dateTo: '',
                     resolution: hasQuarterHour ? '15 min' : '24h agregada',
-                    cups: detectedCups
+                    cups: detectedCups,
+                    detectedTariff,
+                    maxObservedKw: +maxObservedKw.toFixed(2)
                 }
             };
         }
@@ -6311,12 +6447,23 @@ const Actions = {
             return `${dKey};${vals}`;
         }).join('|');
 
+        let detectedTariff = '20td';
+        if (matches30 && !matches20) {
+            detectedTariff = '30td';
+        } else if (matches20 && !matches30) {
+            detectedTariff = '20td';
+        } else if (maxObservedKw > 15.0 || estimatedAnnualKwh > 15000) {
+            detectedTariff = '30td';
+        }
+
         return {
             curve24: avg24,
             estimatedAnnualKwh,
             monthlyKwh,
             monthlyCurves24,
             customDaysCompact,
+            detectedTariff,
+            maxObservedKw: +maxObservedKw.toFixed(2),
             datadisMeta: {
                 rowsCount: rawRecords.length,
                 daysCount,
@@ -6324,7 +6471,9 @@ const Actions = {
                 dateFrom: sortedDates[0],
                 dateTo: sortedDates[sortedDates.length - 1],
                 resolution: hasQuarterHour ? '15 min (Cuartohoraria)' : '1 h (Horaria)',
-                cups: detectedCups
+                cups: detectedCups,
+                detectedTariff,
+                maxObservedKw: +maxObservedKw.toFixed(2)
             }
         };
     },
@@ -7217,6 +7366,20 @@ const UI = {
         if (optDd) optDd.disabled = !(hasCustomCurve && ct.datadisMeta && ct.datadisMeta.daysCount > 0);
         this.setVal('selSeasonalityMode', ct.seasonalityMode || 'neutro');
 
+        // Presets rápidos de consumo (bloqueados cuando hay telemetría real activa de contador/Datadis)
+        const presetsBox = document.getElementById('boxConsumptionPresets');
+        if (presetsBox) {
+            presetsBox.classList.toggle('opacity-40', hasCustomCurve);
+            presetsBox.classList.toggle('pointer-events-none', hasCustomCurve);
+        }
+        ['btnPreset_piso', 'btnPreset_chalet', 'btnPreset_ve', 'btnPreset_pyme'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.disabled = hasCustomCurve;
+        });
+        document.getElementById('lblPresetsDisabledNotice')?.classList.toggle('hidden', !hasCustomCurve);
+        const rngAnnualEl = document.getElementById('rngAnnualKwh');
+        if (rngAnnualEl) rngAnnualEl.disabled = hasCustomCurve;
+
         // Editor interactivo de 12 meses Ene..Dic
         const showM12 = ct.seasonalityMode === 'mensual_manual' || ct.seasonalityMode === 'datadis_real';
         const boxM12 = document.getElementById('boxMonthly12Editor');
@@ -7243,11 +7406,13 @@ const UI = {
         // Bloque de perfiles sintéticos y fracción diurna
         const synthBox = document.getElementById('boxSyntheticProfiles');
         if (synthBox) {
-            synthBox.classList.toggle('opacity-50', hasCustomCurve);
+            synthBox.classList.toggle('opacity-40', hasCustomCurve);
+            synthBox.classList.toggle('pointer-events-none', hasCustomCurve);
         }
         ['diurno', 'estandar', 'nocturno', 'electrificado'].forEach(p => {
             const b = document.getElementById(`profBtn_${p}`);
             if (!b) return;
+            b.disabled = hasCustomCurve;
             const active = !hasCustomCurve && ct.profileType === p;
             b.className = active
                 ? "btn-press p-2.5 rounded-xl border border-[#0066FF] bg-[#0066FF]/10 text-left transition"
