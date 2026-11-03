@@ -464,8 +464,12 @@
                     </div>
                 </div>
 
-                <!-- Acciones Globales: Auto-Ajuste, JSON, Idioma, Tema -->
+                <!-- Acciones Globales: Modo Rápido/Experto, Auto-Ajuste, JSON, Idioma, Tema -->
                 <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <button type="button" id="btnWizardModeToggle" onclick="Actions.toggleWizardMode()" class="btn-press inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-mono font-bold bg-[#0066FF]/12 text-[#0066FF] border border-[#0066FF]/30 whitespace-nowrap transition" aria-label="Cambiar entre modo rápido y modo ingeniería avanzada">
+                        <span id="lblWizardModeBadge">⚡ Rápido</span>
+                    </button>
+
                     <button type="button" id="btnAutoPilotToggle" onclick="Actions.toggleAutoPilot()" class="btn-press inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-mono font-bold bg-[#10B981]/12 text-[#10B981] border border-[#10B981]/30 whitespace-nowrap transition" aria-label="Activar o pausar el auto-ajuste integral">
                         <span id="lblAutoPilotShort" class="sm:hidden">⚡ Auto</span>
                         <span id="lblAutoPilotFull" class="hidden sm:inline">⚡ Auto-Ajuste: ON</span>
@@ -555,6 +559,42 @@
                         <div>
                             <label for="inpProjRef" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5" data-i18n="lblProjRef">Referencia / Código CIE (Opcional)</label>
                             <input id="inpProjRef" type="text" class="showroom-input w-full font-mono" placeholder="Ej. EXP-FV-2026-001" oninput="Actions.updateMeta('projectRef', this.value)">
+                        </div>
+                    </div>
+
+                    <!-- Selector de Modalidad Inicial: Modo Rápido (3 Clics) vs Modo Ingeniería Avanzada (8 Pasos) -->
+                    <div class="pt-4 border-t border-[var(--border-hairline)] space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Modalidad de Configuración</label>
+                            <span class="text-[11px] font-mono text-[var(--text-muted)]">Cambia en cualquier momento</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Modalidad de configuración inicial">
+                            <!-- Modo Rápido (Recomendado para propietarios y normies) -->
+                            <div id="cardModeExpress" onclick="Actions.setWizardMode('express')" class="btn-press cursor-pointer p-4 rounded-2xl border-2 transition relative flex items-start gap-3 border-[#0066FF] bg-[#0066FF]/8">
+                                <input type="radio" name="radWizardMode" id="optModeExpress" value="express" checked class="mt-1 accent-[#0066FF]">
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <strong class="text-sm font-bold text-[var(--text-primary)]">🚀 Modo Rápido (3 Clics)</strong>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0066FF] text-white">Recomendado</span>
+                                    </div>
+                                    <p class="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">
+                                        Introduce consumo o Datadis, dinos si quieres batería y <strong>salta directamente a los resultados</strong> con todo dimensionado y en regla.
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Modo Avanzado (Ingeniería Completa) -->
+                            <div id="cardModeAdvanced" onclick="Actions.setWizardMode('advanced')" class="btn-press cursor-pointer p-4 rounded-2xl border-2 transition relative flex items-start gap-3 border-[var(--border-hairline)] bg-[var(--bg-subtle)] hover:border-[#0066FF]/40">
+                                <input type="radio" name="radWizardMode" id="optModeAdvanced" value="advanced" class="mt-1 accent-[#0066FF]">
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <strong class="text-sm font-bold text-[var(--text-primary)]">🛠️ Modo Ingeniería Avanzada</strong>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-mono text-[var(--text-muted)] border border-[var(--border-hairline)]">8 Pasos</span>
+                                    </div>
+                                    <p class="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">
+                                        Inspección detallada de 30 módulos FV, 54 inversores Multi-MPPT, caída de tensión REBT y curvas de batería.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -796,6 +836,72 @@
                                     <option value="ceuta_melilla">Ceuta y Melilla (IPSI 4%/1%)</option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 1D: Batería, Objetivo de Autarquía y Modalidad Legal (RD 244/2019) -->
+                    <div class="bento-card p-5 space-y-4 border border-[#10B981]/25">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-display font-bold text-sm flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-md bg-[#10B981]/15 text-[#10B981] font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">1D</span>
+                                <span>Batería, Autarquía y Modalidad</span>
+                            </h3>
+                            <span id="badgeS1BatteryStatus" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981]">Con Batería</span>
+                        </div>
+
+                        <!-- Toggle Batería -->
+                        <div>
+                            <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">¿Deseas incluir Batería de Almacenamiento (LiFePO4)?</label>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <button type="button" id="btnS1BatNo" onclick="Actions.setExpressBattery(false)" class="btn-press p-2.5 rounded-xl border text-center transition">
+                                    <span class="font-bold block">⚡ Sin Batería</span>
+                                    <span class="text-[10px] text-[var(--text-muted)] font-mono">Solo solar diurno directo</span>
+                                </button>
+                                <button type="button" id="btnS1BatYes" onclick="Actions.setExpressBattery(true)" class="btn-press p-2.5 rounded-xl border text-center transition border-[#10B981] bg-[#10B981]/10 text-[var(--text-primary)]">
+                                    <span class="font-bold block text-[#10B981]">🔋 Con Batería LiFePO4</span>
+                                    <span class="text-[10px] text-[var(--text-muted)] font-mono">Almacena sol para la noche</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Configuración Autarquía y Capacidad (Visible si tiene batería) -->
+                        <div id="boxS1BatteryOptions" class="space-y-3 pt-2 border-t border-[var(--border-hairline)]">
+                            <div>
+                                <div class="flex items-center justify-between text-xs mb-1">
+                                    <label for="rngExpressAutarky" class="font-semibold text-[var(--text-secondary)]">Objetivo de Cobertura / Autarquía:</label>
+                                    <strong id="lblExpressAutarkyVal" class="font-mono text-[#10B981] font-bold text-sm">85%</strong>
+                                </div>
+                                <input id="rngExpressAutarky" type="range" min="60" max="100" step="5" value="85" aria-label="Porcentaje de autarquía o cobertura deseada" oninput="Actions.setExpressAutarky(this.value)" style="--thumb-accent: #10B981;">
+                                
+                                <!-- Presets Rápidos -->
+                                <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                                    <button type="button" onclick="Actions.setExpressAutarky(70)" class="btn-press px-2 py-1 rounded-lg text-[10px] font-mono bento-subtle hover:border-[#10B981]/40">70% Equilibrado</button>
+                                    <button type="button" onclick="Actions.setExpressAutarky(85)" class="btn-press px-2 py-1 rounded-lg text-[10px] font-mono border border-[#10B981]/40 bg-[#10B981]/10 text-[#10B981] font-bold">85% Recomendado</button>
+                                    <button type="button" onclick="Actions.setExpressAutarky(95)" class="btn-press px-2 py-1 rounded-lg text-[10px] font-mono bento-subtle hover:border-[#10B981]/40">95% Alta Autonomía</button>
+                                    <button type="button" onclick="Actions.setExpressAutarky(100)" class="btn-press px-2 py-1 rounded-lg text-[10px] font-mono bento-subtle hover:border-[#10B981]/40">100% Total</button>
+                                </div>
+                            </div>
+
+                            <div class="bento-subtle p-3 rounded-xl flex items-center justify-between gap-2 border border-[#10B981]/20">
+                                <div>
+                                    <span class="text-[10px] font-mono uppercase text-[var(--text-muted)] block">Capacidad Sugerida</span>
+                                    <span id="lblS1SuggestedBat" class="text-sm font-bold text-[#10B981] font-mono">10.0 kWh (Huawei LUNA2000 o BYD)</span>
+                                </div>
+                                <span class="text-xs text-[var(--text-muted)] font-mono shrink-0">Auto-ajustada</span>
+                            </div>
+                        </div>
+
+                        <!-- Modalidad Legal RD 244/2019 -->
+                        <div class="pt-2 border-t border-[var(--border-hairline)] space-y-1.5">
+                            <label for="selExpressLegalMode" class="block text-xs font-semibold text-[var(--text-secondary)]">Modalidad de Autoconsumo (RD 244/2019):</label>
+                            <select id="selExpressLegalMode" class="showroom-input w-full text-xs" onchange="Actions.setExpressLegalMode(this.value)">
+                                <option value="compensacion">Con compensación simplificada de excedentes (Con venta/abono)</option>
+                                <option value="sin_excedentes">Sin excedentes (Inyección Cero / Anti-vertido certificado)</option>
+                                <option value="aislada">Instalación Aislada de la Red Eléctrica (Off-Grid 100%)</option>
+                            </select>
+                            <p id="lblExpressLegalDesc" class="text-[11px] text-[var(--text-muted)] font-mono leading-relaxed">
+                                Los excedentes solares no consumidos en el instante se vierten a la red y se compensan en tu factura mensual.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -2117,6 +2223,27 @@
              PASO 7: SHOWROOM DE RESULTADOS E INFORME TÉCNICO DESCARGABLE (PDF A4)
              ====================================================================== -->
         <section id="step-7" class="wizard-step space-y-6" aria-labelledby="step7Heading">
+            <!-- Banner Informativo para Modo Rápido (Express) -->
+            <div id="bannerExpressModeInfo" class="hidden bento-card p-5 border border-[#10B981]/30 bg-[#10B981]/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-start gap-3.5">
+                    <span class="text-3xl shrink-0 leading-none">🚀</span>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <strong class="text-sm sm:text-base font-bold text-[var(--text-primary)]">¡Estudio Rápido Generado con Éxito!</strong>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#10B981] text-white">Dimensionado Óptimo</span>
+                        </div>
+                        <p class="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
+                            Hemos seleccionado automáticamente la combinación más rentable de paneles solares, inversor comercial, tramos REBT y batería según tu consumo y ubicación.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                    <button type="button" onclick="Actions.openStepInAdvanced(2)" class="btn-press px-4 py-2.5 rounded-xl text-xs font-bold border border-[#0066FF]/40 text-[#0066FF] hover:bg-[#0066FF]/10 inline-flex items-center gap-1.5 whitespace-nowrap shadow-sm">
+                        <span>🛠️ Abrir Modo Avanzado (8 Pasos)</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- Cabecera Resumen Ejecutiva + Botón Crítico PDF -->
             <div class="bento-card p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
                 <div class="space-y-1.5">
@@ -3237,7 +3364,8 @@ function createDefaultState() {
             completedSteps: [0],
             theme: "light",
             lang: "es",
-            autoPilot: true
+            autoPilot: true,
+            wizardMode: "express" // 'express' (Normie / Rápido 3 clics) | 'advanced' (Ingeniería 8 pasos)
         },
         locationAndPVGIS: {
             municipality: "Madrid",
@@ -3380,6 +3508,7 @@ function createDefaultState() {
             roundTripEffPct: 95.0,
             coupling: "DC",
             autonomyDays: 2.0,
+            targetAutarkyPct: 85,
             offGridMode: false
         },
         legalAndFinancials: {
@@ -5041,9 +5170,15 @@ const AutoOptimizer = {
                 if (d.tipoRed === 'trifasico') score += 10;
             }
 
+            // Si la batería está activa, priorizar inversores híbridos con puerto de batería compatible
+            if (bat && bat.enabled) {
+                if (d.batBus) score -= 5.0;
+                if (!d.batBus && !d.hybrid) score += 8.0;
+            }
+
             // Preferir inversor string frente a microinversor a partir de 5 módulos
             if (nMods >= 5 && isMicro) score += 8;
-            if (isOffGrid && (d.brand === 'victron' || d.brand === 'deye')) score -= 3;
+            if (isOffGrid && (d.brand === 'victron' || d.brand === 'deye')) score -= 6.0;
 
             // Bonificar mayor rendimiento europeo de ficha
             score -= ((Number(d.rendimiento) || 97.5) - 97.0) * 0.8;
@@ -5101,9 +5236,15 @@ const AutoOptimizer = {
         const specYield = Store.computed?.pvgis?.specificYield || 1600;
         const dailySolar = (((Number(pv.moduleCount) || 8) * (Number(pv.wp) || 450)) / 1000) * specYield / 365;
 
-        const targetKwh = bat.offGridMode
-            ? Math.max(5.0, dailyDemand * (Number(bat.autonomyDays) || 2.0))
-            : Math.max(4.5, Math.min(60, Math.min(dailyDemand * nocShare * 1.05, dailySolar * 0.68)));
+        const autarkyTarget = Number(bat.targetAutarkyPct) || 85;
+        let targetKwh = 5.0;
+        if (bat.offGridMode || autarkyTarget >= 99) {
+            targetKwh = Math.max(5.0, dailyDemand * Math.max(1.8, Number(bat.autonomyDays) || 2.0));
+        } else {
+            // Factor de cobertura según objetivo de autarquía (60% -> 0.40 de noche, 85% -> 0.95 de noche, 95% -> 1.30 de noche)
+            const factor = Math.max(0.40, Math.min(1.45, 0.40 + (autarkyTarget - 60) * (0.90 / 35)));
+            targetKwh = Math.max(3.5, Math.min(80.0, dailyDemand * nocShare * factor));
+        }
 
         const invCat = inv.mode === 'catalog' ? INVERSORES_COMERCIALES[inv.catalogId] : null;
         const prefBrand = invCat?.brand || '';
@@ -5269,7 +5410,7 @@ const AutoOptimizer = {
             this.writeSlotsToState(dist.slots, dist.bounds.numMppts);
         }
 
-        if (st.batterySystem.enabled && st.batterySystem.mode === 'catalog' && !st.batterySystem.offGridMode) {
+        if (st.batterySystem.enabled && st.batterySystem.mode === 'catalog') {
             this.applyOptimalBattery();
         }
 
@@ -5291,7 +5432,7 @@ const AutoOptimizer = {
             this.writeSlotsToState(dist.slots, dist.bounds.numMppts);
         }
 
-        if (st.batterySystem.enabled && st.batterySystem.mode === 'catalog' && !st.batterySystem.offGridMode) {
+        if (st.batterySystem.enabled && st.batterySystem.mode === 'catalog') {
             this.applyOptimalBattery();
         }
 
@@ -5586,8 +5727,20 @@ const Wizard = {
     },
 
     next() {
-        const cur = Number(Store.state.projectMeta.currentStep) || 0;
+        const meta = Store.state.projectMeta;
+        const cur = Number(meta.currentStep) || 0;
         if (!this.validateStep(cur)) return;
+
+        const isExpress = (meta.wizardMode || 'express') === 'express';
+        if (isExpress && cur === 1) {
+            // Salto directo al final en Modo Rápido (3 Clics) con auto-ajuste y cumplimiento
+            AutoOptimizer.cascadeFromStep1();
+            PhysicsEngine.recalculateAll();
+            this.goToStep(7, true);
+            UI.showToast(meta.lang === 'en' ? "🚀 Quick study ready: all optimal equipment sized and compliant." : "🚀 ¡Estudio rápido listo! Equipos dimensionados y en regla.", "ok");
+            return;
+        }
+
         if (cur < 7) {
             this.goToStep(cur + 1, true);
         } else {
@@ -5596,7 +5749,15 @@ const Wizard = {
     },
 
     prev() {
-        const cur = Number(Store.state.projectMeta.currentStep) || 0;
+        const meta = Store.state.projectMeta;
+        const cur = Number(meta.currentStep) || 0;
+        const isExpress = (meta.wizardMode || 'express') === 'express';
+
+        if (isExpress && cur === 7) {
+            this.goToStep(1, true);
+            return;
+        }
+
         if (cur > 0) {
             this.goToStep(cur - 1, true);
         }
@@ -5610,8 +5771,62 @@ const Wizard = {
         const meta = Store.state.projectMeta;
         const cur = Number(meta.currentStep) || 0;
         const lang = meta.lang === 'en' ? 'en' : 'es';
+        const isExpress = (meta.wizardMode || 'express') === 'express';
         const completed = Array.isArray(meta.completedSteps) ? meta.completedSteps : [0];
 
+        // MODO RÁPIDO (EXPRESS): Mostrar 3 hitos esenciales + acceso a los 8 pasos
+        if (isExpress) {
+            const expressSteps = [
+                { step: 0, es: "0. Portada", en: "0. Cover" },
+                { step: 1, es: "1. Suministro & Batería", en: "1. Load & Battery" },
+                { step: 7, es: "2. Resultados & Memoria", en: "2. Results & Report" }
+            ];
+            const currentExpressIdx = cur === 0 ? 0 : (cur === 1 ? 1 : 2);
+            if (fill) {
+                const pct = (currentExpressIdx + 1) / 3;
+                fill.style.transform = `scaleX(${pct.toFixed(4)})`;
+            }
+
+            list.innerHTML = expressSteps.map((s, idx) => {
+                const isCurrent = (s.step === cur) || (s.step === 7 && cur > 1);
+                const isDone = (idx < currentExpressIdx);
+
+                let pillCls = "text-[var(--text-muted)] opacity-70 cursor-pointer";
+                let dotCls = "bg-[var(--bg-subtle)] text-[var(--text-muted)] border border-[var(--border-hairline)]";
+
+                if (isCurrent) {
+                    pillCls = "bg-[#0066FF]/12 text-[#0066FF] border border-[#0066FF]/30 font-bold shadow-sm cursor-pointer";
+                    dotCls = "bg-[#0066FF] text-white font-bold";
+                } else if (isDone) {
+                    pillCls = "hover:bg-[#10B981]/10 text-[var(--text-primary)] font-semibold cursor-pointer";
+                    dotCls = "bg-[#10B981] text-white font-bold";
+                }
+
+                const labelTxt = s[lang].replace(/^\d+\.\s*/, '');
+                return `
+                    <li class="flex-1 min-w-0">
+                        <button type="button"
+                            onclick="Wizard.goToStep(${s.step}, true)"
+                            aria-current="${isCurrent ? 'step' : 'false'}"
+                            class="w-full px-2 py-1.5 rounded-xl text-[11px] transition flex items-center gap-1.5 justify-center whitespace-nowrap ${pillCls}">
+                            <span class="w-5 h-5 rounded-full text-[10px] font-mono flex items-center justify-center shrink-0 ${dotCls}">
+                                ${isDone ? '✓' : (idx + 1)}
+                            </span>
+                            <span class="truncate">${escapeHtml(labelTxt)}</span>
+                        </button>
+                    </li>
+                `;
+            }).join('') + `
+                <li class="shrink-0 pl-1">
+                    <button type="button" onclick="Actions.setWizardMode('advanced')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-mono font-bold text-[#0066FF] border border-[#0066FF]/30 bg-[#0066FF]/5 hover:bg-[#0066FF]/15 transition whitespace-nowrap">
+                        🛠️ ${lang === 'en' ? 'Advanced (8 Steps)' : 'Modo Avanzado (8 Pasos)'}
+                    </button>
+                </li>
+            `;
+            return;
+        }
+
+        // MODO INGENIERÍA AVANZADA: 8 Pasos Completos
         if (fill) {
             const pct = (cur + 1) / 8;
             fill.style.transform = `scaleX(${pct.toFixed(4)})`;
@@ -5664,6 +5879,7 @@ const Wizard = {
         const meta = Store.state.projectMeta;
         const cur = Number(meta.currentStep) || 0;
         const en = meta.lang === 'en';
+        const isExpress = (meta.wizardMode || 'express') === 'express';
         const c = Store.computed;
 
         // Ocultar barra flotante en la Portada Hero (Paso 0) para acabado limpio de Showroom
@@ -5674,11 +5890,20 @@ const Wizard = {
         bar.classList.remove('hidden');
 
         if (btnPrev) {
-            btnPrev.innerHTML = `<span>${en ? '← Previous Step' : '← Paso Anterior'}</span>`;
+            if (isExpress && cur === 7) {
+                btnPrev.innerHTML = `<span>${en ? '← Back to Supply & Battery' : '← Volver a Suministro y Batería'}</span>`;
+            } else {
+                btnPrev.innerHTML = `<span>${en ? '← Previous Step' : '← Paso Anterior'}</span>`;
+            }
         }
 
         if (ind) {
-            ind.textContent = en ? `Step ${cur} of 7 • ${this.stepsMeta[cur].en}` : `Paso ${cur} de 7 • ${this.stepsMeta[cur].es}`;
+            if (isExpress) {
+                const expressStepNum = cur === 1 ? 1 : (cur === 7 ? 2 : 0);
+                ind.textContent = en ? `Express Mode • Step ${expressStepNum} of 2` : `Modo Rápido • Hito ${expressStepNum} de 2`;
+            } else {
+                ind.textContent = en ? `Step ${cur} of 7 • ${this.stepsMeta[cur].en}` : `Paso ${cur} de 7 • ${this.stepsMeta[cur].es}`;
+            }
         }
 
         if (sum && c) {
@@ -5706,6 +5931,8 @@ const Wizard = {
         if (lblNext) {
             if (cur === 7) {
                 lblNext.textContent = en ? '📄 Export PDF Report' : '📄 Generar Informe PDF';
+            } else if (isExpress && cur === 1) {
+                lblNext.textContent = en ? '🚀 Calculate & View Results →' : '🚀 Ver Estudio y Resultados →';
             } else if (cur === 6) {
                 lblNext.textContent = en ? 'View Showroom & Report →' : 'Ver Showroom e Informe →';
             } else {
@@ -5736,6 +5963,72 @@ const Actions = {
             this.refresh();
             UI.showToast(meta.lang === 'en' ? "Manual lock enabled: automatic equipment scaling paused." : "Modo Manual activado: escalado automático en pausa.", "warn");
         }
+    },
+
+    /* --- MODO RÁPIDO (EXPRESS 3 CLICS) VS MODO INGENIERÍA AVANZADA --- */
+    setWizardMode(mode) {
+        const meta = Store.state.projectMeta;
+        meta.wizardMode = mode === 'advanced' ? 'advanced' : 'express';
+        Store.save();
+        Wizard.renderStepper();
+        Wizard.renderBottomBar();
+        this.refresh();
+        const en = meta.lang === 'en';
+        if (meta.wizardMode === 'express') {
+            UI.showToast(en ? "⚡ Express Mode active: direct 3-step workflow." : "⚡ Modo Rápido activado: flujo directo en 3 clics.", "ok");
+        } else {
+            UI.showToast(en ? "🛠️ Advanced Engineering Mode active: 8 full technical steps." : "🛠️ Modo Avanzado activado: 8 pasos técnicos de ingeniería desbloqueados.", "ok");
+        }
+    },
+
+    toggleWizardMode() {
+        const current = Store.state.projectMeta.wizardMode || 'express';
+        this.setWizardMode(current === 'express' ? 'advanced' : 'express');
+    },
+
+    openStepInAdvanced(stepIdx) {
+        Store.state.projectMeta.wizardMode = 'advanced';
+        Store.save();
+        Wizard.renderStepper();
+        Wizard.renderBottomBar();
+        this.refresh();
+        Wizard.goToStep(stepIdx, true);
+    },
+
+    setExpressBattery(enabled) {
+        const bat = Store.state.batterySystem;
+        bat.enabled = Boolean(enabled);
+        AutoOptimizer.cascadeFromStep1();
+        this.refresh();
+        const en = Store.state.projectMeta.lang === 'en';
+        UI.showToast(bat.enabled ? (en ? "🔋 Battery included: capacity adjusted to target autarky." : "🔋 Batería incluida: capacidad ajustada según autarquía.") : (en ? "⚡ Direct solar mode (no battery)." : "⚡ Modo solar directo (sin batería)."), "ok");
+    },
+
+    setExpressAutarky(val) {
+        const pct = Math.max(50, Math.min(100, Math.round(Number(val)) || 85));
+        Store.state.batterySystem.targetAutarkyPct = pct;
+        if (!Store.state.batterySystem.enabled) {
+            Store.state.batterySystem.enabled = true;
+        }
+        AutoOptimizer.cascadeFromStep1();
+        this.refresh();
+    },
+
+    setExpressLegalMode(mode) {
+        const fin = Store.state.legalAndFinancials;
+        const bat = Store.state.batterySystem;
+        const targetMode = mode === 'con_excedentes' ? 'compensacion' : mode;
+        fin.rd244Mode = targetMode;
+        if (targetMode === 'aislada') {
+            bat.offGridMode = true;
+            bat.enabled = true;
+        } else {
+            bat.offGridMode = false;
+        }
+        AutoOptimizer.cascadeFromStep1();
+        this.refresh();
+        const en = Store.state.projectMeta.lang === 'en';
+        UI.showToast(en ? "Legal mode updated." : `Modalidad actualizada: ${targetMode.replace('_', ' ')}`, "ok");
     },
 
     autoFixAllErrors(strategy = 'smart') {
@@ -7310,6 +7603,30 @@ const UI = {
             if (lblAutoFull) lblAutoFull.textContent = isAutoOn ? (isEn ? "⚡ Auto-Pilot: ON" : "⚡ Auto-Ajuste: ON") : (isEn ? "🔒 Manual Mode" : "🔒 Modo Manual");
         }
 
+        // Modo Wizard (Express vs Advanced)
+        const isExpress = (st.projectMeta.wizardMode || 'express') === 'express';
+        const lblBadge = document.getElementById('lblWizardModeBadge');
+        if (lblBadge) {
+            lblBadge.textContent = isExpress ? (isEn ? "⚡ Express" : "⚡ Rápido") : (isEn ? "🛠️ Advanced" : "🛠️ Avanzado");
+        }
+        const optExpress = document.getElementById('optModeExpress');
+        const optAdvanced = document.getElementById('optModeAdvanced');
+        if (optExpress) optExpress.checked = isExpress;
+        if (optAdvanced) optAdvanced.checked = !isExpress;
+
+        const cardExp = document.getElementById('cardModeExpress');
+        const cardAdv = document.getElementById('cardModeAdvanced');
+        if (cardExp) {
+            cardExp.className = isExpress
+                ? "btn-press cursor-pointer p-4 rounded-2xl border-2 transition relative flex items-start gap-3 border-[#0066FF] bg-[#0066FF]/8"
+                : "btn-press cursor-pointer p-4 rounded-2xl border-2 transition relative flex items-start gap-3 border-[var(--border-hairline)] bg-[var(--bg-subtle)] hover:border-[#0066FF]/40";
+        }
+        if (cardAdv) {
+            cardAdv.className = !isExpress
+                ? "btn-press cursor-pointer p-4 rounded-2xl border-2 transition relative flex items-start gap-3 border-[#0066FF] bg-[#0066FF]/8"
+                : "btn-press cursor-pointer p-4 rounded-2xl border-2 transition relative flex items-start gap-3 border-[var(--border-hairline)] bg-[var(--bg-subtle)] hover:border-[#0066FF]/40";
+        }
+
         /* --- PASO 0 --- */
         this.setVal('inpProjName', st.projectMeta.projectName);
         this.setVal('inpClientName', st.projectMeta.clientName);
@@ -7455,6 +7772,62 @@ const UI = {
             ? 'Canarias IGIC 0%/3%'
             : (ct.fiscalRegion === 'ceuta_melilla' ? 'Ceuta/Melilla IPSI 4%/1%' : 'IVA 21% + IEE');
         this.setText('s1FiscalPill', fiscalPillTxt);
+
+        // Tarjeta 1D: Batería, Autarquía y Modalidad Legal RD 244/2019
+        const batS1 = st.batterySystem;
+        const btnBatNo = document.getElementById('btnS1BatNo');
+        const btnBatYes = document.getElementById('btnS1BatYes');
+        const boxBatOpt = document.getElementById('boxS1BatteryOptions');
+        const badgeBat = document.getElementById('badgeS1BatteryStatus');
+
+        if (btnBatNo && btnBatYes) {
+            if (batS1.enabled) {
+                btnBatYes.className = "btn-press p-2.5 rounded-xl border text-center transition border-[#10B981] bg-[#10B981]/10 text-[var(--text-primary)]";
+                btnBatNo.className = "btn-press p-2.5 rounded-xl border text-center transition border-[var(--border-hairline)] bg-[var(--bg-subtle)] opacity-70";
+            } else {
+                btnBatNo.className = "btn-press p-2.5 rounded-xl border text-center transition border-[#0066FF] bg-[#0066FF]/10 text-[var(--text-primary)]";
+                btnBatYes.className = "btn-press p-2.5 rounded-xl border text-center transition border-[var(--border-hairline)] bg-[var(--bg-subtle)] opacity-70";
+            }
+        }
+        if (boxBatOpt) boxBatOpt.classList.toggle('hidden', !batS1.enabled);
+        if (badgeBat) {
+            if (batS1.enabled) {
+                badgeBat.textContent = `Con Batería (${batS1.targetAutarkyPct || 85}%)`;
+                badgeBat.className = "px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981]";
+            } else {
+                badgeBat.textContent = "Sin Batería";
+                badgeBat.className = "px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[var(--bg-subtle)] text-[var(--text-muted)]";
+            }
+        }
+
+        const autarkyPct = Number(batS1.targetAutarkyPct) || 85;
+        this.setVal('rngExpressAutarky', autarkyPct);
+        this.setText('lblExpressAutarkyVal', `${autarkyPct}%`);
+
+        const suggestedBatTxt = batS1.enabled
+            ? `${fmtNum(batS1.nominalCapacityKwh, 1)} kWh (${batS1.modelName || 'LiFePO4'})`
+            : "No instalada (0 kWh)";
+        this.setText('lblS1SuggestedBat', suggestedBatTxt);
+
+        const curLegalMode = st.legalAndFinancials.rd244Mode || 'compensacion';
+        this.setVal('selExpressLegalMode', curLegalMode);
+
+        const legalDescEl = document.getElementById('lblExpressLegalDesc');
+        if (legalDescEl) {
+            if (curLegalMode === 'aislada') {
+                legalDescEl.textContent = isEn
+                    ? "Off-grid 100% autonomous system (ITC-BT-40): sized with multi-day battery autonomy."
+                    : "Instalación 100% aislada de la red eléctrica (ITC-BT-40): dimensionada con autonomía de batería multijornada.";
+            } else if (curLegalMode === 'sin_excedentes') {
+                legalDescEl.textContent = isEn
+                    ? "Zero-export system with certified anti-feed-in protection; no energy injected to the grid."
+                    : "Instalación sin excedentes con sistema anti-vertido certificado; cero inyección a la red.";
+            } else {
+                legalDescEl.textContent = isEn
+                    ? "Surplus solar energy not consumed instantly is exported to the grid with bill credit compensation."
+                    : "Los excedentes solares no consumidos en el instante se vierten a la red y se compensan en tu factura mensual.";
+            }
+        }
 
         // Síntesis preliminar (abajo del Paso 1, derivada de los datos introducidos)
         this.setText('s1KpiRecKwp', fmtNum(c.pvgis.recKwp, 2));
@@ -8129,6 +8502,12 @@ const UI = {
         const fin = st.legalAndFinancials;
         const cf = c.financials;
 
+        const bannerExpress = document.getElementById('bannerExpressModeInfo');
+        if (bannerExpress) {
+            const isExp = (meta.wizardMode || 'express') === 'express';
+            bannerExpress.classList.toggle('hidden', !isExp);
+        }
+
         this.setText(
             's7ProjectMetaLine',
             `Proyecto: ${meta.projectName || '—'} | Titular: ${meta.clientName || '—'} | Ubicación: ${loc.municipality} (${loc.lat}°, ${loc.lon}°) | Fecha: ${meta.date}`
@@ -8289,6 +8668,14 @@ const UI = {
                 <div class="bento-subtle p-3 font-mono text-[11px] text-[var(--text-secondary)]">
                     <strong>Detalle MPPTs:</strong> ${mpptLines}
                 </div>
+                <div class="flex items-center justify-between pt-2 border-t border-[var(--border-hairline)] text-[11px] font-mono">
+                    <button type="button" onclick="Actions.openStepInAdvanced(2)" class="text-[#0066FF] hover:underline flex items-center gap-1 font-semibold">
+                        <span>🛠️ Personalizar Paneles (Paso 2)</span>
+                    </button>
+                    <button type="button" onclick="Actions.openStepInAdvanced(3)" class="text-[#0066FF] hover:underline flex items-center gap-1 font-semibold">
+                        <span>🛠️ Personalizar Inversor (Paso 3)</span>
+                    </button>
+                </div>
             `;
         }
 
@@ -8312,6 +8699,14 @@ const UI = {
                 </div>
                 <div class="bento-subtle p-3 font-mono text-[11px] text-[var(--text-secondary)]">
                     <strong>Balance Anual:</strong> Demanda ${fmtNum(c.energy.final.annualDemandKwh)} kWh • Autoconsumo total ${fmtNum(c.energy.final.totalSolarUsed)} kWh • Excedentes ${fmtNum(c.energy.final.totalSurplusExport)} kWh
+                </div>
+                <div class="flex items-center justify-between pt-2 border-t border-[var(--border-hairline)] text-[11px] font-mono">
+                    <button type="button" onclick="Actions.openStepInAdvanced(5)" class="text-[#0066FF] hover:underline flex items-center gap-1 font-semibold">
+                        <span>🛠️ Personalizar Batería (Paso 5)</span>
+                    </button>
+                    <button type="button" onclick="Actions.openStepInAdvanced(6)" class="text-[#0066FF] hover:underline flex items-center gap-1 font-semibold">
+                        <span>🛠️ Personalizar Finanzas & Legal (Paso 6)</span>
+                    </button>
                 </div>
             `;
         }
