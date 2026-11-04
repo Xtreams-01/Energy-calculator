@@ -1,8 +1,12 @@
 # Development and auxiliary files
 test_showroom_wizard_e2e.py
+test_*.py
 ai_studio_code(1).html
+estudio_3d_solar_pro_interactivo.html
 showroom_solar_portable.html
 WORKFLOW_MAP.md
+screenshot_*.png
+*.png
 
 # Packages & Archives
 *.zip
