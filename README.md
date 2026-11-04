@@ -1,14 +1,14 @@
-# Memoria Técnica y Manual de Operación — Showroom Solar (v4.7.1)
+# Memoria Técnica y Manual de Operación — Showroom Solar (v4.8.0)
 
-> **Plataforma de Simulación Fotovoltaica Determinista, Dimensionamiento de Almacenamiento Electroquímico, Validación Electrotécnica REBT y Análisis de Viabilidad Económico-Financiera.**  
+> **Plataforma de Simulación Fotovoltaica Determinista, Modelado Volumétrico 3D de Cubiertas, Raytracing de Sombras Cercanas y Remotas PVGIS, Trazado de Cableado y Conectores MC4, Validación Electrotécnica REBT y Análisis de Viabilidad Económico-Financiera.**  
 > Aplicación de cálculo y generación automatizada de memorias técnicas de diseño para instalaciones de autoconsumo solar en España, bajo estricto cumplimiento del **Real Decreto 244/2019**, el **Reglamento Electrotécnico para Baja Tensión (REBT)** y la **Circular 3/2020 de la CNMC**.
 
 [![Estado](https://img.shields.io/badge/Estado-Producci%C3%B3n%20Operativa-success.svg)](#)
-[![Versión](https://img.shields.io/badge/Versi%C3%B3n-v4.7.1%20(Tutorial%20Datadis%20%7C%20Doble%20Flujo)-blue.svg)](https://github.com/Xtreams-01/Energy-calculator/releases/tag/v4.7.1)
+[![Versión](https://img.shields.io/badge/Versi%C3%B3n-v4.8.0%20(Estudio%203D%20%7C%20Raytracing%20PVGIS%20%7C%20Cables%20MC4)-blue.svg)](https://github.com/Xtreams-01/Energy-calculator/releases/tag/v4.8.0)
 [![Normativa](https://img.shields.io/badge/Normativa-RD%20244%2F2019%20%7C%20REBT%20ITC--BT--19%2F20%2F40%20%7C%20CNMC%203%2F2020-navy.svg)](#)
 [![Catálogo](https://img.shields.io/badge/Cat%C3%A1logo-30%20M%C3%B3dulos%20%E2%80%A2%2054%20Inversores%20%E2%80%A2%2034%20Bater%C3%ADas-orange.svg)](#)
 
-[📥 **Descargar Versión Portable Autocontenida (.html)**](https://github.com/Xtreams-01/Energy-calculator/releases/download/v4.7.1/showroom_solar_portable.html) | [📦 **Descargar Paquete Técnico Completo (.zip)**](https://github.com/Xtreams-01/Energy-calculator/releases/download/v4.7.1/Showroom_Solar_v4.7.1_Offline.zip) | [📋 **Repositorio Oficial y Versiones**](https://github.com/Xtreams-01/Energy-calculator/releases)
+[📥 **Descargar Versión Portable Autocontenida (.html)**](https://github.com/Xtreams-01/Energy-calculator/releases/download/v4.8.0/showroom_solar_portable.html) | [📦 **Descargar Paquete Técnico Completo (.zip)**](https://github.com/Xtreams-01/Energy-calculator/releases/download/v4.8.0/Showroom_Solar_v4.8.0_Offline.zip) | [📋 **Repositorio Oficial y Versiones**](https://github.com/Xtreams-01/Energy-calculator/releases)
 
 ---
 
@@ -125,6 +125,21 @@ Cálculo analítico individualizado para los tres tramos de la instalación: **L
   * Sustitución programada de inversores: año 13 de explotación.
 * **Métricas Financieras Consolidadas:** Valor Actual Neto ($VAN$), Tasa Interna de Retorno ($TIR$), Periodo de Recuperación Simple y Descontado ($Payback$) y Coste Nivelado de la Energía ($LCOE$ en €/kWh).
 
+### 2.8. Estudio Volumétrico 3D, Raytracing de Sombras PVGIS y Cableado Profundo (`Solar3DStudio`)
+Integrado exclusivamente en el Modo Profesional, el estudio tridimensional ejecuta simulación física sobre la geometría real del emplazamiento:
+* **Referencia Georreferenciada PNOA (IGN):** Descarga dinámica de ortofotografía aérea de máxima resolución espacial desde el servicio WMS del **Instituto Geográfico Nacional** (`https://www.ign.es/wms-inspire/pnoa-ma`) o ingestión de planos técnicos acotados (`.png`, `.jpg`, `.pdf`) mediante `FileReader` con calibración de escala métrica.
+* **Modelado Paramétrico de Edificación:** Generación analítica de tipologías arquitectónicas (cubiertas a dos aguas, cuatro aguas, un agua, planta en L, cubiertas planas con peto perimetral y casetón de ascensor, o naves industriales) y calcado vectorial de vértices libres.
+* **Catálogo de Obstáculos Físicos y Arbolado Estacional:** Incorporación de elementos sombreadores con propiedades ópticas estacionales: árboles de hoja caduca (con coeficiente de atenuación radiativa invernal $\tau = 0.68$ y estival $\tau = 0.18$), coníferas perennes ($\tau = 0.14$), chimeneas, antenas, climatizadores (HVAC) y prismas colindantes.
+* **Algoritmo de Trazado de Rayos con Discretización Half-Cut (6 Subzonas):**
+  * Cálculo astronómico continuo del vector de posición solar (Ángulo Cenital $\theta_z$ y Acimut $\gamma_s$) según el algoritmo NOAA para cada hora diurna de los 12 meses representativos.
+  * Incorporación del perfil de elevación de horizonte topográfico lejano devuelto por PVGIS JRC (`mode=printhorizon`).
+  * Discretización de cada panel fotovoltaico en 6 subzonas de captación (3 subcadenas asociadas a los diodos de paso *bypass* en configuración partida *Half-Cut*). Activación no lineal de pérdidas por mismatch eléctrico: la oclusión de una subcélula activa el diodo correspondiente, reduciendo la producción del módulo un 33% o 66% en lugar del 100%.
+  * Evaluación del Factor de Vista al Cielo (*Sky View Factor*, $SVF$) para cuantificar la pérdida por enmascaramiento de radiación difusa y albedo.
+* **Cálculo Analítico de Cableado 3D y Conectores MC4:**
+  * Posicionamiento espacial de equipos: Inversor, Acumulador LiFePO4 y Cuadro General de Protección (CGMP).
+  * Simulación de canalizaciones y topologías de interconexión: **Salto de Rana** (*Leapfrog*, interconectando módulos alternos para minimizar el lazo de inducción magnética) vs **Cadena Lineal** (*Daisy-Chain* con cable de retorno).
+  * Determinación métrica exacta de: conductores entre placas ($L_{intra}$), puentes entre filas ($L_{jumper}$), bajantes homerun ($L_{dc+}, L_{dc-}$), línea de enlace al cuadro general ($L_{ac}$), línea de batería ($L_{bat}$), estimación de bobinas comerciales de compra (+15% de holgura de curvatura y conexionado) y cómputo de pares de conectores rápidos estancos tipo **MC4**.
+
 ---
 
 ## 3. Catálogos Industriales Tier-1 Integrados
@@ -159,12 +174,12 @@ Diseñado para la confección ágil de propuestas técnicas por parte de comerci
 Diseñado para ingenieros proyectistas, instaladores autorizados y directores de obra:
 * **Fase 0 (Identificación):** Metadatos completos y exportación/importación en formato JSON estandarizado.
 * **Fase 1 (Suministro y PVGIS):** Selección entre 52 demarcaciones territoriales, modelado tarifario (Fija, 2.0TD o 3.0TD de 6 periodos) y telemetría de contador.
-* **Fase 2 (Generador Fotovoltaico):** Selección de módulo de catálogo o manual, orientación, inclinación, cálculo de superficie ocupada ($m^2$) y curva $I-V$ / $P-V$.
+* **Fase 2 (Generador Fotovoltaico & Estudio 3D):** Selección de módulo de catálogo o manual, orientación, inclinación, cálculo de superficie ocupada ($m^2$), curva $I-V$ / $P-V$, e integración del **Estudio 3D CAD (`Solar3DStudio`)** con ortofoto IGN PNOA, modelado de cubiertas, posicionamiento de obstáculos/árboles, raytracing de 6 subzonas y mapa de calor de sombras.
 * **Fase 3 (Inversor y Multi-MPPT):** Asignación de inversor comercial, solver de distribución de cadenas, cálculo de pérdidas por clipping y botón de autocorrección en 1 clic.
-* **Fase 4 (Cableado REBT):** Verificación analítica de caída de tensión y criterio térmico para tramos DC, AC y Batería con esquema unifilar interactivo SVG.
+* **Fase 4 (Cableado REBT & Métrica 3D):** Verificación analítica de caída de tensión y criterio térmico para tramos DC, AC y Batería con esquema unifilar interactivo SVG y panel métrico de canalizaciones 3D (uniones placa a placa, puentes, bajantes, bobinas de compra y pares de conectores MC4).
 * **Fase 5 (Almacenamiento):** Elección de tecnología de acoplamiento, comparativa de factura con/sin batería y cálculo de cobertura de cargas nocturnas.
 * **Fase 6 (Legal y Finanzas):** Simulación de flujos de caja a 25 años, deducciones fiscales según territorio y cálculo de VAN, TIR y LCOE.
-* **Fase 7 (Showroom y Memoria A4):** Panel ejecutivo consolidado, auditoría de pérdidas IEC 61724 y generación de la Memoria Técnica de Diseño oficial en PDF A4.
+* **Fase 7 (Showroom y Memoria A4):** Panel ejecutivo consolidado, auditoría de pérdidas IEC 61724, anexo de simulación 3D con captura en alta resolución del gemelo digital y generación de la Memoria Técnica de Diseño oficial en PDF A4.
 
 ---
 

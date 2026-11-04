@@ -346,7 +346,7 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            #appShell, #modalJsonProject, #toastNotification {
+            #appShell, #modalJsonProject, #modalFeatureInfo, #modalDatadisTutorial, #modalSolar3DStudio, #toastNotification {
                 display: none !important;
             }
             #printReportA4 {
@@ -1396,6 +1396,34 @@
                             Actualizar PVGIS
                         </button>
                     </div>
+
+                    <!-- Acceso Discreto al Estudio 3D (Exclusivo Modo Profesional) -->
+                    <div id="boxPro3DLauncher" class="pt-3 border-t border-[var(--border-hairline)] space-y-2.5">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-7 h-7 rounded-lg bg-[#0066FF]/12 text-[#0066FF] flex items-center justify-center text-sm shrink-0">🏗️</span>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-xs font-bold text-[var(--text-primary)] truncate" data-i18n="s2_3d_title">Estudio 3D de Sombras y Cableado</span>
+                                        <span id="s2Badge3DState" class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--bg-subtle)] text-[var(--text-muted)] whitespace-nowrap">Opcional • Pro</span>
+                                    </div>
+                                    <p id="s2Sub3DState" class="text-[11px] text-[var(--text-muted)] truncate">Casa, árboles, sol PVGIS y cables entre paneles</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <button type="button" id="btnDisable3DQuick" onclick="Solar3DStudio.toggleActive(false)" class="hidden btn-press px-2.5 py-1.5 rounded-xl text-[11px] font-semibold bento-subtle text-[var(--text-muted)] hover:text-[#EF4444]" title="Desactivar datos 3D y volver a sliders manuales">
+                                    Apagar 3D
+                                </button>
+                                <button type="button" id="btnOpenSolar3DStudio" onclick="Solar3DStudio.openModal()" class="btn-press px-3.5 py-2 rounded-xl text-xs font-bold bg-[#0066FF]/12 text-[#0066FF] hover:bg-[#0066FF] hover:text-white border border-[#0066FF]/25 transition inline-flex items-center gap-1.5 whitespace-nowrap">
+                                    <span>🧊 Abrir Estudio 3D</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="s2Active3DSummary" class="hidden p-2.5 rounded-xl bg-[#10B981]/10 border border-[#10B981]/25 text-[11px] font-mono text-[var(--text-secondary)] flex flex-wrap items-center justify-between gap-2">
+                            <span id="s2Active3DMetrics">✅ Maqueta 3D activa: 8 paneles • Sombra real -2.4% • Cables medidos</span>
+                            <span class="text-[#10B981] font-bold">PVGIS + 3D Sincronizado</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1653,6 +1681,58 @@
                 <div class="flex items-center gap-2 self-end sm:self-auto">
                     <span id="s4LossPctBadge" class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-[#10B981]/12 text-[#10B981] whitespace-nowrap">-1.0%</span>
                     <span id="s4LossKwhBadge" class="text-xs font-mono text-[var(--text-muted)] whitespace-nowrap">(-58 kWh/año)</span>
+                </div>
+            </div>
+
+            <!-- Desglose de Cableado 3D (Entre Paneles, Bajantes, Equipos y Conectores MC4 - Modo Profesional) -->
+            <div id="s4Box3DWiringCard" class="bento-card p-4 sm:p-5 border border-[#0066FF]/25 space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl bg-[#0066FF]/12 text-[#0066FF] flex items-center justify-center font-bold text-sm shrink-0">🔌</span>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-display font-bold text-sm text-[var(--text-primary)]">Trazado de Cables en 3D: Entre Paneles, Bajantes y Lista de Compra</h4>
+                                <span id="s4Badge3DWiringStatus" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--bg-subtle)] text-[var(--text-muted)]">Modo Manual</span>
+                            </div>
+                            <p class="text-[11px] text-[var(--text-muted)]">Mide uniones placa a placa (salto de rana), puentes de fila y distancia real al Inversor, Batería y Cuadro General.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="Solar3DStudio.openModal('cables')" class="btn-press px-3.5 py-2 rounded-xl text-xs font-bold bg-[#0066FF]/12 text-[#0066FF] hover:bg-[#0066FF] hover:text-white border border-[#0066FF]/25 transition whitespace-nowrap">
+                        📍 Situar Equipos y Cables en 3D
+                    </button>
+                </div>
+
+                <div id="s4Grid3DWiringMetrics" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-2 border-t border-[var(--border-hairline)] text-xs">
+                    <div class="p-2.5 rounded-xl bento-subtle">
+                        <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase block">Unión Entre Placas</span>
+                        <strong id="s4WireIntraM" class="font-mono font-bold text-sm text-[var(--text-primary)]">9.2 m</strong>
+                        <span id="s4WireTopoSub" class="text-[10px] text-[var(--text-muted)] block">Salto de rana</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl bento-subtle">
+                        <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase block">Puentes de Fila</span>
+                        <strong id="s4WireJumpersM" class="font-mono font-bold text-sm text-[var(--text-primary)]">2.4 m</strong>
+                        <span class="text-[10px] text-[var(--text-muted)] block">Saltos inter-fila</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl bento-subtle">
+                        <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase block">Bajante al Inversor</span>
+                        <strong id="s4WireHomerunM" class="font-mono font-bold text-sm text-[#0066FF]">11.8 m (×2)</strong>
+                        <span class="text-[10px] text-[var(--text-muted)] block">Ida (+) y Vuelta (-)</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl bento-subtle">
+                        <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase block">Inversor → Cuadro</span>
+                        <strong id="s4WireAc3DM" class="font-mono font-bold text-sm text-[var(--text-primary)]">15.0 m</strong>
+                        <span id="s4WireBat3DM" class="text-[10px] text-[var(--text-muted)] block">Batería: 3.0 m</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl bento-subtle">
+                        <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase block">Compra Cable DC</span>
+                        <strong id="s4WireBuyDcM" class="font-mono font-bold text-sm text-[#10B981]">28m R + 28m N</strong>
+                        <span class="text-[10px] text-[var(--text-muted)] block">Incl. +15% margen</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl bento-subtle">
+                        <span class="text-[10px] font-mono text-[var(--text-muted)] uppercase block">Conectores MC4</span>
+                        <strong id="s4WireMc4Count" class="font-mono font-bold text-sm text-[#F59E0B]">4 pares</strong>
+                        <span class="text-[10px] text-[var(--text-muted)] block">Macho + Hembra</span>
+                    </div>
                 </div>
             </div>
 
@@ -2700,6 +2780,380 @@
     </div>
 </div>
 
+<!-- ==========================================================================
+     MODAL POP-UP: ESTUDIO CAD 3D DE TEJADO, SOMBRAS PVGIS Y CABLEADO REAL
+     (Exclusivo Modo Profesional • Carga diferida bajo demanda)
+     ========================================================================== -->
+<div id="modalSolar3DStudio" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="modalSolar3DTitle" onclick="if(event.target===this) Solar3DStudio.closeModal()">
+    <div class="bento-card w-full max-w-[1440px] h-[94dvh] flex flex-col overflow-hidden border border-[#0066FF]/40 shadow-2xl">
+
+        <!-- Cabecera Superior del Estudio 3D (Único botón ✕ de cierre arriba a la derecha) -->
+        <div class="px-4 py-3 border-b border-[var(--border-hairline)] flex flex-wrap items-center justify-between gap-3 shrink-0 bg-[var(--bg-surface-solid)]">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-[#0066FF]/12 text-[#0066FF] flex items-center justify-center font-bold text-lg shrink-0">🧊</div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                        <h3 id="modalSolar3DTitle" class="font-display font-bold text-base sm:text-lg text-[var(--text-primary)] truncate">Estudio 3D: Casa, Sombras PVGIS y Cableado</h3>
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#0066FF]/12 text-[#0066FF] uppercase whitespace-nowrap">Modo Profesional</span>
+                    </div>
+                    <p id="s3dHeaderSub" class="text-[11px] text-[var(--text-muted)] font-mono truncate">Sol PVGIS • Madrid (40.42°, -3.70°) • Arrastre ratón: Girar / Zoom</p>
+                </div>
+            </div>
+
+            <!-- Pestañas de Herramientas del Estudio 3D -->
+            <div class="segmented-group overflow-x-auto max-w-full" role="tablist" aria-label="Secciones del Estudio 3D">
+                <button type="button" id="tab3D_casa" onclick="Solar3DStudio.setTab('casa')" class="segmented-btn active !px-3 !py-1.5 text-xs whitespace-nowrap">1. Suelo y Casa</button>
+                <button type="button" id="tab3D_obstaculos" onclick="Solar3DStudio.setTab('obstaculos')" class="segmented-btn !px-3 !py-1.5 text-xs whitespace-nowrap">2. Árboles y Obstáculos</button>
+                <button type="button" id="tab3D_placas" onclick="Solar3DStudio.setTab('placas')" class="segmented-btn !px-3 !py-1.5 text-xs whitespace-nowrap">3. Paneles y Sombras</button>
+                <button type="button" id="tab3D_cables" onclick="Solar3DStudio.setTab('cables')" class="segmented-btn !px-3 !py-1.5 text-xs whitespace-nowrap">4. Inversor y Cables</button>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <button type="button" id="btnApply3DToProject" onclick="Solar3DStudio.applyAndClose()" class="btn-press px-4 py-2 rounded-xl text-xs font-bold bg-[#10B981] hover:bg-[#059669] text-white shadow-sm inline-flex items-center gap-1.5 whitespace-nowrap">
+                    <span>✅ Aplicar al Proyecto</span>
+                </button>
+                <button type="button" onclick="Solar3DStudio.closeModal()" aria-label="Cerrar estudio 3D" class="w-8 h-8 rounded-xl bento-subtle flex items-center justify-center font-bold text-xs hover:text-[#EF4444]">✕</button>
+            </div>
+        </div>
+
+        <!-- Barra de Control Solar y Vistas en Tiempo Real -->
+        <div class="px-4 py-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] flex flex-wrap items-center justify-between gap-2 text-xs shrink-0">
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="font-mono font-bold text-[11px] text-[#F59E0B]">☀️ SOL PVGIS:</span>
+                <select id="sel3DSunMonth" aria-label="Mes del año para simulación solar" class="showroom-input !py-1 !px-2 text-xs font-mono font-bold" onchange="Solar3DStudio.setSunDate(this.value)">
+                    <option value="11">21 Dic (Solsticio Invierno — Sombra Máx.)</option>
+                    <option value="2">21 Mar (Equinoccio Primavera)</option>
+                    <option value="5">21 Jun (Solsticio Verano — Sol Alto)</option>
+                    <option value="8">21 Sep (Equinoccio Otoño)</option>
+                    <option value="0">15 Enero</option>
+                    <option value="1">15 Febrero</option>
+                    <option value="3">15 Abril</option>
+                    <option value="4">15 Mayo</option>
+                    <option value="6">15 Julio</option>
+                    <option value="7">15 Agosto</option>
+                    <option value="9">15 Octubre</option>
+                    <option value="10">15 Noviembre</option>
+                </select>
+
+                <div class="flex items-center gap-1.5 bg-[var(--bg-surface-solid)] px-2.5 py-1 rounded-xl border border-[var(--border-hairline)]">
+                    <span class="text-[11px] font-mono text-[var(--text-muted)]">Hora:</span>
+                    <input id="rng3DSunHour" type="range" min="6" max="21" step="0.25" value="10.5" aria-label="Hora solar del día" class="!w-28 sm:!w-36" oninput="Solar3DStudio.setSunHour(this.value)" style="--thumb-accent: #F59E0B;">
+                    <strong id="lbl3DSunHour" class="font-mono text-xs text-[#0066FF] w-12 text-right">10:30</strong>
+                    <button type="button" id="btn3DPlaySun" onclick="Solar3DStudio.togglePlaySun()" class="btn-press px-2 py-0.5 rounded-lg text-[11px] font-bold bg-[#F59E0B]/15 text-[#F59E0B] hover:bg-[#F59E0B] hover:text-white">▶ Play</button>
+                </div>
+
+                <span id="lbl3DSunAngles" class="hidden xl:inline font-mono text-[11px] text-[var(--text-muted)]">Elev: 26.2° • Az: -22°</span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1.5">
+                <button type="button" id="btn3DToggleHeatmap" onclick="Solar3DStudio.toggleHeatmap()" class="btn-press px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30">🎨 Semáforo Placas: ON</button>
+                <button type="button" id="btn3DToggleCables" onclick="Solar3DStudio.toggleCablesView()" class="btn-press px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#0066FF]/15 text-[#0066FF] border border-[#0066FF]/30">🔌 Cables 3D: ON</button>
+                <button type="button" onclick="Solar3DStudio.setCameraView('iso')" class="btn-press px-2 py-1 rounded-lg text-[11px] font-mono bento-subtle">Vista 3D</button>
+                <button type="button" onclick="Solar3DStudio.setCameraView('top')" class="btn-press px-2 py-1 rounded-lg text-[11px] font-mono bento-subtle">Cenital 2D</button>
+                <button type="button" onclick="Solar3DStudio.setCameraView('south')" class="btn-press px-2 py-1 rounded-lg text-[11px] font-mono bento-subtle">Frente Sur</button>
+            </div>
+        </div>
+
+        <!-- Cuerpo Principal: Panel Izquierdo (Controles) + Lienzo 3D Central + Resumen Inferior -->
+        <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+
+            <!-- Columna Izquierda (4 cols en LG): Controles Contextuales de la Pestaña Activa -->
+            <div class="lg:col-span-4 border-r border-[var(--border-hairline)] overflow-y-auto p-4 space-y-4 bg-[var(--bg-surface-solid)] text-xs">
+
+                <!-- PESTAÑA 1: SUELO (ORTOFOTO / PLANO) Y CASA / EDIFICIO -->
+                <div id="panel3D_casa" class="space-y-4">
+                    <div class="p-3.5 rounded-2xl bento-subtle space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <strong class="font-display font-bold text-xs uppercase text-[#0066FF]">1A. Referencia del Suelo (Ortofoto / Plano)</strong>
+                            <span id="lbl3DGroundStatus" class="text-[10px] font-mono text-[#10B981]">IGN PNOA Activo</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button type="button" id="btnGroundIgn" onclick="Solar3DStudio.setGroundMode('ign_ortho')" class="btn-press p-2 rounded-xl text-[11px] font-bold border border-[#0066FF] bg-[#0066FF]/10 text-[#0066FF]">🛰️ Foto Aérea</button>
+                            <button type="button" id="btnGroundCustom" onclick="document.getElementById('inp3DGroundFile').click()" class="btn-press p-2 rounded-xl text-[11px] font-semibold bento-subtle">📂 Subir Plano</button>
+                            <button type="button" id="btnGroundGrid" onclick="Solar3DStudio.setGroundMode('grid_only')" class="btn-press p-2 rounded-xl text-[11px] font-semibold bento-subtle">📏 Solo Rejilla</button>
+                        </div>
+                        <input type="file" id="inp3DGroundFile" accept="image/*" class="hidden" onchange="Solar3DStudio.loadCustomGroundImage(this.files[0])">
+                        <div class="flex items-center justify-between gap-2 pt-1">
+                            <label for="inp3DGroundScale" class="text-[11px] text-[var(--text-muted)]">Ancho de parcela (escala m):</label>
+                            <input id="inp3DGroundScale" type="number" min="15" max="160" step="1" value="42" class="showroom-input !py-1 !px-2 w-20 text-right font-mono text-xs" oninput="Solar3DStudio.setGroundScale(this.value)">
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bento-subtle space-y-3">
+                        <div class="flex items-center justify-between">
+                            <strong class="font-display font-bold text-xs uppercase text-[#0066FF]">1B. Tipo de Edificación / Cubierta</strong>
+                            <button type="button" id="btnDrawFootprint" onclick="Solar3DStudio.toggleDrawFootprint()" class="btn-press px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#0066FF]/15 text-[#0066FF] hover:bg-[#0066FF] hover:text-white">
+                                ✏️ Calcar Esquinas
+                            </button>
+                        </div>
+                        <p id="hintDrawFootprint" class="hidden p-2 rounded-xl bg-[#F59E0B]/15 text-[#F59E0B] font-mono text-[11px]">
+                            👆 Haz clic en 3 o más esquinas sobre el suelo 3D para calcar la planta y pulsa «Cerrar Planta».
+                        </p>
+
+                        <label for="sel3DArchType" class="block text-[11px] font-semibold text-[var(--text-secondary)]">Plantilla arquitectónica rápida:</label>
+                        <select id="sel3DArchType" class="showroom-input w-full text-xs font-bold" onchange="Solar3DStudio.setBuildingProp('archType', this.value)">
+                            <option value="chalet_2aguas">🏠 Chalet / Casa — Cubierta a 2 Aguas</option>
+                            <option value="chalet_4aguas">🏡 Chalet — Cubierta a 4 Aguas (Pabellón)</option>
+                            <option value="chalet_1agua">📐 Casa / Cobertizo — Cubierta a 1 Agua</option>
+                            <option value="chalet_l">🏘️ Vivienda en «L» (Cuerpo Principal + Ala)</option>
+                            <option value="piso_plana">🏢 Edificio / Bloque — Azotea Plana con Murete</option>
+                            <option value="nave_industrial">🏭 Nave Industrial / Comercial (Gran Luz)</option>
+                        </select>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label for="inp3DBldWidth" class="block text-[11px] text-[var(--text-muted)] mb-0.5">Ancho Fachada X (m)</label>
+                                <input id="inp3DBldWidth" type="number" min="4" max="80" step="0.5" value="12" class="showroom-input w-full !py-1 font-mono font-bold" oninput="Solar3DStudio.setBuildingProp('widthM', this.value)">
+                            </div>
+                            <div>
+                                <label for="inp3DBldDepth" class="block text-[11px] text-[var(--text-muted)] mb-0.5">Fondo Planta Z (m)</label>
+                                <input id="inp3DBldDepth" type="number" min="4" max="80" step="0.5" value="9" class="showroom-input w-full !py-1 font-mono font-bold" oninput="Solar3DStudio.setBuildingProp('depthM', this.value)">
+                            </div>
+                            <div>
+                                <label for="inp3DBldHeight" class="block text-[11px] text-[var(--text-muted)] mb-0.5">Altura Alero / Pared (m)</label>
+                                <input id="inp3DBldHeight" type="number" min="2.5" max="45" step="0.5" value="5.8" class="showroom-input w-full !py-1 font-mono font-bold" oninput="Solar3DStudio.setBuildingProp('wallHeightM', this.value)">
+                            </div>
+                            <div>
+                                <label for="inp3DBldTilt" class="block text-[11px] text-[var(--text-muted)] mb-0.5">Pendiente Tejado (°)</label>
+                                <input id="inp3DBldTilt" type="number" min="0" max="55" step="1" value="30" class="showroom-input w-full !py-1 font-mono font-bold text-[#0066FF]" oninput="Solar3DStudio.setBuildingProp('roofTiltDeg', this.value)">
+                            </div>
+                            <div>
+                                <label for="inp3DBldAzimuth" class="block text-[11px] text-[var(--text-muted)] mb-0.5">Giro Casa (0°=Sur)</label>
+                                <input id="inp3DBldAzimuth" type="number" min="-180" max="180" step="5" value="0" class="showroom-input w-full !py-1 font-mono font-bold" oninput="Solar3DStudio.setBuildingProp('azimuthDeg', this.value)">
+                            </div>
+                            <div>
+                                <label for="inp3DBldParapet" class="block text-[11px] text-[var(--text-muted)] mb-0.5">Murete Azotea (m)</label>
+                                <input id="inp3DBldParapet" type="number" min="0" max="2.5" step="0.1" value="0.9" class="showroom-input w-full !py-1 font-mono font-bold" oninput="Solar3DStudio.setBuildingProp('parapetHeightM', this.value)">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-semibold">
+                                <input id="chk3DElevatorHut" type="checkbox" class="rounded border-slate-400 text-[#0066FF]" onchange="Solar3DStudio.setBuildingProp('hasElevatorHut', this.checked)">
+                                <span>Incluir casetón de ascensor en azotea</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 2: ÁRBOLES, CHIMENEAS, VECINOS Y FIGURAS ALTERNAS -->
+                <div id="panel3D_obstaculos" class="hidden space-y-4">
+                    <div class="p-3.5 rounded-2xl bento-subtle space-y-2.5">
+                        <strong class="font-display font-bold text-xs uppercase text-[#0066FF] block">2A. Añadir Vegetación u Obstáculo al Entorno</strong>
+                        <p class="text-[11px] text-[var(--text-muted)]">Haz clic para insertar y muévelo sobre la parcela o el tejado:</p>
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <button type="button" onclick="Solar3DStudio.addObstacle('tree_deciduous')" class="btn-press p-2 rounded-xl text-left bento-card hover:border-[#10B981] flex items-center gap-2">
+                                <span class="text-base">🌳</span>
+                                <div><strong class="block text-[11px]">Árbol Caduco</strong><span class="text-[10px] text-[var(--text-muted)]">Cae hoja en inv.</span></div>
+                            </button>
+                            <button type="button" onclick="Solar3DStudio.addObstacle('tree_conifer')" class="btn-press p-2 rounded-xl text-left bento-card hover:border-[#10B981] flex items-center gap-2">
+                                <span class="text-base">🌲</span>
+                                <div><strong class="block text-[11px]">Pino / Perenne</strong><span class="text-[10px] text-[var(--text-muted)]">Tupido todo el año</span></div>
+                            </button>
+                            <button type="button" onclick="Solar3DStudio.addObstacle('tree_palm')" class="btn-press p-2 rounded-xl text-left bento-card hover:border-[#10B981] flex items-center gap-2">
+                                <span class="text-base">🌴</span>
+                                <div><strong class="block text-[11px]">Palmera Alta</strong><span class="text-[10px] text-[var(--text-muted)]">Fuste + penacho</span></div>
+                            </button>
+                            <button type="button" onclick="Solar3DStudio.addObstacle('chimney')" class="btn-press p-2 rounded-xl text-left bento-card hover:border-[#F59E0B] flex items-center gap-2">
+                                <span class="text-base">🧱</span>
+                                <div><strong class="block text-[11px]">Chimenea</strong><span class="text-[10px] text-[var(--text-muted)]">Sobre cubierta</span></div>
+                            </button>
+                            <button type="button" onclick="Solar3DStudio.addObstacle('antenna')" class="btn-press p-2 rounded-xl text-left bento-card hover:border-[#F59E0B] flex items-center gap-2">
+                                <span class="text-base">📡</span>
+                                <div><strong class="block text-[11px]">Antena / Mástil</strong><span class="text-[10px] text-[var(--text-muted)]">Sombra fina bypass</span></div>
+                            </button>
+                            <button type="button" onclick="Solar3DStudio.addObstacle('hvac')" class="btn-press p-2 rounded-xl text-left bento-card hover:border-[#F59E0B] flex items-center gap-2">
+                                <span class="text-base">❄️</span>
+                                <div><strong class="block text-[11px]">Clima / Caseta</strong><span class="text-[10px] text-[var(--text-muted)]">Equipo en tejado</span></div>
+                            </button>
+                            <button type="button" onclick="Solar3DStudio.addObstacle('neighbor_block')" class="btn-press p-2 rounded-xl text-left bento-card hover:border-[#0066FF] flex items-center gap-2">
+                                <span class="text-base">🏢</span>
+                                <div><strong class="block text-[11px]">Edificio Vecino</strong><span class="text-[10px] text-[var(--text-muted)]">Sombra colindante</span></div>
+                            </button>
+                            <button type="button" onclick="Solar3DStudio.addObstacle('free_prism')" class="btn-press p-2 rounded-xl text-left bento-card hover:border-[#0066FF] flex items-center gap-2">
+                                <span class="text-base">📦</span>
+                                <div><strong class="block text-[11px]">Figura Libre</strong><span class="text-[10px] text-[var(--text-muted)]">Cubo/Cilindro/Rampa</span></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Editor del Obstáculo Seleccionado -->
+                    <div id="boxSelectedObstacleEditor" class="p-3.5 rounded-2xl bento-subtle space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <strong id="lblSelectedObstacleName" class="font-display font-bold text-xs text-[#0066FF]">Ningún obstáculo seleccionado</strong>
+                            <button type="button" onclick="Solar3DStudio.deleteSelectedObstacle()" class="btn-press px-2 py-1 rounded-lg text-[10px] font-bold bg-[#EF4444]/15 text-[#EF4444]">🗑️ Borrar</button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label for="inpObsX" class="block text-[10px] text-[var(--text-muted)]">Posición Este/Oeste X (m)</label>
+                                <input id="inpObsX" type="number" step="0.5" value="0" class="showroom-input w-full !py-1 font-mono text-xs" oninput="Solar3DStudio.updateSelectedObstacle('x', this.value)">
+                            </div>
+                            <div>
+                                <label for="inpObsZ" class="block text-[10px] text-[var(--text-muted)]">Posición Sur/Norte Z (m)</label>
+                                <input id="inpObsZ" type="number" step="0.5" value="6" class="showroom-input w-full !py-1 font-mono text-xs" oninput="Solar3DStudio.updateSelectedObstacle('z', this.value)">
+                            </div>
+                            <div>
+                                <label for="inpObsH" class="block text-[10px] text-[var(--text-muted)]">Altura Total H (m)</label>
+                                <input id="inpObsH" type="number" min="0.5" max="50" step="0.5" value="7.5" class="showroom-input w-full !py-1 font-mono text-xs font-bold" oninput="Solar3DStudio.updateSelectedObstacle('heightM', this.value)">
+                            </div>
+                            <div>
+                                <label for="inpObsW" class="block text-[10px] text-[var(--text-muted)]">Ancho / Copa D (m)</label>
+                                <input id="inpObsW" type="number" min="0.2" max="40" step="0.5" value="4.0" class="showroom-input w-full !py-1 font-mono text-xs font-bold" oninput="Solar3DStudio.updateSelectedObstacle('widthM', this.value)">
+                            </div>
+                        </div>
+                        <div id="listObstaclesItems" class="max-h-32 overflow-y-auto space-y-1 pt-1 border-t border-[var(--border-hairline)]"></div>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 3: COLOCACIÓN DE PANELES SOLARES Y MAPA DE SOMBRAS -->
+                <div id="panel3D_placas" class="hidden space-y-4">
+                    <div class="p-3.5 rounded-2xl bento-subtle space-y-3">
+                        <div class="flex items-center justify-between">
+                            <strong class="font-display font-bold text-xs uppercase text-[#0066FF]">3A. Disposición de Placas en Cubierta</strong>
+                            <span id="lbl3DModuleModel" class="text-[10px] font-mono text-[var(--text-muted)]">450 Wp (1.72×1.13m)</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label for="sel3DPanelOrient" class="block text-[11px] text-[var(--text-muted)] mb-1">Posición del Panel</label>
+                                <select id="sel3DPanelOrient" class="showroom-input w-full !py-1 text-xs font-bold" onchange="Solar3DStudio.setPanelMountProp('orientation', this.value)">
+                                    <option value="portrait">Vertical (Retrato)</option>
+                                    <option value="landscape">Horizontal (Apaisado)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="sel3DFlatRoofMode" class="block text-[11px] text-[var(--text-muted)] mb-1">En Azotea Plana</label>
+                                <select id="sel3DFlatRoofMode" class="showroom-input w-full !py-1 text-xs font-bold" onchange="Solar3DStudio.setPanelMountProp('flatRoofMode', this.value)">
+                                    <option value="south_rows">Filas al Sur (Sep. IDAE)</option>
+                                    <option value="east_west">Doble Este-Oeste (Λ)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="inp3DEdgeMargin" class="block text-[11px] text-[var(--text-muted)] mb-1">Margen al Borde (m)</label>
+                                <input id="inp3DEdgeMargin" type="number" min="0.1" max="2.0" step="0.05" value="0.45" class="showroom-input w-full !py-1 font-mono text-xs" oninput="Solar3DStudio.setPanelMountProp('edgeMarginM', this.value)">
+                            </div>
+                            <div>
+                                <label for="inp3DMaxShade" class="block text-[11px] text-[var(--text-muted)] mb-1">Quitar si Sombra &gt; (%)</label>
+                                <input id="inp3DMaxShade" type="number" min="5" max="50" step="1" value="15" class="showroom-input w-full !py-1 font-mono text-xs text-[#F59E0B] font-bold" oninput="Solar3DStudio.setPanelMountProp('maxAllowedShadePct', this.value)">
+                            </div>
+                        </div>
+
+                        <button type="button" id="btn3DAutoFillOptimal" onclick="Solar3DStudio.autoFillOptimalPanels()" class="w-full btn-press py-2.5 px-4 rounded-xl text-xs font-bold bg-[#0066FF] hover:bg-[#0052CC] text-white shadow-md flex items-center justify-center gap-2">
+                            <span>✨ Rellenar Tejado Óptimo (Evita Sombras)</span>
+                        </button>
+
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button type="button" onclick="Solar3DStudio.addSinglePanelOnRoof()" class="btn-press py-1.5 px-2 rounded-xl text-[11px] font-semibold bento-card text-center">➕ +1 Placa</button>
+                            <button type="button" onclick="Solar3DStudio.removeHighShadePanels()" class="btn-press py-1.5 px-2 rounded-xl text-[11px] font-semibold bento-card text-center text-[#F59E0B]">🧹 Limpiar Rojas</button>
+                            <button type="button" onclick="Solar3DStudio.clearAllPanels()" class="btn-press py-1.5 px-2 rounded-xl text-[11px] font-semibold bento-card text-center text-[#EF4444]">🗑️ Vaciar</button>
+                        </div>
+                    </div>
+
+                    <!-- Resumen de Sombras y Reparto por Faldón / MPPT -->
+                    <div class="p-3.5 rounded-2xl bento-subtle space-y-2">
+                        <strong class="font-display font-bold text-xs uppercase text-[#10B981] block">3B. Diagnóstico Solar PVGIS + Diodos Bypass</strong>
+                        <div class="grid grid-cols-2 gap-2 font-mono text-xs">
+                            <div class="p-2 rounded-xl bg-[var(--bg-surface-solid)]">
+                                <span class="text-[10px] text-[var(--text-muted)] block">Placas en Cubierta</span>
+                                <strong id="lbl3DPanelCount" class="text-sm text-[#0066FF]">8 uds (3.60 kWp)</strong>
+                            </div>
+                            <div class="p-2 rounded-xl bg-[var(--bg-surface-solid)]">
+                                <span class="text-[10px] text-[var(--text-muted)] block">Pérdida Real Sombra</span>
+                                <strong id="lbl3DShadeLoss" class="text-sm text-[#10B981]">-2.1% / año</strong>
+                            </div>
+                        </div>
+                        <div id="box3DMpptFacesBreakdown" class="text-[11px] font-mono text-[var(--text-secondary)] space-y-1 pt-1"></div>
+                    </div>
+                </div>
+
+                <!-- PESTAÑA 4: UBICACIÓN DEL INVERSOR, BATERÍA, CUADRO Y CABLEADO ENTRE PANELES -->
+                <div id="panel3D_cables" class="hidden space-y-4">
+                    <div class="p-3.5 rounded-2xl bento-subtle space-y-3">
+                        <strong class="font-display font-bold text-xs uppercase text-[#0066FF] block">4A. Situar Equipos y Modo de Cableado</strong>
+                        <p class="text-[11px] text-[var(--text-muted)]">Pulsa un equipo y haz clic sobre cualquier pared/punto de la casa 3D (o ajusta sus coordenadas):</p>
+
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button type="button" id="btnPlaceInv3D" onclick="Solar3DStudio.setPlacementMode('inverter')" class="btn-press p-2 rounded-xl text-center bento-card border border-[#0066FF]/40 text-[#0066FF] font-bold text-[11px]">📍 Inversor</button>
+                            <button type="button" id="btnPlaceBat3D" onclick="Solar3DStudio.setPlacementMode('battery')" class="btn-press p-2 rounded-xl text-center bento-card border border-[#10B981]/40 text-[#10B981] font-bold text-[11px]">🔋 Batería</button>
+                            <button type="button" id="btnPlaceBoard3D" onclick="Solar3DStudio.setPlacementMode('mainBoard')" class="btn-press p-2 rounded-xl text-center bento-card border border-[#F59E0B]/40 text-[#F59E0B] font-bold text-[11px]">⚡ Cuadro Casa</button>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label for="sel3DWiringTopology" class="block text-[11px] text-[var(--text-muted)] mb-1">Unión Entre Placas</label>
+                                <select id="sel3DWiringTopology" class="showroom-input w-full !py-1 text-xs font-bold" onchange="Solar3DStudio.setElectricalProp('wiringTopology', this.value)">
+                                    <option value="leapfrog">Salto de Rana (Anti-bucle)</option>
+                                    <option value="daisy">En Fila (Daisy-Chain)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="sel3DRoutingStyle" class="block text-[11px] text-[var(--text-muted)] mb-1">Bajada de Tubos</label>
+                                <select id="sel3DRoutingStyle" class="showroom-input w-full !py-1 text-xs font-bold" onchange="Solar3DStudio.setElectricalProp('routingStyle', this.value)">
+                                    <option value="orthogonal_walls">Pegado a Paredes/Alero</option>
+                                    <option value="direct_conduit">Tubo Directo Interior</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 pt-1">
+                            <div>
+                                <label for="inp3DInvX" class="block text-[10px] text-[var(--text-muted)]">Inversor X (m)</label>
+                                <input id="inp3DInvX" type="number" step="0.5" value="-4.2" class="showroom-input w-full !py-1 font-mono text-xs" oninput="Solar3DStudio.setEquipmentCoord('inverterPos', 'x', this.value)">
+                            </div>
+                            <div>
+                                <label for="inp3DInvY" class="block text-[10px] text-[var(--text-muted)]">Altura Y (m)</label>
+                                <input id="inp3DInvY" type="number" min="0.5" max="20" step="0.2" value="1.6" class="showroom-input w-full !py-1 font-mono text-xs" oninput="Solar3DStudio.setEquipmentCoord('inverterPos', 'y', this.value)">
+                            </div>
+                            <div>
+                                <label for="inp3DInvZ" class="block text-[10px] text-[var(--text-muted)]">Fondo Z (m)</label>
+                                <input id="inp3DInvZ" type="number" step="0.5" value="4.5" class="showroom-input w-full !py-1 font-mono text-xs" oninput="Solar3DStudio.setEquipmentCoord('inverterPos', 'z', this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bento-subtle space-y-2 font-mono text-xs">
+                        <strong class="font-display font-bold text-xs uppercase text-[#10B981] block font-sans">4B. Medición Exacta de Cables y Conectores</strong>
+                        <div class="flex justify-between"><span>Unión entre paneles (neto):</span><strong id="lbl3DWireIntra">9.2 m</strong></div>
+                        <div class="flex justify-between"><span>Puentes salto entre filas:</span><strong id="lbl3DWireJumpers">2.4 m</strong></div>
+                        <div class="flex justify-between"><span>Bajante al Inversor (+ / -):</span><strong id="lbl3DWireHomerun" class="text-[#0066FF]">11.5m / 12.1m</strong></div>
+                        <div class="flex justify-between"><span>Tramo Inversor → Batería:</span><strong id="lbl3DWireBat">2.5 m</strong></div>
+                        <div class="flex justify-between"><span>Tramo Inversor → Cuadro AC:</span><strong id="lbl3DWireAc">14.0 m</strong></div>
+                        <div class="pt-2 border-t border-[var(--border-hairline)] flex justify-between text-[#10B981]">
+                            <span>Compra Rollo DC (+15%):</span><strong id="lbl3DBuyRollDc">28m Rojo + 28m Negro</strong>
+                        </div>
+                        <div class="flex justify-between text-[#F59E0B]">
+                            <span>Conectores MC4 necesarios:</span><strong id="lbl3DMc4Count">4 pares (M/H)</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Lienzo Central Interactivo Three.js WebGL (8 cols en LG) -->
+            <div class="lg:col-span-8 relative bg-slate-900 min-h-[380px] flex flex-col">
+                <div id="solar3DCanvasContainer" class="flex-1 w-full h-full relative overflow-hidden cursor-grab active:cursor-grabbing">
+                    <!-- Canvas WebGL / 2.5D se monta aquí -->
+                </div>
+
+                <!-- Leyenda Flotante del Semáforo de Sombras y Cables -->
+                <div class="absolute bottom-3 left-3 right-3 pointer-events-none flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
+                    <div class="px-3 py-1.5 rounded-xl bg-slate-950/80 text-slate-100 backdrop-blur-md border border-white/10 flex flex-wrap items-center gap-3">
+                        <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-[#10B981] inline-block"></span> Óptimo (&lt;4% sombra)</span>
+                        <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-[#F59E0B] inline-block"></span> Sombra media (4–15%)</span>
+                        <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-[#EF4444] inline-block"></span> Sombra alta (&gt;15%)</span>
+                    </div>
+                    <div class="px-3 py-1.5 rounded-xl bg-slate-950/80 text-slate-100 backdrop-blur-md border border-white/10 flex items-center gap-3">
+                        <span class="text-red-400">━━ DC (+)</span>
+                        <span class="text-cyan-300">━━ Entre Placas</span>
+                        <span class="text-amber-400">━━ AC Cuadro</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!-- Notificación Toast Flotante -->
 <div id="toastNotification" role="status" aria-live="polite" class="hidden fixed bottom-24 right-5 z-50 bento-card px-4 py-3 text-xs font-semibold shadow-xl border-l-4 border-l-[#10B981]"></div>
 
@@ -3686,6 +4140,80 @@ function createDefaultState() {
             subsidyEur: 0,
             ibiDiscountEurYear: 0,
             ibiYears: 0
+        },
+        scene3D: {
+            enabled: false,
+            groundMode: "ign_ortho", // 'ign_ortho' | 'custom_image' | 'grid_only'
+            groundScaleM: 42,
+            buildings: [
+                {
+                    id: "bld_main",
+                    name: "Vivienda Principal",
+                    archType: "chalet_2aguas", // 'chalet_2aguas' | 'chalet_4aguas' | 'chalet_1agua' | 'chalet_l' | 'piso_plana' | 'nave_industrial' | 'poligono_libre'
+                    x: 0,
+                    z: 0,
+                    widthM: 12,
+                    depthM: 9,
+                    wallHeightM: 5.8,
+                    roofTiltDeg: 30,
+                    azimuthDeg: 0,
+                    parapetHeightM: 0.9,
+                    hasElevatorHut: false,
+                    lWingWidthM: 5.0,
+                    lWingDepthM: 5.0,
+                    customFootprintPts: []
+                }
+            ],
+            obstacles: [],
+            panels: [],
+            panelMountConfig: {
+                orientation: "portrait", // 'portrait' | 'landscape'
+                flatRoofTiltDeg: 25,
+                flatRoofMode: "south_rows", // 'south_rows' | 'east_west'
+                edgeMarginM: 0.45,
+                maxAllowedShadePct: 15
+            },
+            electrical3D: {
+                wiringTopology: "leapfrog", // 'leapfrog' | 'daisy'
+                routingStyle: "orthogonal_walls", // 'orthogonal_walls' | 'direct_conduit'
+                pigtailLengthM: 1.15,
+                showCablesIn3D: true,
+                inverterPos: { x: -4.2, y: 1.6, z: 4.5, wallLabel: "Fachada Sur / Garaje" },
+                batteryPos: { x: -2.8, y: 0.8, z: 4.5, wallLabel: "Junto al Inversor" },
+                mainBoardPos: { x: 2.8, y: 1.6, z: 4.5, wallLabel: "Entrada Vivienda (CGMP)" },
+                computedWiring: {
+                    intraPanelTotalM: 9.2,
+                    interRowJumpersM: 2.4,
+                    homerunPosM: 11.5,
+                    homerunNegM: 12.1,
+                    worstStringOneWayM: 18.0,
+                    invToBatteryOneWayM: 2.5,
+                    invToBoardOneWayM: 14.0,
+                    mc4PairsCount: 4,
+                    totalRedCableBuyM: 28,
+                    totalBlackCableBuyM: 28,
+                    totalAcCableBuyM: 17,
+                    stringsBreakdown: []
+                }
+            },
+            sunSim: {
+                monthIdx: 11,
+                dayOfMonth: 21,
+                hourDecimal: 10.5,
+                showSunPathArcs: true,
+                showPanelHeatmap: true,
+                horizonProfile36: []
+            },
+            computed3D: {
+                annualNearShadeLossPct: 0,
+                annualHorizonLossPct: 0,
+                annualBypassMismatchPct: 0,
+                totalEffectiveLossPct: 0,
+                avgSkyViewFactor: 0.96,
+                roofFacesSummary: [],
+                hourlyShadeFactor12x24: null,
+                snapshotDataUrl: null
+            }
         }
     };
 }
@@ -4415,7 +4943,13 @@ const PhysicsEngine = {
             const mSolarKwh = annualGenKwh * (loc.monthlyWeights[m] || (1 / 12));
             const mDemandKwh = monthlyDemandTarget[m];
 
-            const seasonCurve = this.getSolarCurveForMonth(m);
+            const rawSeasonCurve = this.getSolarCurveForMonth(m);
+            const s3dMat = (Store.state.projectMeta.wizardMode === 'advanced' && Store.state.scene3D?.enabled)
+                ? Store.state.scene3D.computed3D?.hourlyShadeFactor12x24?.[m]
+                : null;
+            const seasonCurve = Array.isArray(s3dMat)
+                ? rawSeasonCurve.map((val, hIdx) => val * Math.max(0.05, Number(s3dMat[hIdx]) ?? 1))
+                : rawSeasonCurve;
             const curveSum = seasonCurve.reduce((a, b) => a + b, 0) || 1;
             const dailySolar = mSolarKwh / daysInMonth;
 
@@ -4684,10 +5218,13 @@ const PhysicsEngine = {
             if (sumM >= 50) ct.annualKwh = sumM;
         }
 
-        // 1. Geometría & Rendimiento Específico PVGIS
+        // 1. Geometría & Rendimiento Específico PVGIS (+ Sombras 3D si Modo Profesional tiene escena 3D activa)
         const geomFactor = this.computeGeomFactor(pv.tilt, pv.azimuth, loc.optimalTilt);
         const lossFactor = (1 - (Number(pv.systemLossPct) || 14) / 100) / (1 - 0.14);
-        const specificYield = Math.max(550, Math.round((Number(loc.baseKwhKwp) || 1640) * geomFactor * lossFactor));
+        const shade3DFactor = (st.projectMeta.wizardMode === 'advanced' && st.scene3D && st.scene3D.enabled)
+            ? Math.max(0.15, 1 - (Number(st.scene3D.computed3D?.totalEffectiveLossPct) || 0) / 100)
+            : 1.0;
+        const specificYield = Math.max(450, Math.round((Number(loc.baseKwhKwp) || 1640) * geomFactor * lossFactor * shade3DFactor));
 
         // 2. Dimensionamiento Óptimo Económico Paso 1 (Técnico-financiero: VAN 25a, Payback, Cashflow)
         const modWp = Math.max(50, Number(pv.wp) || 450);
@@ -5787,6 +6324,2018 @@ const AutoOptimizer = {
         this.autoSizeAllCables();
 
         return actionsTaken;
+    }
+};
+
+/* ============================================================================
+   5B. ESTUDIO CAD 3D, RAYTRACER DE SOMBRAS PVGIS Y CABLEADO 3D PROFUNDO
+   (Exclusivo Modo Profesional • Inicialización Diferida • 100% Offline/Online)
+   ============================================================================ */
+const Solar3DStudio = {
+    isOpen: false,
+    activeTab: 'casa',
+    placementMode: null, // null | 'inverter' | 'battery' | 'mainBoard' | 'draw_footprint'
+    selectedObstacleId: null,
+    playTimer: null,
+    orthoImage: null,
+    orthoLoadedCoords: null,
+
+    // Cámara 3D interactiva (Yaw, Pitch, Zoom, Pan)
+    cam: {
+        yawDeg: -32,
+        pitchDeg: 34,
+        zoom: 14.5, // píxeles por metro base
+        panX: 0,
+        panY: 18,
+        isDragging: false,
+        dragMode: 'orbit', // 'orbit' | 'pan' | 'move_obs'
+        lastMouseX: 0,
+        lastMouseY: 0
+    },
+
+    // Caché en memoria para no saturar localStorage
+    runtimeSnapshotUrl: null,
+    screenHotspots: [], // [{type, id, x, y, r, data}]
+
+    openModal(initialTab = null) {
+        // Guard estricto: Si el usuario está en Modo Rápido, cambiar a Modo Profesional automáticamente o avisar
+        if (Store.state.projectMeta.wizardMode !== 'advanced') {
+            Store.state.projectMeta.wizardMode = 'advanced';
+            Wizard.renderStepper();
+        }
+
+        const modal = document.getElementById('modalSolar3DStudio');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        this.isOpen = true;
+
+        this.ensureSceneInitialized();
+        if (initialTab) {
+            this.setTab(initialTab);
+        } else {
+            this.setTab(this.activeTab || 'casa');
+        }
+
+        this.setupCanvasEvents();
+        this.loadIgnOrthophotoIfNeeded();
+        this.fetchPvgisHorizonIfNeeded();
+        this.recalculate3DPhysicsAndWiring();
+        this.syncModalInputsFromState();
+        this.renderScene();
+    },
+
+    closeModal() {
+        const modal = document.getElementById('modalSolar3DStudio');
+        if (modal) modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+        this.isOpen = false;
+        this.placementMode = null;
+        if (this.playTimer) {
+            clearInterval(this.playTimer);
+            this.playTimer = null;
+            const btn = document.getElementById('btn3DPlaySun');
+            if (btn) btn.textContent = '▶ Play';
+        }
+    },
+
+    applyAndClose() {
+        const s3d = Store.state.scene3D;
+        s3d.enabled = true;
+        this.recalculate3DPhysicsAndWiring();
+
+        // Capturar imagen limpia de la maqueta 3D para la Memoria Técnica PDF A4
+        this.captureSnapshotForReport();
+
+        // 1. Sincronizar Paso 2 (Nº de paneles e inclinación/acimut principal)
+        const pv = Store.state.pvModules;
+        if (s3d.panels.length > 0) {
+            pv.useRecommendedCount = false;
+            pv.moduleCount = s3d.panels.length;
+            const mainBld = s3d.buildings[0];
+            if (mainBld) {
+                pv.tilt = mainBld.archType === 'piso_plana'
+                    ? (Number(s3d.panelMountConfig.flatRoofTiltDeg) || 25)
+                    : (Number(mainBld.roofTiltDeg) || 30);
+                pv.azimuth = Number(mainBld.azimuthDeg) || 0;
+            }
+        }
+
+        // 2. Sincronizar Paso 3 (Repartir faldones / grupos en los MPPTs del inversor)
+        this.syncPanelsToInverterMppts();
+
+        // 3. Sincronizar Paso 4 (Longitudes reales 3D de cableado DC, AC y Batería + Auto-sección REBT)
+        const w = s3d.electrical3D.computedWiring;
+        const cab = Store.state.cablingAndREBT;
+        if (w) {
+            cab.dc.lengthM = Math.max(2, +(Number(w.worstStringOneWayM) || 18).toFixed(1));
+            cab.ac.lengthM = Math.max(2, +(Number(w.invToBoardOneWayM) || 14).toFixed(1));
+            cab.battery.lengthM = Math.max(1, +(Number(w.invToBatteryOneWayM) || 2.5).toFixed(1));
+        }
+
+        PhysicsEngine.recalculateAll();
+        if (typeof Actions !== 'undefined' && Actions.autoSelectAllCables) {
+            Actions.autoSelectAllCables(true);
+        }
+        Store.save();
+        UI.renderAll();
+        this.closeModal();
+        UI.showToast("✅ Maqueta 3D aplicada: paneles, sombras PVGIS, MPPTs, cables REBT y vista PDF sincronizados.", "ok");
+    },
+
+    toggleActive(enable) {
+        Store.state.scene3D.enabled = Boolean(enable);
+        PhysicsEngine.recalculateAll();
+        Store.save();
+        UI.renderAll();
+        UI.showToast(enable ? "🧊 Datos del modelo 3D activados." : "Modo 3D desactivado: usando controles manuales estándar.", "ok");
+    },
+
+    ensureSceneInitialized() {
+        if (!Store.state.scene3D || !Array.isArray(Store.state.scene3D.buildings) || Store.state.scene3D.buildings.length === 0) {
+            const def = createDefaultState().scene3D;
+            Store.state.scene3D = JSON.parse(JSON.stringify(def));
+        }
+        const s3d = Store.state.scene3D;
+        // Si aún no hay obstáculos ni paneles, crear una escena inicial realista con el nº de paneles actual
+        if (!Array.isArray(s3d.obstacles)) s3d.obstacles = [];
+        if (s3d.obstacles.length === 0 && !s3d._seededInitialObstacles) {
+            s3d._seededInitialObstacles = true;
+            s3d.obstacles.push(
+                { id: 'obs_tree_1', type: 'tree_deciduous', name: 'Árbol Caduco Sur-Este', x: 7.5, z: 7.0, heightM: 7.5, widthM: 4.2 },
+                { id: 'obs_chim_1', type: 'chimney', name: 'Chimenea Cubierta', x: -2.2, z: 1.0, heightM: 1.4, widthM: 0.7 }
+            );
+        }
+        if (!Array.isArray(s3d.panels) || s3d.panels.length === 0) {
+            this.autoFillOptimalPanels(true);
+        }
+    },
+
+    setTab(tabId) {
+        this.activeTab = tabId;
+        ['casa', 'obstaculos', 'placas', 'cables'].forEach(t => {
+            const btn = document.getElementById(`tab3D_${t}`);
+            const pnl = document.getElementById(`panel3D_${t}`);
+            if (btn) btn.classList.toggle('active', t === tabId);
+            if (pnl) pnl.classList.toggle('hidden', t !== tabId);
+        });
+        this.placementMode = null;
+        document.getElementById('hintDrawFootprint')?.classList.add('hidden');
+        this.renderScene();
+    },
+
+    /* ========================================================================
+       1. CARGA DE ORTOFOTO AÉREA OFICIAL (IGN PNOA WMS) Y PLANO PERSONALIZADO
+       ======================================================================== */
+    setGroundMode(mode) {
+        Store.state.scene3D.groundMode = mode;
+        this.syncModalInputsFromState();
+        if (mode === 'ign_ortho') {
+            this.loadIgnOrthophotoIfNeeded(true);
+        }
+        this.renderScene();
+    },
+
+    setGroundScale(val) {
+        const s = Math.max(15, Math.min(160, Number(val) || 42));
+        Store.state.scene3D.groundScaleM = s;
+        this.loadIgnOrthophotoIfNeeded(true);
+        this.renderScene();
+    },
+
+    loadIgnOrthophotoIfNeeded(force = false) {
+        const s3d = Store.state.scene3D;
+        if (s3d.groundMode !== 'ign_ortho') return;
+
+        const loc = Store.state.locationAndPVGIS;
+        const lat = Number(loc.lat) || 40.42;
+        const lon = Number(loc.lon) || -3.70;
+        const scaleM = Number(s3d.groundScaleM) || 42;
+        const key = `${lat.toFixed(4)}_${lon.toFixed(4)}_${scaleM}`;
+
+        if (!force && this.orthoImage && this.orthoLoadedCoords === key) return;
+
+        // Calcular BBOX en grados EPSG:4326 centrada en (lat, lon) con tamaño scaleM × scaleM metros
+        const dLat = (scaleM / 2) / 111320;
+        const dLon = (scaleM / 2) / (111320 * Math.max(0.2, Math.cos(lat * Math.PI / 180)));
+        const minLat = (lat - dLat).toFixed(6);
+        const maxLat = (lat + dLat).toFixed(6);
+        const minLon = (lon - dLon).toFixed(6);
+        const maxLon = (lon + dLon).toFixed(6);
+
+        // Servicio WMS Oficial PNOA Máxima Actualidad del Instituto Geográfico Nacional (IGN España)
+        const wmsUrl = `https://www.ign.es/wms-inspire/pnoa-ma?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&LAYERS=OI.OrthoimageCoverage&STYLES=&CRS=EPSG:4326&BBOX=${minLat},${minLon},${maxLat},${maxLon}&WIDTH=640&HEIGHT=640&FORMAT=image/jpeg`;
+
+        const lbl = document.getElementById('lbl3DGroundStatus');
+        if (lbl) lbl.textContent = "Cargando PNOA IGN...";
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+            this.orthoImage = img;
+            this.orthoLoadedCoords = key;
+            if (lbl) lbl.textContent = "🛰️ Ortofoto IGN Activa";
+            if (this.isOpen) this.renderScene();
+        };
+        img.onerror = () => {
+            if (lbl) lbl.textContent = "Rejilla Métrica CAD (Offline)";
+            this.orthoImage = null;
+            if (this.isOpen) this.renderScene();
+        };
+        img.src = wmsUrl;
+    },
+
+    loadCustomGroundImage(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                this.orthoImage = img;
+                Store.state.scene3D.groundMode = 'custom_image';
+                const lbl = document.getElementById('lbl3DGroundStatus');
+                if (lbl) lbl.textContent = "📂 Plano Propio Activo";
+                this.syncModalInputsFromState();
+                this.renderScene();
+                UI.showToast("Plano cargado en el suelo 3D. Ajusta el ancho de parcela en metros para escalarlo.", "ok");
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    },
+
+    async fetchPvgisHorizonIfNeeded() {
+        const s3d = Store.state.scene3D;
+        const loc = Store.state.locationAndPVGIS;
+        const key = `${Number(loc.lat).toFixed(2)}_${Number(loc.lon).toFixed(2)}`;
+        if (s3d._horizonCoordKey === key && Array.isArray(s3d.sunSim.horizonProfile36) && s3d.sunSim.horizonProfile36.length === 36) {
+            return;
+        }
+
+        // Perfil sintético determinista según latitud/elevación como base inmediata (y fallback offline)
+        const elevM = Number(loc.elevation) || 400;
+        const baseHor = Array.from({ length: 36 }, (_, idx) => {
+            const az = -180 + idx * 10;
+            const mountainWave = Math.max(1.0, (elevM / 220) * (1.8 + Math.sin((az + 40) * Math.PI / 90) * 1.1 + Math.cos(az * Math.PI / 60) * 0.7));
+            return +Math.min(18, mountainWave).toFixed(1);
+        });
+        s3d.sunSim.horizonProfile36 = baseHor;
+        s3d._horizonCoordKey = key;
+
+        const isStaticLocal = (
+            window.location.protocol === 'file:' ||
+            window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1' ||
+            (typeof PVGISService !== 'undefined' && PVGISService.proxyUnavailable === true)
+        );
+        if (isStaticLocal) return;
+
+        try {
+            const res = await fetch(`/api/pvgis?lat=${encodeURIComponent(loc.lat)}&lon=${encodeURIComponent(loc.lon)}&mode=printhorizon`);
+            if (!res.ok) return;
+            const json = await res.json();
+            const prof = json?.outputs?.horizon_profile;
+            if (Array.isArray(prof) && prof.length >= 12) {
+                const mapped36 = Array(36).fill(2.0);
+                for (let i = 0; i < 36; i++) {
+                    const targetAz = -180 + i * 10;
+                    let best = prof[0];
+                    let minDiff = Infinity;
+                    for (const p of prof) {
+                        const d = Math.abs((Number(p.A) || 0) - targetAz);
+                        if (d < minDiff) { minDiff = d; best = p; }
+                    }
+                    mapped36[i] = +(Number(best.H_hor) || 2.0).toFixed(1);
+                }
+                s3d.sunSim.horizonProfile36 = mapped36;
+                this.recalculate3DPhysicsAndWiring();
+                if (this.isOpen) this.renderScene();
+            }
+        } catch (_) {
+            // Silencioso en modo portable local; se usa el horizonte topográfico calculado
+        }
+    },
+
+    /* ========================================================================
+       2. MODELADOR PARAMÉTRICO DE EDIFICACIONES Y CALCADO DE ESQUINAS
+       ======================================================================== */
+    selectArchetype(val) {
+        this.setBuildingProp('archType', val);
+    },
+
+    setBuildingProp(prop, val) {
+        const bld = Store.state.scene3D.buildings[0];
+        if (!bld) return;
+        if (prop === 'archType') {
+            bld.archType = String(val);
+            if (val === 'piso_plana') {
+                bld.roofTiltDeg = 0;
+                bld.wallHeightM = Math.max(9.0, bld.wallHeightM);
+                bld.parapetHeightM = Math.max(0.8, bld.parapetHeightM || 0.9);
+            } else if (val === 'nave_industrial') {
+                bld.widthM = Math.max(18, bld.widthM);
+                bld.depthM = Math.max(14, bld.depthM);
+                bld.wallHeightM = Math.max(7.5, bld.wallHeightM);
+                bld.roofTiltDeg = 12;
+            } else if (bld.roofTiltDeg === 0) {
+                bld.roofTiltDeg = 30;
+            }
+        } else if (prop === 'hasElevatorHut') {
+            bld.hasElevatorHut = Boolean(val);
+        } else {
+            bld[prop] = Number(val) || 0;
+        }
+
+        // Reposicionar paneles automáticamente sobre la nueva geometría de cubierta
+        this.autoFillOptimalPanels(true);
+        this.syncModalInputsFromState();
+        this.renderScene();
+    },
+
+    toggleDrawFootprint() {
+        const bld = Store.state.scene3D.buildings[0];
+        const hint = document.getElementById('hintDrawFootprint');
+        const btn = document.getElementById('btnDrawFootprint');
+
+        if (this.placementMode === 'draw_footprint') {
+            // Cerrar polígono si tiene al menos 3 puntos
+            if (bld.customFootprintPts && bld.customFootprintPts.length >= 3) {
+                bld.archType = 'poligono_libre';
+                // Calcular bounding box equivalente para el posicionador
+                const xs = bld.customFootprintPts.map(p => p.x);
+                const zs = bld.customFootprintPts.map(p => p.z);
+                bld.widthM = Math.max(4, +(Math.max(...xs) - Math.min(...xs)).toFixed(1));
+                bld.depthM = Math.max(4, +(Math.max(...zs) - Math.min(...zs)).toFixed(1));
+                bld.x = +((Math.max(...xs) + Math.min(...xs)) / 2).toFixed(1);
+                bld.z = +((Math.max(...zs) + Math.min(...zs)) / 2).toFixed(1);
+                UI.showToast(`Planta calcada con ${bld.customFootprintPts.length} esquinas (${bld.widthM}×${bld.depthM} m).`, "ok");
+                this.autoFillOptimalPanels(true);
+            }
+            this.placementMode = null;
+            if (hint) hint.classList.add('hidden');
+            if (btn) btn.textContent = '✏️ Calcar Esquinas';
+        } else {
+            this.placementMode = 'draw_footprint';
+            bld.customFootprintPts = [];
+            this.setCameraView('top');
+            if (hint) hint.classList.remove('hidden');
+            if (btn) btn.textContent = '✅ Cerrar Planta';
+        }
+        this.renderScene();
+    },
+
+    /* Devuelve las caras de tejado (faldones) en coordenadas 3D del edificio */
+    getBuildingRoofFaces(bld) {
+        const W = Math.max(4, Number(bld.widthM) || 12);
+        const D = Math.max(4, Number(bld.depthM) || 9);
+        const H = Math.max(2.5, Number(bld.wallHeightM) || 5.8);
+        const tilt = (bld.archType === 'piso_plana') ? 0 : Math.max(0, Math.min(55, Number(bld.roofTiltDeg) || 30));
+        const tiltRad = tilt * Math.PI / 180;
+        const azBuilding = Number(bld.azimuthDeg) || 0;
+        const ridgeRise = (D / 2) * Math.tan(tiltRad);
+
+        const faces = [];
+
+        if (bld.archType === 'piso_plana') {
+            faces.push({
+                faceId: 'azotea_plana',
+                name: 'Azotea Plana',
+                mpptIndex: 0,
+                tiltDeg: Number(Store.state.scene3D.panelMountConfig.flatRoofTiltDeg) || 25,
+                azimuthDeg: azBuilding,
+                isFlatRoof: true,
+                minX: -W / 2, maxX: W / 2,
+                minZ: -D / 2, maxZ: D / 2,
+                yAtLocal: () => H,
+                normalLocal: { x: 0, y: 1, z: 0 }
+            });
+        } else if (bld.archType === 'chalet_1agua') {
+            const rise1 = D * Math.tan(tiltRad);
+            faces.push({
+                faceId: 'faldon_unico',
+                name: 'Faldón Principal Sur',
+                mpptIndex: 0,
+                tiltDeg: tilt,
+                azimuthDeg: azBuilding,
+                isFlatRoof: false,
+                minX: -W / 2, maxX: W / 2,
+                minZ: -D / 2, maxZ: D / 2,
+                yAtLocal: (lx, lz) => H + ((D / 2 - lz) / D) * rise1,
+                normalLocal: { x: 0, y: Math.cos(tiltRad), z: Math.sin(tiltRad) }
+            });
+        } else if (bld.archType === 'chalet_l') {
+            // Cuerpo principal Sur + Ala lateral Este/Oeste
+            faces.push({
+                faceId: 'faldon_sur_principal',
+                name: 'Faldón Sur (Cuerpo Ppal.)',
+                mpptIndex: 0,
+                tiltDeg: tilt,
+                azimuthDeg: azBuilding,
+                isFlatRoof: false,
+                minX: -W / 2, maxX: W / 2,
+                minZ: 0, maxZ: D / 2,
+                yAtLocal: (lx, lz) => H + (1 - lz / (D / 2)) * ridgeRise,
+                normalLocal: { x: 0, y: Math.cos(tiltRad), z: Math.sin(tiltRad) }
+            });
+            const wWing = Math.max(3.5, W * 0.45);
+            faces.push({
+                faceId: 'faldon_ala_oeste',
+                name: 'Faldón Ala Lateral (MPPT 2)',
+                mpptIndex: 1,
+                tiltDeg: tilt,
+                azimuthDeg: azBuilding + 90,
+                isFlatRoof: false,
+                minX: W / 2 - wWing, maxX: W / 2,
+                minZ: 0.5, maxZ: D * 0.95,
+                yAtLocal: (lx, lz) => H + (1 - Math.abs(lx - (W / 2 - wWing / 2)) / (wWing / 2)) * (ridgeRise * 0.75),
+                normalLocal: { x: Math.sin(tiltRad), y: Math.cos(tiltRad), z: 0 }
+            });
+        } else {
+            // 2 aguas, 4 aguas, nave industrial o polígono: Faldón Sur (MPPT 1) + Faldón Norte/Segundo (MPPT 2)
+            faces.push({
+                faceId: 'faldon_sur',
+                name: 'Faldón Sur (MPPT 1)',
+                mpptIndex: 0,
+                tiltDeg: tilt,
+                azimuthDeg: azBuilding,
+                isFlatRoof: false,
+                minX: -W / 2, maxX: W / 2,
+                minZ: 0, maxZ: D / 2,
+                yAtLocal: (lx, lz) => H + (1 - Math.max(0, lz) / (D / 2)) * ridgeRise,
+                normalLocal: { x: 0, y: Math.cos(tiltRad), z: Math.sin(tiltRad) }
+            });
+            faces.push({
+                faceId: 'faldon_norte',
+                name: 'Faldón Opuesto / Este-Oeste (MPPT 2)',
+                mpptIndex: 1,
+                tiltDeg: tilt,
+                azimuthDeg: (azBuilding + 180) % 360,
+                isFlatRoof: false,
+                minX: -W / 2, maxX: W / 2,
+                minZ: -D / 2, maxZ: 0,
+                yAtLocal: (lx, lz) => H + (1 - Math.max(0, -lz) / (D / 2)) * ridgeRise,
+                normalLocal: { x: 0, y: Math.cos(tiltRad), z: -Math.sin(tiltRad) }
+            });
+        }
+
+        return { W, D, H, tilt, ridgeRise, azBuilding, faces };
+    },
+
+    localToWorld(bld, lx, ly, lz) {
+        const azRad = ((Number(bld.azimuthDeg) || 0) * Math.PI) / 180;
+        const cosA = Math.cos(azRad);
+        const sinA = Math.sin(azRad);
+        return {
+            x: (Number(bld.x) || 0) + lx * cosA - lz * sinA,
+            y: ly,
+            z: (Number(bld.z) || 0) + lx * sinA + lz * cosA
+        };
+    },
+
+    /* ========================================================================
+       3. GESTIÓN DE ÁRBOLES, CHIMENEAS, VECINOS Y FIGURAS ALTERNAS
+       ======================================================================== */
+    addObstacle(obsType) {
+        const s3d = Store.state.scene3D;
+        const bld = s3d.buildings[0];
+        const H = Number(bld?.wallHeightM) || 5.8;
+        const idx = s3d.obstacles.length + 1;
+
+        const presets = {
+            tree_deciduous: { name: `Árbol Caduco #${idx}`, x: 6.5, z: 6.5, yBase: 0, heightM: 8.0, widthM: 4.5 },
+            tree_conifer:   { name: `Pino Perenne #${idx}`, x: -6.5, z: 6.5, yBase: 0, heightM: 9.0, widthM: 3.6 },
+            tree_palm:      { name: `Palmera #${idx}`,      x: 4.0, z: 8.0, yBase: 0, heightM: 10.5, widthM: 3.8 },
+            chimney:        { name: `Chimenea #${idx}`,     x: -2.0, z: 1.2, yBase: H, heightM: 1.5, widthM: 0.75 },
+            antenna:        { name: `Antena / Mástil #${idx}`, x: 2.2, z: 0.5, yBase: H, heightM: 2.6, widthM: 0.25 },
+            hvac:           { name: `Equipo Clima #${idx}`, x: 1.5, z: 1.8, yBase: H, heightM: 1.1, widthM: 1.2 },
+            neighbor_block: { name: `Edificio Vecino #${idx}`, x: 11.5, z: 2.0, yBase: 0, heightM: 11.5, widthM: 7.0 },
+            free_prism:     { name: `Figura Libre #${idx}`, x: -5.0, z: 7.0, yBase: 0, heightM: 3.5, widthM: 3.0 }
+        };
+
+        const p = presets[obsType] || presets.free_prism;
+        const newObs = {
+            id: `obs_${Date.now()}_${idx}`,
+            type: obsType,
+            name: p.name,
+            x: p.x + (idx % 3 - 1) * 0.8,
+            z: p.z,
+            heightM: p.heightM,
+            widthM: p.widthM
+        };
+
+        s3d.obstacles.push(newObs);
+        this.selectedObstacleId = newObs.id;
+        this.recalculate3DPhysicsAndWiring();
+        this.syncModalInputsFromState();
+        this.renderScene();
+    },
+
+    selectObstacle(obsId) {
+        this.selectedObstacleId = obsId;
+        this.syncModalInputsFromState();
+        this.renderScene();
+    },
+
+    updateSelectedObstacle(prop, val) {
+        const obs = Store.state.scene3D.obstacles.find(o => o.id === this.selectedObstacleId);
+        if (!obs) return;
+        obs[prop] = Number(val) || 0;
+        this.recalculate3DPhysicsAndWiring();
+        this.renderScene();
+    },
+
+    deleteSelectedObstacle() {
+        const s3d = Store.state.scene3D;
+        if (!this.selectedObstacleId) return;
+        s3d.obstacles = s3d.obstacles.filter(o => o.id !== this.selectedObstacleId);
+        this.selectedObstacleId = s3d.obstacles[0]?.id || null;
+        this.recalculate3DPhysicsAndWiring();
+        this.syncModalInputsFromState();
+        this.renderScene();
+    },
+
+    /* ========================================================================
+       4. COLOCACIÓN INTELIGENTE DE PANELES (DISTANCIA IDAE + AUTO-DESCARTE)
+       ======================================================================== */
+    setPanelMountProp(prop, val) {
+        const cfg = Store.state.scene3D.panelMountConfig;
+        cfg[prop] = (prop === 'orientation' || prop === 'flatRoofMode') ? String(val) : (Number(val) || 0);
+        this.autoFillOptimalPanels(true);
+        this.syncModalInputsFromState();
+        this.renderScene();
+    },
+
+    autoFillOptimalPanels(keepTargetCountIfPossible = false) {
+        const s3d = Store.state.scene3D;
+        const bld = s3d.buildings[0];
+        if (!bld) return;
+
+        const pv = Store.state.pvModules;
+        const cfg = s3d.panelMountConfig;
+        const isPortrait = cfg.orientation !== 'landscape';
+        const modW = ((isPortrait ? (Number(pv.widthMm) || 1134) : (Number(pv.lengthMm) || 1722)) / 1000);
+        const modL = ((isPortrait ? (Number(pv.lengthMm) || 1722) : (Number(pv.widthMm) || 1134)) / 1000);
+        const margin = Math.max(0.15, Number(cfg.edgeMarginM) || 0.45);
+        const gap = 0.025; // 2.5 cm entre paneles por grapas intermedias
+
+        const roof = this.getBuildingRoofFaces(bld);
+        const lat = Math.abs(Number(Store.state.locationAndPVGIS.lat) || 40.42);
+        // Altura solar al mediodía del 21 de diciembre: h_sol = 90 - lat - 23.45
+        const winterSunElevRad = Math.max(12, 90 - lat - 23.45) * Math.PI / 180;
+
+        const candidatePanels = [];
+        let pIdx = 1;
+
+        for (const face of roof.faces) {
+            // Priorizar el faldón Sur y el ala lateral antes que el faldón Norte
+            if (face.faceId === 'faldon_norte' && !keepTargetCountIfPossible) continue;
+
+            const spanX = (face.maxX - face.minX) - 2 * margin;
+            const spanZ = (face.maxZ - face.minZ) - 2 * margin;
+            if (spanX < modW || spanZ < modL * 0.8) continue;
+
+            // En azotea plana: aplicar separación inter-fila normativa IDAE para evitar autosombra el 21 de diciembre
+            let stepZ = modL + gap;
+            if (face.isFlatRoof) {
+                const mountTiltRad = ((Number(cfg.flatRoofTiltDeg) || 25) * Math.PI) / 180;
+                if (cfg.flatRoofMode === 'south_rows') {
+                    const idaeDist = modL * (Math.cos(mountTiltRad) + (Math.sin(mountTiltRad) / Math.tan(winterSunElevRad)));
+                    stepZ = Math.max(modL + 0.35, idaeDist);
+                } else {
+                    // Modo Este-Oeste en Λ: alta densidad sin sombra inter-fila sur
+                    stepZ = modL * Math.cos(mountTiltRad) + 0.25;
+                }
+            }
+
+            const cols = Math.max(1, Math.floor((spanX + gap) / (modW + gap)));
+            const rows = Math.max(1, Math.floor((spanZ + gap) / stepZ));
+            const usedW = cols * modW + (cols - 1) * gap;
+            const startX = (face.minX + face.maxX) / 2 - usedW / 2 + modW / 2;
+            const startZ = face.maxZ - margin - (modL * 0.5);
+
+            for (let r = 0; r < rows; r++) {
+                const lz = startZ - r * stepZ;
+                if (lz - modL * 0.45 < face.minZ + margin * 0.5) break;
+
+                for (let c = 0; c < cols; c++) {
+                    const lx = startX + c * (modW + gap);
+                    const ly = face.yAtLocal(lx, lz) + 0.08;
+                    const wp = this.localToWorld(bld, lx, ly, lz);
+
+                    // Comprobar que no colisiona con casetón de ascensor o chimeneas sobre el tejado
+                    if (this.doesPanelCollideWithRoofObstacle(bld, lx, ly, lz, wp, modW, modL)) {
+                        continue;
+                    }
+
+                    candidatePanels.push({
+                        id: `pnl_${pIdx++}`,
+                        buildingId: bld.id,
+                        faceId: face.faceId,
+                        faceName: face.name,
+                        mpptGroup: face.mpptIndex + 1,
+                        lx, ly, lz,
+                        x: +wp.x.toFixed(2),
+                        y: +wp.y.toFixed(2),
+                        z: +wp.z.toFixed(2),
+                        widthM: +modW.toFixed(3),
+                        lengthM: +modL.toFixed(3),
+                        tiltDeg: face.tiltDeg,
+                        azimuthDeg: (cfg.flatRoofMode === 'east_west' && face.isFlatRoof)
+                            ? (r % 2 === 0 ? -90 : 90)
+                            : face.azimuthDeg,
+                        shadeLossPct: 0,
+                        bypassLossPct: 0,
+                        svf: 0.96
+                    });
+                }
+            }
+        }
+
+        s3d.panels = candidatePanels;
+        this.recalculate3DPhysicsAndWiring();
+
+        // Filtrar paneles que superen el umbral máximo de sombra permitido
+        const maxShade = Math.max(5, Number(cfg.maxAllowedShadePct) || 15);
+        const filtered = s3d.panels.filter(p => p.shadeLossPct <= maxShade);
+
+        const targetCount = Math.max(2, Number(Store.state.pvModules.moduleCount) || 8);
+        if (keepTargetCountIfPossible && filtered.length > targetCount) {
+            // Elegir los N paneles más soleados (menor pérdida por sombra)
+            filtered.sort((a, b) => a.shadeLossPct - b.shadeLossPct);
+            s3d.panels = filtered.slice(0, targetCount);
+        } else if (filtered.length > 0) {
+            s3d.panels = filtered;
+        }
+
+        this.recalculate3DPhysicsAndWiring();
+        if (!keepTargetCountIfPossible) {
+            UI.showToast(`✨ Cubierta optimizada: ${s3d.panels.length} paneles instalados en las zonas de máxima radiación.`, "ok");
+        }
+    },
+
+    doesPanelCollideWithRoofObstacle(bld, lx, ly, lz, worldPos, modW, modL) {
+        // Casetón de ascensor en azotea plana (ubicado en cuadrante norte central)
+        if (bld.archType === 'piso_plana' && bld.hasElevatorHut) {
+            if (Math.abs(lx) < 1.8 && lz < -0.5 && lz > -3.8) return true;
+        }
+        // Obstáculos sobre tejado (chimeneas, antenas, clima)
+        for (const obs of Store.state.scene3D.obstacles) {
+            if (obs.type === 'chimney' || obs.type === 'antenna' || obs.type === 'hvac') {
+                const dx = Math.abs(worldPos.x - (Number(obs.x) || 0));
+                const dz = Math.abs(worldPos.z - (Number(obs.z) || 0));
+                const rad = (Number(obs.widthM) || 0.8) / 2 + 0.35;
+                if (dx < (modW / 2 + rad) && dz < (modL / 2 + rad)) return true;
+            }
+        }
+        return false;
+    },
+
+    addSinglePanelOnRoof() {
+        const s3d = Store.state.scene3D;
+        const bld = s3d.buildings[0];
+        if (!bld) return;
+        const pv = Store.state.pvModules;
+        const cfg = s3d.panelMountConfig;
+        const isPortrait = cfg.orientation !== 'landscape';
+        const modW = ((isPortrait ? (Number(pv.widthMm) || 1134) : (Number(pv.lengthMm) || 1722)) / 1000);
+        const modL = ((isPortrait ? (Number(pv.lengthMm) || 1722) : (Number(pv.widthMm) || 1134)) / 1000);
+        const roof = this.getBuildingRoofFaces(bld);
+        const face = roof.faces[0];
+
+        const idx = s3d.panels.length;
+        const cols = Math.max(1, Math.floor((roof.W - 0.8) / (modW + 0.03)));
+        const col = idx % cols;
+        const row = Math.floor(idx / cols);
+        const lx = -roof.W / 2 + 0.6 + modW / 2 + col * (modW + 0.04);
+        const lz = Math.max(face.minZ + 0.5, face.maxZ - 0.7 - row * (modL + 0.12));
+        const ly = face.yAtLocal(lx, lz) + 0.08;
+        const wp = this.localToWorld(bld, lx, ly, lz);
+
+        s3d.panels.push({
+            id: `pnl_${Date.now()}_${idx + 1}`,
+            buildingId: bld.id,
+            faceId: face.faceId,
+            faceName: face.name,
+            mpptGroup: 1,
+            lx, ly, lz,
+            x: +wp.x.toFixed(2),
+            y: +wp.y.toFixed(2),
+            z: +wp.z.toFixed(2),
+            widthM: +modW.toFixed(3),
+            lengthM: +modL.toFixed(3),
+            tiltDeg: face.tiltDeg,
+            azimuthDeg: face.azimuthDeg,
+            shadeLossPct: 0,
+            bypassLossPct: 0,
+            svf: 0.96
+        });
+
+        this.recalculate3DPhysicsAndWiring();
+        this.syncModalInputsFromState();
+        this.renderScene();
+    },
+
+    removeHighShadePanels() {
+        const s3d = Store.state.scene3D;
+        const maxS = Math.max(5, Number(s3d.panelMountConfig.maxAllowedShadePct) || 15);
+        const before = s3d.panels.length;
+        s3d.panels = s3d.panels.filter(p => p.shadeLossPct <= maxS);
+        const removed = before - s3d.panels.length;
+        this.recalculate3DPhysicsAndWiring();
+        this.syncModalInputsFromState();
+        this.renderScene();
+        UI.showToast(removed > 0 ? `🧹 Eliminadas ${removed} placas con sombra superior al ${maxS}%.` : "Todas las placas están ya en zona óptima (< umbral).", "ok");
+    },
+
+    clearAllPanels() {
+        Store.state.scene3D.panels = [];
+        this.recalculate3DPhysicsAndWiring();
+        this.syncModalInputsFromState();
+        this.renderScene();
+    },
+
+    /* ========================================================================
+       5. MOTOR FÍSICO SOLAR: EFEMÉRIDES NOAA + RAYTRACING 6 ZONAS + BYPASS
+       ======================================================================== */
+    computeSunPosition(latDeg, monthIdx, dayOfMonth, hourSolar) {
+        const dayOfYear = [15, 46, 74, 105, 135, 166, 196, 227, 258, 288, 319, 349][monthIdx] || 355;
+        const latRad = (latDeg * Math.PI) / 180;
+        // Declinación solar de Cooper / Spencer
+        const declDeg = 23.45 * Math.sin(((2 * Math.PI) / 365) * (284 + dayOfYear));
+        const declRad = (declDeg * Math.PI) / 180;
+        const hourAngleRad = ((hourSolar - 12) * 15 * Math.PI) / 180;
+
+        const sinElev = Math.sin(latRad) * Math.sin(declRad) + Math.cos(latRad) * Math.cos(declRad) * Math.cos(hourAngleRad);
+        const elevRad = Math.asin(Math.max(-1, Math.min(1, sinElev)));
+        const elevDeg = (elevRad * 180) / Math.PI;
+
+        // Acimut solar con convención PVGIS: 0° = Sur, -90° = Este, +90° = Oeste
+        const cosAz = (Math.sin(elevRad) * Math.sin(latRad) - Math.sin(declRad)) /
+                      Math.max(1e-5, Math.cos(elevRad) * Math.cos(latRad));
+        let azDeg = (Math.acos(Math.max(-1, Math.min(1, cosAz))) * 180) / Math.PI;
+        if (hourSolar < 12) azDeg = -azDeg;
+
+        const azRad = (azDeg * Math.PI) / 180;
+        const cosEl = Math.cos(elevRad);
+        // Vector unitario apuntando hacia el Sol en el sistema (X=Este, Y=Arriba, Z=Sur)
+        const sx = -cosEl * Math.sin(azRad);
+        const sy = Math.sin(elevRad);
+        const sz = cosEl * Math.cos(azRad);
+
+        return { elevDeg, azDeg, sx, sy, sz };
+    },
+
+    setSunDate(mVal) {
+        const s3d = Store.state.scene3D;
+        s3d.sunSim.monthIdx = Math.max(0, Math.min(11, parseInt(mVal, 10) || 11));
+        this.renderScene();
+    },
+
+    setSunHour(hVal) {
+        const s3d = Store.state.scene3D;
+        s3d.sunSim.hourDecimal = Math.max(6, Math.min(21, parseFloat(hVal) || 10.5));
+        this.syncSunHeaderLabels();
+        this.renderScene();
+    },
+
+    togglePlaySun() {
+        const btn = document.getElementById('btn3DPlaySun');
+        if (this.playTimer) {
+            clearInterval(this.playTimer);
+            this.playTimer = null;
+            if (btn) btn.textContent = '▶ Play';
+            return;
+        }
+        if (btn) btn.textContent = '⏸ Pausa';
+        this.playTimer = setInterval(() => {
+            const s3d = Store.state.scene3D;
+            s3d.sunSim.hourDecimal += 0.20;
+            if (s3d.sunSim.hourDecimal > 19.5) s3d.sunSim.hourDecimal = 7.0;
+            const rng = document.getElementById('rng3DSunHour');
+            if (rng) rng.value = s3d.sunSim.hourDecimal;
+            this.syncSunHeaderLabels();
+            this.renderScene();
+        }, 65);
+    },
+
+    toggleHeatmap() {
+        const s3d = Store.state.scene3D;
+        s3d.sunSim.showPanelHeatmap = !s3d.sunSim.showPanelHeatmap;
+        const btn = document.getElementById('btn3DToggleHeatmap');
+        if (btn) {
+            btn.textContent = `🎨 Semáforo Placas: ${s3d.sunSim.showPanelHeatmap ? 'ON' : 'OFF'}`;
+            btn.classList.toggle('opacity-60', !s3d.sunSim.showPanelHeatmap);
+        }
+        this.renderScene();
+    },
+
+    toggleCablesView() {
+        const s3d = Store.state.scene3D;
+        s3d.electrical3D.showCablesIn3D = !s3d.electrical3D.showCablesIn3D;
+        const btn = document.getElementById('btn3DToggleCables');
+        if (btn) {
+            btn.textContent = `🔌 Cables 3D: ${s3d.electrical3D.showCablesIn3D ? 'ON' : 'OFF'}`;
+            btn.classList.toggle('opacity-60', !s3d.electrical3D.showCablesIn3D);
+        }
+        this.renderScene();
+    },
+
+    setCameraView(preset) {
+        if (preset === 'top') {
+            this.cam.yawDeg = 0;
+            this.cam.pitchDeg = 88;
+            this.cam.panX = 0;
+            this.cam.panY = 0;
+        } else if (preset === 'south') {
+            this.cam.yawDeg = 0;
+            this.cam.pitchDeg = 18;
+            this.cam.panX = 0;
+            this.cam.panY = 24;
+        } else {
+            this.cam.yawDeg = -32;
+            this.cam.pitchDeg = 34;
+            this.cam.panX = 0;
+            this.cam.panY = 18;
+        }
+        this.renderScene();
+    },
+
+    /* Construye la lista de volúmenes opacos y porosos (AABB / cilindros / copas) para el Raytracer */
+    buildRaytracerVolumes() {
+        const s3d = Store.state.scene3D;
+        const bld = s3d.buildings[0];
+        const H = Number(bld?.wallHeightM) || 5.8;
+        const W = Number(bld?.widthM) || 12;
+        const D = Number(bld?.depthM) || 9;
+        const vols = [];
+
+        // 1. Murete perimetral (peto) y casetón de ascensor en azotea plana
+        if (bld && bld.archType === 'piso_plana') {
+            const pH = Number(bld.parapetHeightM) || 0.9;
+            if (pH > 0.05) {
+                // Peto Sur, Este y Oeste (proyectan sombra sobre la primera fila de paneles)
+                vols.push({ minX: -W / 2, maxX: W / 2, minY: H, maxY: H + pH, minZ: D / 2 - 0.25, maxZ: D / 2, tauSummer: 0, tauWinter: 0 });
+                vols.push({ minX: -W / 2, maxX: -W / 2 + 0.25, minY: H, maxY: H + pH, minZ: -D / 2, maxZ: D / 2, tauSummer: 0, tauWinter: 0 });
+                vols.push({ minX: W / 2 - 0.25, maxX: W / 2, minY: H, maxY: H + pH, minZ: -D / 2, maxZ: D / 2, tauSummer: 0, tauWinter: 0 });
+            }
+            if (bld.hasElevatorHut) {
+                vols.push({ minX: -1.5, maxX: 1.5, minY: H, maxY: H + 2.6, minZ: -3.4, maxZ: -0.8, tauSummer: 0, tauWinter: 0 });
+            }
+        }
+
+        // 2. Obstáculos del usuario (Árboles caducos/perennes/palmeras, chimeneas, antenas, vecinos, prismas)
+        for (const obs of s3d.obstacles) {
+            const ox = Number(obs.x) || 0;
+            const oz = Number(obs.z) || 0;
+            const oH = Math.max(0.5, Number(obs.heightM) || 5.0);
+            const oW = Math.max(0.2, Number(obs.widthM) || 2.0);
+            const isRoofObj = (obs.type === 'chimney' || obs.type === 'antenna' || obs.type === 'hvac');
+            const y0 = isRoofObj ? H : 0;
+
+            if (obs.type === 'tree_deciduous') {
+                // Tronco + Copa con permeabilidad invernal (pierde hojas Nov..Mar)
+                vols.push({ minX: ox - 0.25, maxX: ox + 0.25, minY: 0, maxY: oH * 0.42, minZ: oz - 0.25, maxZ: oz + 0.25, tauSummer: 0, tauWinter: 0 });
+                vols.push({ minX: ox - oW / 2, maxX: ox + oW / 2, minY: oH * 0.35, maxY: oH, minZ: oz - oW / 2, maxZ: oz + oW / 2, tauSummer: 0.18, tauWinter: 0.68 });
+            } else if (obs.type === 'tree_conifer') {
+                vols.push({ minX: ox - oW * 0.42, maxX: ox + oW * 0.42, minY: oH * 0.18, maxY: oH, minZ: oz - oW * 0.42, maxZ: oz + oW * 0.42, tauSummer: 0.14, tauWinter: 0.14 });
+            } else if (obs.type === 'tree_palm') {
+                vols.push({ minX: ox - 0.22, maxX: ox + 0.22, minY: 0, maxY: oH * 0.78, minZ: oz - 0.22, maxZ: oz + 0.22, tauSummer: 0, tauWinter: 0 });
+                vols.push({ minX: ox - oW / 2, maxX: ox + oW / 2, minY: oH * 0.74, maxY: oH, minZ: oz - oW / 2, maxZ: oz + oW / 2, tauSummer: 0.28, tauWinter: 0.28 });
+            } else {
+                vols.push({ minX: ox - oW / 2, maxX: ox + oW / 2, minY: y0, maxY: y0 + oH, minZ: oz - oW / 2, maxZ: oz + oW / 2, tauSummer: 0, tauWinter: 0 });
+            }
+        }
+
+        return vols;
+    },
+
+    /* Intersección Rayo-AABB rápida (slab method) */
+    traceSunRay(ox, oy, oz, sx, sy, sz, volumes, isWinterMonth) {
+        if (sy <= 0.01) return 0;
+        let transmittance = 1.0;
+        const invX = 1 / (Math.abs(sx) < 1e-6 ? 1e-6 : sx);
+        const invY = 1 / (Math.abs(sy) < 1e-6 ? 1e-6 : sy);
+        const invZ = 1 / (Math.abs(sz) < 1e-6 ? 1e-6 : sz);
+
+        for (let i = 0; i < volumes.length; i++) {
+            const v = volumes[i];
+            const t1 = (v.minX - ox) * invX;
+            const t2 = (v.maxX - ox) * invX;
+            const t3 = (v.minY - oy) * invY;
+            const t4 = (v.maxY - oy) * invY;
+            const t5 = (v.minZ - oz) * invZ;
+            const t6 = (v.maxZ - oz) * invZ;
+
+            const tmin = Math.max(Math.min(t1, t2), Math.min(t3, t4), Math.min(t5, t6));
+            const tmax = Math.min(Math.max(t1, t2), Math.max(t3, t4), Math.max(t5, t6));
+
+            if (tmax >= 0.08 && tmin <= tmax) {
+                const tau = isWinterMonth ? v.tauWinter : v.tauSummer;
+                transmittance *= tau;
+                if (transmittance <= 0.01) return 0;
+            }
+        }
+        return transmittance;
+    },
+
+    /* Ejecuta la simulación anual de sombras (6 sub-zonas Half-Cut / 3 Diodos Bypass) + Cableado 3D */
+    recalculate3DPhysicsAndWiring() {
+        const s3d = Store.state.scene3D;
+        const loc = Store.state.locationAndPVGIS;
+        const lat = Number(loc.lat) || 40.42;
+        const volumes = this.buildRaytracerVolumes();
+        const hor36 = (Array.isArray(s3d.sunSim.horizonProfile36) && s3d.sunSim.horizonProfile36.length === 36)
+            ? s3d.sunSim.horizonProfile36
+            : Array(36).fill(2.5);
+
+        const panels = s3d.panels || [];
+        const hourlyMatrix12x24 = Array.from({ length: 12 }, () => Array(24).fill(1.0));
+
+        if (panels.length === 0) {
+            s3d.computed3D.annualNearShadeLossPct = 0;
+            s3d.computed3D.totalEffectiveLossPct = 0;
+            s3d.computed3D.hourlyShadeFactor12x24 = hourlyMatrix12x24;
+            this.computeDeep3DWiring();
+            return;
+        }
+
+        // 1. Calcular Factor de Visión de Cielo (SVF difuso) para cada panel con 16 direcciones hemisféricas
+        const hemiDirs = [];
+        for (let a = 0; a < 8; a++) {
+            const phi = (a * Math.PI) / 4;
+            for (const elDeg of [25, 55]) {
+                const el = (elDeg * Math.PI) / 180;
+                hemiDirs.push({ sx: Math.cos(el) * Math.cos(phi), sy: Math.sin(el), sz: Math.cos(el) * Math.sin(phi) });
+            }
+        }
+
+        let sumSvf = 0;
+        for (const p of panels) {
+            let openSky = 0;
+            for (const d of hemiDirs) {
+                openSky += this.traceSunRay(p.x, p.y + 0.05, p.z, d.sx, d.sy, d.sz, volumes, false);
+            }
+            p.svf = +(openSky / hemiDirs.length).toFixed(3);
+            sumSvf += p.svf;
+        }
+        s3d.computed3D.avgSkyViewFactor = +(sumSvf / panels.length).toFixed(2);
+
+        // 2. Raytracing Anual sobre 6 sub-zonas por módulo (3 columnas de Diodos de Bypass × 2 mitades Half-Cut)
+        const panelUnshadedSum = Array(panels.length).fill(0);
+        const panelShadedSum = Array(panels.length).fill(0);
+        const panelBypassLossSum = Array(panels.length).fill(0);
+        let totalHorizonBlocked = 0;
+        let totalPossibleDirect = 0;
+
+        for (let m = 0; m < 12; m++) {
+            const isWinter = (m <= 2 || m >= 10);
+            // Fracción de radiación difusa sobre global según época (invierno más difuso, verano más directo)
+            const diffuseShare = isWinter ? 0.36 : 0.22;
+            const beamShare = 1 - diffuseShare;
+
+            for (let h = 6; h <= 20; h++) {
+                const sun = this.computeSunPosition(lat, m, 15, h + 0.5);
+                if (sun.elevDeg <= 1.5) {
+                    hourlyMatrix12x24[m][h] = 1.0;
+                    continue;
+                }
+
+                // Comprobar horizonte lejano PVGIS (montañas)
+                const horIdx = Math.max(0, Math.min(35, Math.floor((sun.azDeg + 180) / 10)));
+                const horElevDeg = hor36[horIdx] || 2.0;
+                const clearHorizon = sun.elevDeg > horElevDeg;
+
+                const weightIrr = Math.max(0.05, Math.sin((sun.elevDeg * Math.PI) / 180));
+                totalPossibleDirect += weightIrr;
+                if (!clearHorizon) totalHorizonBlocked += weightIrr * beamShare;
+
+                let hourFactorSum = 0;
+
+                for (let pi = 0; pi < panels.length; pi++) {
+                    const p = panels[pi];
+                    // 6 sub-puntos sobre la superficie del módulo (3 tercios de diodo de bypass × 2 mitades)
+                    const diodeCols = [-0.33 * p.widthM, 0, 0.33 * p.widthM];
+                    const halfRows = [-0.25 * p.lengthM, 0.25 * p.lengthM];
+
+                    let diodeTransSum = 0;
+                    let rawAreaTransSum = 0;
+
+                    if (clearHorizon) {
+                        for (let dCol = 0; dCol < 3; dCol++) {
+                            const dx = diodeCols[dCol];
+                            const tTop = this.traceSunRay(p.x + dx, p.y + 0.08, p.z + halfRows[0], sun.sx, sun.sy, sun.sz, volumes, isWinter);
+                            const tBot = this.traceSunRay(p.x + dx, p.y + 0.08, p.z + halfRows[1], sun.sx, sun.sy, sun.sz, volumes, isWinter);
+                            const rawCol = 0.5 * (tTop + tBot);
+                            rawAreaTransSum += rawCol;
+                            // Física Half-Cut + Diodo de Bypass: la rama cae al mínimo de su sub-cadena si hay sombra dura
+                            const effectiveDiodeCol = Math.min(tTop, tBot) * 0.65 + rawCol * 0.35;
+                            diodeTransSum += effectiveDiodeCol;
+                        }
+                    }
+
+                    const beamFactor = diodeTransSum / 3;
+                    const rawAreaFactor = rawAreaTransSum / 3;
+                    const effFactor = beamShare * beamFactor + diffuseShare * p.svf;
+
+                    panelUnshadedSum[pi] += weightIrr;
+                    panelShadedSum[pi] += weightIrr * effFactor;
+                    panelBypassLossSum[pi] += weightIrr * Math.max(0, (rawAreaFactor - beamFactor) * beamShare);
+                    hourFactorSum += effFactor;
+                }
+
+                hourlyMatrix12x24[m][h] = +(hourFactorSum / panels.length).toFixed(4);
+            }
+        }
+
+        let sumLossPct = 0;
+        let sumBypassPct = 0;
+        for (let pi = 0; pi < panels.length; pi++) {
+            const unsh = panelUnshadedSum[pi] || 1;
+            const lossPct = Math.max(0, Math.min(95, (1 - panelShadedSum[pi] / unsh) * 100));
+            const bypPct = Math.max(0, Math.min(40, (panelBypassLossSum[pi] / unsh) * 100));
+            panels[pi].shadeLossPct = +lossPct.toFixed(1);
+            panels[pi].bypassLossPct = +bypPct.toFixed(1);
+            sumLossPct += lossPct;
+            sumBypassPct += bypPct;
+        }
+
+        const horizonLossPct = totalPossibleDirect > 0 ? +((totalHorizonBlocked / totalPossibleDirect) * 100).toFixed(1) : 0.4;
+        const avgTotalShadeLoss = +(sumLossPct / panels.length).toFixed(1);
+        const avgBypassLoss = +(sumBypassPct / panels.length).toFixed(1);
+
+        s3d.computed3D.annualHorizonLossPct = horizonLossPct;
+        s3d.computed3D.annualBypassMismatchPct = avgBypassLoss;
+        s3d.computed3D.annualNearShadeLossPct = +Math.max(0, avgTotalShadeLoss - horizonLossPct).toFixed(1);
+        s3d.computed3D.totalEffectiveLossPct = avgTotalShadeLoss;
+        s3d.computed3D.hourlyShadeFactor12x24 = hourlyMatrix12x24;
+
+        // 3. Agrupar por faldón / orientación y calcular todo el cableado 3D
+        this.computeDeep3DWiring();
+    },
+
+    /* ========================================================================
+       6. CÁLCULO PROFUNDO DE CABLEADO 3D: INTRA-PANEL, PUENTES, HOMERUN Y MC4
+       ======================================================================== */
+    setPlacementMode(mode) {
+        this.placementMode = (this.placementMode === mode) ? null : mode;
+        ['Inv', 'Bat', 'Board'].forEach(k => {
+            const map = { Inv: 'inverter', Bat: 'battery', Board: 'mainBoard' };
+            const btn = document.getElementById(`btnPlace${k}3D`);
+            if (btn) btn.classList.toggle('ring-2', this.placementMode === map[k]);
+        });
+        if (this.placementMode) {
+            UI.showToast("👆 Haz clic sobre cualquier pared o zona de la casa 3D para situar el equipo.", "ok");
+        }
+    },
+
+    setElectricalProp(prop, val) {
+        Store.state.scene3D.electrical3D[prop] = String(val);
+        this.computeDeep3DWiring();
+        this.syncModalInputsFromState();
+        this.renderScene();
+    },
+
+    setEquipmentCoord(eqKey, axis, val) {
+        const eq = Store.state.scene3D.electrical3D[eqKey];
+        if (!eq) return;
+        eq[axis] = Number(val) || 0;
+        this.computeDeep3DWiring();
+        this.syncModalInputsFromState();
+        this.renderScene();
+    },
+
+    computeDeep3DWiring() {
+        const s3d = Store.state.scene3D;
+        const el = s3d.electrical3D;
+        const panels = s3d.panels || [];
+        const invPos = el.inverterPos || { x: -4.2, y: 1.6, z: 4.5 };
+        const batPos = el.batteryPos || { x: -2.8, y: 0.8, z: 4.5 };
+        const brdPos = el.mainBoardPos || { x: 2.8, y: 1.6, z: 4.5 };
+        const isLeapfrog = el.wiringTopology !== 'daisy';
+        const isOrtho = el.routingStyle !== 'direct_conduit';
+
+        // Función de distancia 3D (Ortogonal pegada a paredes/cubierta vs Conducto directo)
+        const distRoute = (a, b, slack = 1.08) => {
+            const dx = Math.abs(a.x - b.x);
+            const dy = Math.abs(a.y - b.y);
+            const dz = Math.abs(a.z - b.z);
+            if (isOrtho) {
+                return (dx + dy + dz) * slack;
+            }
+            return Math.sqrt(dx * dx + dy * dy + dz * dz) * (slack + 0.04);
+        };
+
+        // Agrupar paneles por faldón / stringGroup
+        const groups = {};
+        for (const p of panels) {
+            const gKey = p.faceId || `mppt_${p.mpptGroup || 1}`;
+            if (!groups[gKey]) {
+                groups[gKey] = {
+                    faceId: gKey,
+                    faceName: p.faceName || 'Faldón Principal',
+                    mpptGroup: p.mpptGroup || 1,
+                    tiltDeg: p.tiltDeg,
+                    azimuthDeg: p.azimuthDeg,
+                    panels: []
+                };
+            }
+            groups[gKey].panels.push(p);
+        }
+
+        let intraPanelTotalM = 0;
+        let interRowJumpersM = 0;
+        let homerunPosM = 0;
+        let homerunNegM = 0;
+        let worstStringOneWayM = 8.0;
+        const stringsBreakdown = [];
+        const groupList = Object.values(groups);
+
+        groupList.forEach((grp, idx) => {
+            // Ordenar paneles en serpentín por fila Z y columna X
+            grp.panels.sort((a, b) => (Math.abs(b.z - a.z) > 0.4 ? b.z - a.z : a.x - b.x));
+
+            let grpIntra = 0;
+            let grpJumpers = 0;
+            for (let i = 0; i < grp.panels.length - 1; i++) {
+                const pA = grp.panels[i];
+                const pB = grp.panels[i + 1];
+                const d3 = Math.hypot(pA.x - pB.x, pA.y - pB.y, pA.z - pB.z);
+                if (Math.abs(pA.z - pB.z) > 0.45) {
+                    // Salto de una fila a otra (requiere latiguillo puente extra)
+                    grpJumpers += d3 * 1.15;
+                } else {
+                    // Unión entre paneles contiguos (leapfrog salta alternando módulos para evitar bucle inductivo de rayo UNE 60364-7-712)
+                    grpIntra += isLeapfrog ? d3 * 1.05 : d3 * 0.95;
+                }
+            }
+
+            const firstP = grp.panels[0] || invPos;
+            const lastP = isLeapfrog && grp.panels.length > 2
+                ? grp.panels[1] // En salto de rana, el retorno vuelve junto al primer panel evitando el gran bucle abierto
+                : (grp.panels[grp.panels.length - 1] || invPos);
+
+            const posRun = distRoute(firstP, invPos, 1.10);
+            const negRun = distRoute(lastP, invPos, 1.10);
+
+            intraPanelTotalM += grpIntra;
+            interRowJumpersM += grpJumpers;
+            homerunPosM += posRun;
+            homerunNegM += negRun;
+
+            const oneWayEq = (posRun + negRun) / 2 + (grpIntra + grpJumpers) * 0.5;
+            if (oneWayEq > worstStringOneWayM) worstStringOneWayM = oneWayEq;
+
+            stringsBreakdown.push({
+                mpptId: idx + 1,
+                faceName: grp.faceName,
+                panelCount: grp.panels.length,
+                tiltDeg: grp.tiltDeg,
+                azimuthDeg: grp.azimuthDeg,
+                intraM: +grpIntra.toFixed(1),
+                jumpersM: +grpJumpers.toFixed(1),
+                posRunM: +posRun.toFixed(1),
+                negRunM: +negRun.toFixed(1),
+                oneWayEqM: +oneWayEq.toFixed(1)
+            });
+        });
+
+        const invToBatM = +Math.max(1.2, distRoute(invPos, batPos, 1.08)).toFixed(1);
+        const invToBrdM = +Math.max(2.5, distRoute(invPos, brdPos, 1.10)).toFixed(1);
+
+        // Conectores MC4: 2 pares por string (entrada inversor + salida tejado) + 1 par por cada salto de fila
+        const numStrings = Math.max(1, stringsBreakdown.length);
+        const jumperCount = Math.max(1, Math.round(interRowJumpersM / 2.2));
+        const mc4PairsCount = numStrings * 2 + jumperCount;
+
+        // Rollos de compra con +15% de holgura de montaje en obra
+        const totalRedBuy = Math.ceil((homerunPosM + interRowJumpersM * 0.5 + intraPanelTotalM * 0.25) * 1.15);
+        const totalBlackBuy = Math.ceil((homerunNegM + interRowJumpersM * 0.5 + intraPanelTotalM * 0.25) * 1.15);
+        const totalAcBuy = Math.ceil(invToBrdM * 1.15);
+
+        el.computedWiring = {
+            intraPanelTotalM: +intraPanelTotalM.toFixed(1),
+            interRowJumpersM: +interRowJumpersM.toFixed(1),
+            homerunPosM: +homerunPosM.toFixed(1),
+            homerunNegM: +homerunNegM.toFixed(1),
+            worstStringOneWayM: +worstStringOneWayM.toFixed(1),
+            invToBatteryOneWayM: invToBatM,
+            invToBoardOneWayM: invToBrdM,
+            mc4PairsCount,
+            totalRedCableBuyM: Math.max(10, totalRedBuy),
+            totalBlackCableBuyM: Math.max(10, totalBlackBuy),
+            totalAcCableBuyM: Math.max(5, totalAcBuy),
+            stringsBreakdown
+        };
+        s3d.computed3D.roofFacesSummary = stringsBreakdown;
+    },
+
+    syncPanelsToInverterMppts() {
+        const s3d = Store.state.scene3D;
+        const inv = Store.state.inverterAndStrings;
+        const breakdown = s3d.electrical3D.computedWiring?.stringsBreakdown || [];
+        if (breakdown.length === 0) return;
+
+        // Si hay más de 1 orientación/faldón, asegurar que el inversor asigne cada faldón a un MPPT independiente
+        const numMppts = Math.max(1, Number(inv.numMppts) || 2);
+        for (let i = 0; i < inv.mppts.length; i++) {
+            if (i < breakdown.length && i < numMppts) {
+                inv.mppts[i].name = `MPPT ${i + 1} (${breakdown[i].faceName})`;
+                inv.mppts[i].stringsParallel = 1;
+                inv.mppts[i].modulesSeries = breakdown[i].panelCount;
+            } else {
+                inv.mppts[i].stringsParallel = 0;
+                inv.mppts[i].modulesSeries = 0;
+            }
+        }
+        // Si todos los paneles excedían para un solo MPPT o quedaron sin asignar, usar el solver óptimo respetando el total
+        const assigned = inv.mppts.slice(0, numMppts).reduce((acc, m) => acc + (m.stringsParallel * m.modulesSeries), 0);
+        if (assigned !== s3d.panels.length && typeof AutoOptimizer !== 'undefined') {
+            AutoOptimizer.autoDistributeStringsInCurrentInverter(s3d.panels.length);
+        }
+    },
+
+    /* ========================================================================
+       7. SINCRONIZACIÓN DE CONTROLES DEL MODAL Y TARJETAS EXTERNAS
+       ======================================================================== */
+    syncSunHeaderLabels() {
+        const s3d = Store.state.scene3D;
+        const loc = Store.state.locationAndPVGIS;
+        const h = Number(s3d.sunSim.hourDecimal) || 10.5;
+        const hh = String(Math.floor(h)).padStart(2, '0');
+        const mm = String(Math.round((h % 1) * 60)).padStart(2, '0');
+
+        const lblH = document.getElementById('lbl3DSunHour');
+        if (lblH) lblH.textContent = `${hh}:${mm}`;
+
+        const sun = this.computeSunPosition(Number(loc.lat) || 40.42, s3d.sunSim.monthIdx, 21, h);
+        const lblA = document.getElementById('lbl3DSunAngles');
+        if (lblA) lblA.textContent = `Elev: ${sun.elevDeg.toFixed(1)}° • Az: ${Math.round(sun.azDeg)}°`;
+
+        const hSub = document.getElementById('s3dHeaderSub');
+        if (hSub) hSub.textContent = `Sol PVGIS • ${loc.municipality || loc.province} (${Number(loc.lat).toFixed(2)}°, ${Number(loc.lon).toFixed(2)}°) • Ratón: Girar / Rueda: Zoom`;
+    },
+
+    syncModalInputsFromState() {
+        const s3d = Store.state.scene3D;
+        if (!s3d) return;
+        const bld = s3d.buildings[0] || {};
+        const cfg = s3d.panelMountConfig || {};
+        const el = s3d.electrical3D || {};
+        const w = el.computedWiring || {};
+        const pv = Store.state.pvModules;
+
+        this.syncSunHeaderLabels();
+
+        const setVal = (id, v) => { const node = document.getElementById(id); if (node && document.activeElement !== node) node.value = v; };
+        setVal('inp3DGroundScale', s3d.groundScaleM || 42);
+        setVal('sel3DArchType', bld.archType || 'chalet_2aguas');
+        setVal('inp3DBldWidth', bld.widthM || 12);
+        setVal('inp3DBldDepth', bld.depthM || 9);
+        setVal('inp3DBldHeight', bld.wallHeightM || 5.8);
+        setVal('inp3DBldTilt', bld.roofTiltDeg ?? 30);
+        setVal('inp3DBldAzimuth', bld.azimuthDeg ?? 0);
+        setVal('inp3DBldParapet', bld.parapetHeightM ?? 0.9);
+        const chkHut = document.getElementById('chk3DElevatorHut');
+        if (chkHut) chkHut.checked = Boolean(bld.hasElevatorHut);
+
+        // Botones de modo de suelo
+        ['Ign', 'Custom', 'Grid'].forEach(k => {
+            const map = { Ign: 'ign_ortho', Custom: 'custom_image', Grid: 'grid_only' };
+            const btn = document.getElementById(`btnGround${k}`);
+            if (btn) {
+                const active = s3d.groundMode === map[k];
+                btn.className = active
+                    ? 'btn-press p-2 rounded-xl text-[11px] font-bold border border-[#0066FF] bg-[#0066FF]/10 text-[#0066FF]'
+                    : 'btn-press p-2 rounded-xl text-[11px] font-semibold bento-subtle';
+            }
+        });
+
+        // Obstáculo seleccionado
+        const obs = s3d.obstacles.find(o => o.id === this.selectedObstacleId) || s3d.obstacles[0];
+        if (obs) {
+            this.selectedObstacleId = obs.id;
+            const lblObs = document.getElementById('lblSelectedObstacleName');
+            if (lblObs) lblObs.textContent = `Seleccionado: ${obs.name}`;
+            setVal('inpObsX', obs.x);
+            setVal('inpObsZ', obs.z);
+            setVal('inpObsH', obs.heightM);
+            setVal('inpObsW', obs.widthM);
+        } else {
+            const lblObs = document.getElementById('lblSelectedObstacleName');
+            if (lblObs) lblObs.textContent = 'Sin obstáculos seleccionados';
+        }
+
+        const listEl = document.getElementById('listObstaclesItems');
+        if (listEl) {
+            listEl.innerHTML = s3d.obstacles.map(o => `
+                <button type="button" onclick="Solar3DStudio.selectObstacle('${escapeHtml(o.id)}')"
+                    class="w-full px-2.5 py-1.5 rounded-lg text-left text-[11px] font-mono flex items-center justify-between ${o.id === this.selectedObstacleId ? 'bg-[#0066FF]/15 text-[#0066FF] font-bold' : 'hover:bg-[var(--bg-surface-solid)]'}">
+                    <span class="truncate">${escapeHtml(o.name)}</span>
+                    <span>H:${o.heightM}m • D:${o.widthM}m</span>
+                </button>
+            `).join('');
+        }
+
+        // Paneles y Sombras
+        const lblMod = document.getElementById('lbl3DModuleModel');
+        if (lblMod) lblMod.textContent = `${pv.wp} Wp (${((pv.lengthMm || 1722) / 1000).toFixed(2)}×${((pv.widthMm || 1134) / 1000).toFixed(2)}m)`;
+        setVal('sel3DPanelOrient', cfg.orientation || 'portrait');
+        setVal('sel3DFlatRoofMode', cfg.flatRoofMode || 'south_rows');
+        setVal('inp3DEdgeMargin', cfg.edgeMarginM ?? 0.45);
+        setVal('inp3DMaxShade', cfg.maxAllowedShadePct ?? 15);
+
+        const pCount = s3d.panels.length;
+        const kwp3D = ((pCount * (Number(pv.wp) || 450)) / 1000).toFixed(2);
+        const lblCnt = document.getElementById('lbl3DPanelCount');
+        if (lblCnt) lblCnt.textContent = `${pCount} uds (${kwp3D} kWp)`;
+        const lblShd = document.getElementById('lbl3DShadeLoss');
+        if (lblShd) lblShd.textContent = `-${s3d.computed3D.totalEffectiveLossPct}% / año`;
+
+        const boxFaces = document.getElementById('box3DMpptFacesBreakdown');
+        if (boxFaces && w.stringsBreakdown) {
+            boxFaces.innerHTML = w.stringsBreakdown.map(g => `
+                <div class="flex items-center justify-between py-0.5 border-b border-[var(--border-hairline)]">
+                    <span>🔌 MPPT ${g.mpptId}: ${escapeHtml(g.faceName)}</span>
+                    <strong class="text-[#0066FF]">${g.panelCount} placas (Tilt ${g.tiltDeg}°)</strong>
+                </div>
+            `).join('') + `<div class="text-[10px] text-[var(--text-muted)] pt-1">Horizonte PVGIS: -${s3d.computed3D.annualHorizonLossPct}% • Diodos Bypass: -${s3d.computed3D.annualBypassMismatchPct}% • SVF Cielo: ${Math.round(s3d.computed3D.avgSkyViewFactor * 100)}%</div>`;
+        }
+
+        // Pestaña 4: Cables y Equipos
+        setVal('sel3DWiringTopology', el.wiringTopology || 'leapfrog');
+        setVal('sel3DRoutingStyle', el.routingStyle || 'orthogonal_walls');
+        setVal('inp3DInvX', el.inverterPos?.x ?? -4.2);
+        setVal('inp3DInvY', el.inverterPos?.y ?? 1.6);
+        setVal('inp3DInvZ', el.inverterPos?.z ?? 4.5);
+
+        const setTxt = (id, t) => { const n = document.getElementById(id); if (n) n.textContent = t; };
+        setTxt('lbl3DWireIntra', `${w.intraPanelTotalM || 0} m`);
+        setTxt('lbl3DWireJumpers', `${w.interRowJumpersM || 0} m`);
+        setTxt('lbl3DWireHomerun', `+${w.homerunPosM || 0}m / -${w.homerunNegM || 0}m`);
+        setTxt('lbl3DWireBat', `${w.invToBatteryOneWayM || 0} m`);
+        setTxt('lbl3DWireAc', `${w.invToBoardOneWayM || 0} m`);
+        setTxt('lbl3DBuyRollDc', `${w.totalRedCableBuyM || 25}m Rojo + ${w.totalBlackCableBuyM || 25}m Negro`);
+        setTxt('lbl3DMc4Count', `${w.mc4PairsCount || 4} pares (M/H)`);
+    },
+
+    /* ========================================================================
+       8. RENDERIZADOR 3D CON PROYECCIÓN DE SOMBRAS, SEMÁFORO Y CABLES EN COLOR
+       ======================================================================== */
+    setupCanvasEvents() {
+        const container = document.getElementById('solar3DCanvasContainer');
+        if (!container) return;
+        let canvas = document.getElementById('solar3DMainCanvas');
+        if (!canvas) {
+            canvas = document.createElement('canvas');
+            canvas.id = 'solar3DMainCanvas';
+            canvas.className = 'w-full h-full block';
+            container.appendChild(canvas);
+
+            canvas.addEventListener('mousedown', (e) => this.onPointerDown(e));
+            window.addEventListener('mousemove', (e) => this.onPointerMove(e));
+            window.addEventListener('mouseup', () => this.onPointerUp());
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const factor = e.deltaY < 0 ? 1.10 : 0.91;
+                this.cam.zoom = Math.max(5.5, Math.min(38, this.cam.zoom * factor));
+                this.renderScene();
+            }, { passive: false });
+        }
+    },
+
+    project3D(wx, wy, wz, width, height) {
+        const yaw = (this.cam.yawDeg * Math.PI) / 180;
+        const pitch = (this.cam.pitchDeg * Math.PI) / 180;
+        const cosY = Math.cos(yaw), sinY = Math.sin(yaw);
+        const cosP = Math.cos(pitch), sinP = Math.sin(pitch);
+
+        // Rotación Yaw alrededor de Y
+        const rx = wx * cosY - wz * sinY;
+        const rz = wx * sinY + wz * cosY;
+
+        // Rotación Pitch alrededor de X
+        const ry = wy * cosP - rz * sinP;
+        const depth = wy * sinP + rz * cosP;
+
+        // Perspectiva suave
+        const fovScale = 95 / Math.max(35, 95 + depth * 0.85);
+        const s = this.cam.zoom * fovScale;
+
+        return {
+            sx: width / 2 + this.cam.panX + rx * s,
+            sy: height / 2 + this.cam.panY - ry * s,
+            depth,
+            scale: s
+        };
+    },
+
+    screenToGroundXZ(clientX, clientY, canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const mx = clientX - rect.left;
+        const my = clientY - rect.top;
+        // Búsqueda rápida por bisección/gradiente sobre el plano Y=0
+        let bestX = 0, bestZ = 0, minDist = Infinity;
+        for (let gx = -22; gx <= 22; gx += 1.0) {
+            for (let gz = -22; gz <= 22; gz += 1.0) {
+                const p = this.project3D(gx, 0, gz, rect.width, rect.height);
+                const d = (p.sx - mx) ** 2 + (p.sy - my) ** 2;
+                if (d < minDist) { minDist = d; bestX = gx; bestZ = gz; }
+            }
+        }
+        return { x: +bestX.toFixed(1), z: +bestZ.toFixed(1) };
+    },
+
+    onPointerDown(e) {
+        const canvas = document.getElementById('solar3DMainCanvas');
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+
+        // 1. Modo calcar esquinas sobre la foto aérea
+        if (this.placementMode === 'draw_footprint') {
+            const pt = this.screenToGroundXZ(e.clientX, e.clientY, canvas);
+            const bld = Store.state.scene3D.buildings[0];
+            if (bld) {
+                bld.customFootprintPts = bld.customFootprintPts || [];
+                bld.customFootprintPts.push(pt);
+                this.renderScene();
+            }
+            return;
+        }
+
+        // 2. Modo colocar Inversor / Batería / Cuadro General en la casa 3D
+        if (this.placementMode === 'inverter' || this.placementMode === 'battery' || this.placementMode === 'mainBoard') {
+            const pt = this.screenToGroundXZ(e.clientX, e.clientY, canvas);
+            const bld = Store.state.scene3D.buildings[0];
+            const W = (Number(bld?.widthM) || 12) / 2;
+            const D = (Number(bld?.depthM) || 9) / 2;
+            const clampedX = +Math.max(-W - 1, Math.min(W + 1, pt.x)).toFixed(1);
+            const clampedZ = +Math.max(-D - 1, Math.min(D + 1, pt.z)).toFixed(1);
+
+            const keyMap = { inverter: 'inverterPos', battery: 'batteryPos', mainBoard: 'mainBoardPos' };
+            const eq = Store.state.scene3D.electrical3D[keyMap[this.placementMode]];
+            if (eq) {
+                eq.x = clampedX;
+                eq.z = clampedZ;
+                eq.y = this.placementMode === 'battery' ? 0.8 : 1.6;
+            }
+            this.placementMode = null;
+            this.computeDeep3DWiring();
+            this.syncModalInputsFromState();
+            this.renderScene();
+            UI.showToast("📍 Equipo situado en el modelo 3D y longitudes de cable recalculadas.", "ok");
+            return;
+        }
+
+        // 3. Comprobar si ha pinchado sobre un obstáculo (árbol, chimenea...) para seleccionarlo/arrastrarlo
+        for (const hs of this.screenHotspots) {
+            if (Math.hypot(hs.x - mx, hs.y - my) <= hs.r) {
+                if (hs.type === 'obstacle') {
+                    this.selectedObstacleId = hs.id;
+                    this.cam.isDragging = true;
+                    this.cam.dragMode = 'move_obs';
+                    this.syncModalInputsFromState();
+                    this.renderScene();
+                    return;
+                }
+            }
+        }
+
+        this.cam.isDragging = true;
+        this.cam.dragMode = e.shiftKey || e.button === 2 ? 'pan' : 'orbit';
+        this.cam.lastMouseX = e.clientX;
+        this.cam.lastMouseY = e.clientY;
+    },
+
+    onPointerMove(e) {
+        if (!this.cam.isDragging || !this.isOpen) return;
+        const canvas = document.getElementById('solar3DMainCanvas');
+        if (!canvas) return;
+
+        if (this.cam.dragMode === 'move_obs' && this.selectedObstacleId) {
+            const pt = this.screenToGroundXZ(e.clientX, e.clientY, canvas);
+            const obs = Store.state.scene3D.obstacles.find(o => o.id === this.selectedObstacleId);
+            if (obs) {
+                obs.x = pt.x;
+                obs.z = pt.z;
+                this.recalculate3DPhysicsAndWiring();
+                this.syncModalInputsFromState();
+                this.renderScene();
+            }
+            return;
+        }
+
+        const dx = e.clientX - this.cam.lastMouseX;
+        const dy = e.clientY - this.cam.lastMouseY;
+        this.cam.lastMouseX = e.clientX;
+        this.cam.lastMouseY = e.clientY;
+
+        if (this.cam.dragMode === 'pan') {
+            this.cam.panX += dx;
+            this.cam.panY += dy;
+        } else {
+            this.cam.yawDeg = (this.cam.yawDeg + dx * 0.45) % 360;
+            this.cam.pitchDeg = Math.max(8, Math.min(89, this.cam.pitchDeg + dy * 0.38));
+        }
+        this.renderScene();
+    },
+
+    onPointerUp() {
+        this.cam.isDragging = false;
+    },
+
+    /* Dibuja la escena 3D completa: Suelo Ortofoto/Rejilla, Sombras proyectadas, Arcos Solares, Edificio, Obstáculos, Paneles Heatmap y Cables */
+    renderScene(targetCanvas = null, forceSize = null) {
+        const canvas = targetCanvas || document.getElementById('solar3DMainCanvas');
+        if (!canvas) return;
+        const container = canvas.parentElement;
+        const dpr = window.devicePixelRatio || 1;
+        const Wpx = forceSize ? forceSize.w : Math.max(320, container?.clientWidth || 800);
+        const Hpx = forceSize ? forceSize.h : Math.max(300, container?.clientHeight || 520);
+
+        if (canvas.width !== Math.round(Wpx * dpr) || canvas.height !== Math.round(Hpx * dpr)) {
+            canvas.width = Math.round(Wpx * dpr);
+            canvas.height = Math.round(Hpx * dpr);
+        }
+
+        const ctx = canvas.getContext('2d');
+        ctx.save();
+        ctx.scale(dpr, dpr);
+
+        const s3d = Store.state.scene3D;
+        const loc = Store.state.locationAndPVGIS;
+        const sun = this.computeSunPosition(Number(loc.lat) || 40.42, s3d.sunSim.monthIdx, 21, s3d.sunSim.hourDecimal);
+        const bld = s3d.buildings[0];
+        this.screenHotspots = [];
+
+        // 1. Fondo Atmosférico (Cielo dinámico según elevación solar)
+        const skyGrad = ctx.createLinearGradient(0, 0, 0, Hpx);
+        if (sun.elevDeg > 8) {
+            skyGrad.addColorStop(0, '#0B1528');
+            skyGrad.addColorStop(0.55, '#132342');
+            skyGrad.addColorStop(1, '#1E293B');
+        } else {
+            skyGrad.addColorStop(0, '#060B14');
+            skyGrad.addColorStop(1, '#111827');
+        }
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(0, 0, Wpx, Hpx);
+
+        // 2. Plano del Suelo (Ortofoto Aérea IGN PNOA / Plano Subido + Rejilla Métrica y Rosa de los Vientos)
+        const halfG = (Number(s3d.groundScaleM) || 42) / 2;
+        const gCorners = [
+            this.project3D(-halfG, 0, -halfG, Wpx, Hpx),
+            this.project3D(halfG, 0, -halfG, Wpx, Hpx),
+            this.project3D(halfG, 0, halfG, Wpx, Hpx),
+            this.project3D(-halfG, 0, halfG, Wpx, Hpx)
+        ];
+
+        ctx.beginPath();
+        ctx.moveTo(gCorners[0].sx, gCorners[0].sy);
+        for (let i = 1; i < 4; i++) ctx.lineTo(gCorners[i].sx, gCorners[i].sy);
+        ctx.closePath();
+        ctx.fillStyle = '#162235';
+        ctx.fill();
+
+        if ((s3d.groundMode === 'ign_ortho' || s3d.groundMode === 'custom_image') && this.orthoImage) {
+            ctx.save();
+            ctx.clip();
+            // Mapeo afín por triángulos/bandas sobre el plano terrestre Y=0
+            const strips = 10;
+            const imgW = this.orthoImage.width;
+            const imgH = this.orthoImage.height;
+            ctx.globalAlpha = 0.78;
+            for (let gz = 0; gz < strips; gz++) {
+                const z0 = -halfG + (gz / strips) * (2 * halfG);
+                const z1 = -halfG + ((gz + 1) / strips) * (2 * halfG);
+                const pTL = this.project3D(-halfG, 0, z0, Wpx, Hpx);
+                const pTR = this.project3D(halfG, 0, z0, Wpx, Hpx);
+                const pBL = this.project3D(-halfG, 0, z1, Wpx, Hpx);
+                ctx.save();
+                ctx.transform(
+                    (pTR.sx - pTL.sx) / imgW,
+                    (pTR.sy - pTL.sy) / imgW,
+                    (pBL.sx - pTL.sx) / (imgH / strips),
+                    (pBL.sy - pTL.sy) / (imgH / strips),
+                    pTL.sx,
+                    pTL.sy
+                );
+                ctx.drawImage(this.orthoImage, 0, (gz / strips) * imgH, imgW, imgH / strips, 0, 0, imgW, imgH / strips);
+                ctx.restore();
+            }
+            ctx.restore();
+        }
+
+        // Rejilla métrica cada 2 metros
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.16)';
+        ctx.lineWidth = 1;
+        for (let m = -20; m <= 20; m += 2) {
+            const pA = this.project3D(m, 0, -20, Wpx, Hpx);
+            const pB = this.project3D(m, 0, 20, Wpx, Hpx);
+            ctx.beginPath(); ctx.moveTo(pA.sx, pA.sy); ctx.lineTo(pB.sx, pB.sy); ctx.stroke();
+
+            const pC = this.project3D(-20, 0, m, Wpx, Hpx);
+            const pD = this.project3D(20, 0, m, Wpx, Hpx);
+            ctx.beginPath(); ctx.moveTo(pC.sx, pC.sy); ctx.lineTo(pD.sx, pD.sy); ctx.stroke();
+        }
+
+        // Etiquetas Cardinales (S, N, E, O)
+        const cardPts = [
+            { lbl: 'SUR (0°)', x: 0, z: halfG - 1.5, col: '#F59E0B' },
+            { lbl: 'NORTE', x: 0, z: -halfG + 1.5, col: '#94A3B8' },
+            { lbl: 'ESTE (-90°)', x: -halfG + 2.2, z: 0, col: '#60A5FA' },
+            { lbl: 'OESTE (+90°)', x: halfG - 2.2, z: 0, col: '#60A5FA' }
+        ];
+        ctx.font = 'bold 11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        for (const c of cardPts) {
+            const pc = this.project3D(c.x, 0.1, c.z, Wpx, Hpx);
+            ctx.fillStyle = c.col;
+            ctx.fillText(c.lbl, pc.sx, pc.sy);
+        }
+
+        // 3. Arcos de la Carta Solar 3D (21 Dic, 21 Mar, 21 Jun) y Posición Actual del Sol
+        if (s3d.sunSim.showSunPathArcs) {
+            const arcRadius = 17.5;
+            const arcSpecs = [
+                { m: 11, col: 'rgba(56, 189, 248, 0.45)', name: '21 Dic' },
+                { m: 2,  col: 'rgba(16, 185, 129, 0.45)', name: '21 Mar/Sep' },
+                { m: 5,  col: 'rgba(245, 158, 11, 0.55)', name: '21 Jun' }
+            ];
+            for (const arc of arcSpecs) {
+                ctx.beginPath();
+                let first = true;
+                for (let h = 6; h <= 20; h += 0.5) {
+                    const sp = this.computeSunPosition(Number(loc.lat) || 40.42, arc.m, 21, h);
+                    if (sp.elevDeg <= 0) continue;
+                    const pt = this.project3D(sp.sx * arcRadius, sp.sy * arcRadius, sp.sz * arcRadius, Wpx, Hpx);
+                    if (first) { ctx.moveTo(pt.sx, pt.sy); first = false; }
+                    else ctx.lineTo(pt.sx, pt.sy);
+                }
+                ctx.strokeStyle = arc.col;
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Sol actual brillante
+            if (sun.elevDeg > 0) {
+                const sunPt = this.project3D(sun.sx * arcRadius, sun.sy * arcRadius, sun.sz * arcRadius, Wpx, Hpx);
+                const sunGlow = ctx.createRadialGradient(sunPt.sx, sunPt.sy, 2, sunPt.sx, sunPt.sy, 22);
+                sunGlow.addColorStop(0, '#FEF08A');
+                sunGlow.addColorStop(0.4, '#F59E0B');
+                sunGlow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+                ctx.fillStyle = sunGlow;
+                ctx.beginPath(); ctx.arc(sunPt.sx, sunPt.sy, 22, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath(); ctx.arc(sunPt.sx, sunPt.sy, 5.5, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        // 4. Sombra Proyectada en Vivo sobre el Suelo y el Tejado según el Vector Solar Actual
+        if (sun.elevDeg > 2 && bld) {
+            this.drawProjectedShadows(ctx, bld, s3d.obstacles, sun, Wpx, Hpx);
+        }
+
+        // 5. Dibujar Edificio Principal (Paredes, Cubierta, Peto/Murete, Casetón)
+        if (bld) {
+            this.drawBuilding3D(ctx, bld, sun, Wpx, Hpx);
+        }
+
+        // 6. Dibujar Paneles Solares sobre el Tejado (con Semáforo de Sombra y % individual)
+        this.drawPanels3D(ctx, s3d.panels, s3d.sunSim.showPanelHeatmap, sun, Wpx, Hpx);
+
+        // 7. Dibujar Obstáculos (Árboles Caducos/Perennes/Palmeras, Chimeneas, Antenas, Vecinos)
+        const isWinterNow = (s3d.sunSim.monthIdx <= 2 || s3d.sunSim.monthIdx >= 10);
+        this.drawObstacles3D(ctx, bld, s3d.obstacles, isWinterNow, Wpx, Hpx);
+
+        // 8. Dibujar Cables 3D (Entre placas, Saltos de fila, Bajantes DC +/-, Batería y Cuadro AC) y Equipos
+        if (s3d.electrical3D.showCablesIn3D) {
+            this.drawElectricalCablesAndPins3D(ctx, s3d, Wpx, Hpx);
+        }
+
+        // 9. Si está calcando esquinas a mano, dibujar el polígono en curso
+        if (this.placementMode === 'draw_footprint' && bld?.customFootprintPts?.length > 0) {
+            ctx.beginPath();
+            bld.customFootprintPts.forEach((pt, idx) => {
+                const p2 = this.project3D(pt.x, 0.15, pt.z, Wpx, Hpx);
+                if (idx === 0) ctx.moveTo(p2.sx, p2.sy);
+                else ctx.lineTo(p2.sx, p2.sy);
+                ctx.fillStyle = '#F59E0B';
+                ctx.fillRect(p2.sx - 4, p2.sy - 4, 8, 8);
+            });
+            ctx.strokeStyle = '#F59E0B';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+        }
+
+        ctx.restore();
+    },
+
+    drawProjectedShadows(ctx, bld, obstacles, sun, Wpx, Hpx) {
+        const cotX = -sun.sx / Math.max(0.08, sun.sy);
+        const cotZ = -sun.sz / Math.max(0.08, sun.sy);
+        const W = (Number(bld.widthM) || 12) / 2;
+        const D = (Number(bld.depthM) || 9) / 2;
+        const H = Number(bld.wallHeightM) || 5.8;
+
+        ctx.fillStyle = 'rgba(2, 6, 23, 0.46)';
+
+        // Sombra del edificio principal sobre la parcela
+        const roofTopPts = [
+            { x: -W, y: H, z: -D },
+            { x: W,  y: H, z: -D },
+            { x: W,  y: H, z: D },
+            { x: -W, y: H, z: D }
+        ];
+        ctx.beginPath();
+        roofTopPts.forEach((p, idx) => {
+            const wp = this.localToWorld(bld, p.x, 0, p.z);
+            const sp = this.project3D(wp.x + p.y * cotX, 0.02, wp.z + p.y * cotZ, Wpx, Hpx);
+            if (idx === 0) ctx.moveTo(sp.sx, sp.sy);
+            else ctx.lineTo(sp.sx, sp.sy);
+        });
+        ctx.closePath();
+        ctx.fill();
+
+        // Sombra de cada obstáculo proyectada tanto sobre el suelo (Y=0) como sobre la cota de cubierta (Y=H)
+        for (const obs of obstacles) {
+            const ox = Number(obs.x) || 0;
+            const oz = Number(obs.z) || 0;
+            const oH = Number(obs.heightM) || 5;
+            const oR = (Number(obs.widthM) || 2) / 2;
+            const isRoofObj = (obs.type === 'chimney' || obs.type === 'antenna' || obs.type === 'hvac');
+            const targetY = isRoofObj ? H : 0.03;
+            const dH = Math.max(0.2, (isRoofObj ? oH : (oH - targetY)));
+
+            const pBase = this.project3D(ox, targetY, oz, Wpx, Hpx);
+            const pTip = this.project3D(ox + dH * cotX, targetY, oz + dH * cotZ, Wpx, Hpx);
+
+            ctx.strokeStyle = 'rgba(2, 6, 23, 0.52)';
+            ctx.lineWidth = Math.max(6, oR * this.cam.zoom * 1.35);
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(pBase.sx, pBase.sy);
+            ctx.lineTo(pTip.sx, pTip.sy);
+            ctx.stroke();
+        }
+    },
+
+    drawPolygon3D(ctx, pts3D, fillStyle, strokeStyle, Wpx, Hpx, lineWidth = 1.2) {
+        if (!pts3D || pts3D.length < 3) return;
+        ctx.beginPath();
+        pts3D.forEach((p, idx) => {
+            const sp = this.project3D(p.x, p.y, p.z, Wpx, Hpx);
+            if (idx === 0) ctx.moveTo(sp.sx, sp.sy);
+            else ctx.lineTo(sp.sx, sp.sy);
+        });
+        ctx.closePath();
+        if (fillStyle) { ctx.fillStyle = fillStyle; ctx.fill(); }
+        if (strokeStyle) { ctx.strokeStyle = strokeStyle; ctx.lineWidth = lineWidth; ctx.stroke(); }
+    },
+
+    drawBuilding3D(ctx, bld, sun, Wpx, Hpx) {
+        const roof = this.getBuildingRoofFaces(bld);
+        const w2 = roof.W / 2;
+        const d2 = roof.D / 2;
+        const H = roof.H;
+        const lw = (lx, ly, lz) => this.localToWorld(bld, lx, ly, lz);
+
+        // Paredes exteriores
+        const walls = [
+            { pts: [lw(-w2, 0, d2), lw(w2, 0, d2), lw(w2, H, d2), lw(-w2, H, d2)], col: '#E2E8F0' }, // Sur
+            { pts: [lw(-w2, 0, -d2), lw(w2, 0, -d2), lw(w2, H, -d2), lw(-w2, H, -d2)], col: '#94A3B8' }, // Norte
+            { pts: [lw(-w2, 0, -d2), lw(-w2, 0, d2), lw(-w2, H, d2), lw(-w2, H, -d2)], col: '#CBD5E1' }, // Este
+            { pts: [lw(w2, 0, -d2), lw(w2, 0, d2), lw(w2, H, d2), lw(w2, H, -d2)], col: '#CBD5E1' }  // Oeste
+        ];
+
+        // Ordenar caras por profundidad media respecto a la cámara (Painter's Algorithm)
+        walls.sort((a, b) => {
+            const da = a.pts.reduce((s, p) => s + this.project3D(p.x, p.y, p.z, Wpx, Hpx).depth, 0) / 4;
+            const db = b.pts.reduce((s, p) => s + this.project3D(p.x, p.y, p.z, Wpx, Hpx).depth, 0) / 4;
+            return db - da;
+        });
+
+        for (const w of walls) {
+            this.drawPolygon3D(ctx, w.pts, w.col, '#475569', Wpx, Hpx, 1.2);
+        }
+
+        // Cubierta según tipología
+        if (bld.archType === 'piso_plana') {
+            this.drawPolygon3D(ctx, [lw(-w2, H, -d2), lw(w2, H, -d2), lw(w2, H, d2), lw(-w2, H, d2)], '#64748B', '#334155', Wpx, Hpx, 1.5);
+            const pH = Number(bld.parapetHeightM) || 0.9;
+            if (pH > 0.05) {
+                this.drawPolygon3D(ctx, [lw(-w2, H, d2), lw(w2, H, d2), lw(w2, H + pH, d2), lw(-w2, H + pH, d2)], 'rgba(203, 213, 225, 0.85)', '#475569', Wpx, Hpx, 1.2);
+            }
+            if (bld.hasElevatorHut) {
+                this.drawPolygon3D(ctx, [lw(-1.5, H, -0.8), lw(1.5, H, -0.8), lw(1.5, H + 2.5, -0.8), lw(-1.5, H + 2.5, -0.8)], '#94A3B8', '#334155', Wpx, Hpx);
+                this.drawPolygon3D(ctx, [lw(-1.5, H + 2.5, -3.4), lw(1.5, H + 2.5, -3.4), lw(1.5, H + 2.5, -0.8), lw(-1.5, H + 2.5, -0.8)], '#64748B', '#334155', Wpx, Hpx);
+            }
+        } else if (bld.archType === 'chalet_1agua') {
+            const topY = H + roof.D * Math.tan((roof.tilt * Math.PI) / 180);
+            this.drawPolygon3D(ctx, [lw(-w2, topY, -d2), lw(w2, topY, -d2), lw(w2, H, d2), lw(-w2, H, d2)], '#9A3412', '#431407', Wpx, Hpx, 1.5);
+        } else {
+            const topY = H + roof.ridgeRise;
+            // Faldón Norte y Faldón Sur + Hastiales triangulares
+            this.drawPolygon3D(ctx, [lw(-w2, H, -d2), lw(-w2, topY, 0), lw(-w2, H, d2)], '#CBD5E1', '#475569', Wpx, Hpx);
+            this.drawPolygon3D(ctx, [lw(w2, H, -d2), lw(w2, topY, 0), lw(w2, H, d2)], '#CBD5E1', '#475569', Wpx, Hpx);
+            this.drawPolygon3D(ctx, [lw(-w2, H, -d2), lw(w2, H, -d2), lw(w2, topY, 0), lw(-w2, topY, 0)], '#7C2D12', '#431407', Wpx, Hpx, 1.4);
+            this.drawPolygon3D(ctx, [lw(-w2, topY, 0), lw(w2, topY, 0), lw(w2, H, d2), lw(-w2, H, d2)], '#B45309', '#431407', Wpx, Hpx, 1.5);
+        }
+
+        // Cotas dimensionales en vivo sobre la base de la casa
+        const pCornerL = this.project3D(-w2, 0.1, d2 + 0.8, Wpx, Hpx);
+        const pCornerR = this.project3D(w2, 0.1, d2 + 0.8, Wpx, Hpx);
+        ctx.fillStyle = '#38BDF8';
+        ctx.font = 'bold 11px "JetBrains Mono", monospace';
+        ctx.fillText(`◄ ${roof.W}m × ${roof.D}m (H:${H}m) ►`, (pCornerL.sx + pCornerR.sx) / 2, (pCornerL.sy + pCornerR.sy) / 2);
+    },
+
+    drawPanels3D(ctx, panels, showHeatmap, sun, Wpx, Hpx) {
+        if (!Array.isArray(panels)) return;
+        const bld = Store.state.scene3D.buildings[0];
+        if (!bld) return;
+        const roof = this.getBuildingRoofFaces(bld);
+
+        for (const p of panels) {
+            const hw = (p.widthM || 1.13) / 2;
+            const hl = (p.lengthM || 1.72) / 2;
+            const face = roof.faces.find(f => f.faceId === p.faceId) || roof.faces[0];
+
+            const z0 = (p.lz ?? 1.5) - hl;
+            const z1 = (p.lz ?? 1.5) + hl;
+            const x0 = (p.lx ?? 0) - hw;
+            const x1 = (p.lx ?? 0) + hw;
+            const y0 = face.yAtLocal(x0, z0) + 0.12;
+            const y1 = face.yAtLocal(x0, z1) + (face.isFlatRoof ? 0.38 : 0.12);
+
+            const corners = [
+                this.localToWorld(bld, x0, y0, z0),
+                this.localToWorld(bld, x1, y0, z0),
+                this.localToWorld(bld, x1, y1, z1),
+                this.localToWorld(bld, x0, y1, z1)
+            ];
+
+            let fillCol = '#1E3A8A';
+            let borderCol = '#93C5FD';
+            if (showHeatmap) {
+                if (p.shadeLossPct <= 4.0) {
+                    fillCol = 'rgba(16, 185, 129, 0.88)';
+                    borderCol = '#A7F3D0';
+                } else if (p.shadeLossPct <= 15.0) {
+                    fillCol = 'rgba(245, 158, 11, 0.88)';
+                    borderCol = '#FDE68A';
+                } else {
+                    fillCol = 'rgba(239, 68, 68, 0.90)';
+                    borderCol = '#FCA5A5';
+                }
+            }
+
+            this.drawPolygon3D(ctx, corners, fillCol, borderCol, Wpx, Hpx, 1.3);
+
+            // Mostrar el % de pérdida anual sobre el centro de cada módulo
+            const pc = this.project3D(p.x, p.y + 0.15, p.z, Wpx, Hpx);
+            if (pc.scale > 9) {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.font = 'bold 9.5px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(`-${p.shadeLossPct}%`, pc.sx, pc.sy + 3);
+            }
+        }
+    },
+
+    drawObstacles3D(ctx, bld, obstacles, isWinterNow, Wpx, Hpx) {
+        const H = Number(bld?.wallHeightM) || 5.8;
+        for (const obs of obstacles) {
+            const ox = Number(obs.x) || 0;
+            const oz = Number(obs.z) || 0;
+            const oH = Number(obs.heightM) || 6.0;
+            const oW = Number(obs.widthM) || 3.0;
+            const isSelected = obs.id === this.selectedObstacleId;
+            const isRoofObj = (obs.type === 'chimney' || obs.type === 'antenna' || obs.type === 'hvac');
+            const y0 = isRoofObj ? H : 0;
+
+            const pBase = this.project3D(ox, y0, oz, Wpx, Hpx);
+            const pTop = this.project3D(ox, y0 + oH, oz, Wpx, Hpx);
+            const rPx = Math.max(8, (oW / 2) * pTop.scale);
+
+            if (obs.type === 'tree_deciduous' || obs.type === 'tree_conifer' || obs.type === 'tree_palm') {
+                // Tronco
+                ctx.strokeStyle = '#78350F';
+                ctx.lineWidth = Math.max(3, 0.35 * pBase.scale);
+                ctx.beginPath();
+                ctx.moveTo(pBase.sx, pBase.sy);
+                ctx.lineTo(pTop.sx, pTop.sy + rPx * 0.4);
+                ctx.stroke();
+
+                // Copa (En invierno el árbol caduco se muestra traslúcido indicando caída de hoja)
+                ctx.beginPath();
+                ctx.arc(pTop.sx, pTop.sy + rPx * 0.3, rPx, 0, Math.PI * 2);
+                ctx.fillStyle = (obs.type === 'tree_deciduous' && isWinterNow)
+                    ? 'rgba(163, 230, 53, 0.32)'
+                    : (obs.type === 'tree_conifer' ? 'rgba(6, 95, 70, 0.86)' : 'rgba(22, 163, 74, 0.78)');
+                ctx.fill();
+                ctx.strokeStyle = isSelected ? '#38BDF8' : '#14532D';
+                ctx.lineWidth = isSelected ? 2.5 : 1.2;
+                ctx.stroke();
+            } else {
+                // Prisma 3D para Chimenea, Antena, Clima, Edificio Vecino o Figura Libre
+                const hw = oW / 2;
+                const topFace = [
+                    { x: ox - hw, y: y0 + oH, z: oz - hw },
+                    { x: ox + hw, y: y0 + oH, z: oz - hw },
+                    { x: ox + hw, y: y0 + oH, z: oz + hw },
+                    { x: ox - hw, y: y0 + oH, z: oz + hw }
+                ];
+                const frontFace = [
+                    { x: ox - hw, y: y0, z: oz + hw },
+                    { x: ox + hw, y: y0, z: oz + hw },
+                    { x: ox + hw, y: y0 + oH, z: oz + hw },
+                    { x: ox - hw, y: y0 + oH, z: oz + hw }
+                ];
+                const colBody = obs.type === 'chimney' ? '#9A3412' : (obs.type === 'neighbor_block' ? '#475569' : '#64748B');
+                this.drawPolygon3D(ctx, frontFace, colBody, isSelected ? '#38BDF8' : '#1E293B', Wpx, Hpx, isSelected ? 2.2 : 1.2);
+                this.drawPolygon3D(ctx, topFace, '#94A3B8', isSelected ? '#38BDF8' : '#1E293B', Wpx, Hpx, isSelected ? 2.2 : 1.2);
+            }
+
+            this.screenHotspots.push({ type: 'obstacle', id: obs.id, x: pTop.sx, y: pTop.sy, r: Math.max(16, rPx) });
+        }
+    },
+
+    drawElectricalCablesAndPins3D(ctx, s3d, Wpx, Hpx) {
+        const el = s3d.electrical3D;
+        const panels = s3d.panels || [];
+        const inv = el.inverterPos || { x: -4.2, y: 1.6, z: 4.5 };
+        const bat = el.batteryPos || { x: -2.8, y: 0.8, z: 4.5 };
+        const brd = el.mainBoardPos || { x: 2.8, y: 1.6, z: 4.5 };
+
+        // 1. Dibujar uniones entre paneles (Cyan brillante) y bajante al Inversor (Rojo + / Negro -)
+        if (panels.length > 0) {
+            ctx.strokeStyle = '#22D3EE';
+            ctx.lineWidth = 2.2;
+            ctx.beginPath();
+            panels.forEach((p, idx) => {
+                const sp = this.project3D(p.x, p.y + 0.16, p.z, Wpx, Hpx);
+                if (idx === 0) ctx.moveTo(sp.sx, sp.sy);
+                else ctx.lineTo(sp.sx, sp.sy);
+            });
+            ctx.stroke();
+
+            // Bajante desde el primer panel al Inversor (siguiendo alero/pared si es ortogonal)
+            const pFirst = panels[0];
+            const spFirst = this.project3D(pFirst.x, pFirst.y + 0.15, pFirst.z, Wpx, Hpx);
+            const spEave = this.project3D(inv.x, pFirst.y, inv.z, Wpx, Hpx);
+            const spInv = this.project3D(inv.x, inv.y, inv.z, Wpx, Hpx);
+
+            ctx.strokeStyle = '#EF4444';
+            ctx.lineWidth = 2.6;
+            ctx.beginPath();
+            ctx.moveTo(spFirst.sx, spFirst.sy);
+            if (el.routingStyle !== 'direct_conduit') ctx.lineTo(spEave.sx, spEave.sy);
+            ctx.lineTo(spInv.sx, spInv.sy);
+            ctx.stroke();
+        }
+
+        // 2. Tramo Inversor -> Batería (Verde) e Inversor -> Cuadro General Casa (Ámbar)
+        const spInv = this.project3D(inv.x, inv.y, inv.z, Wpx, Hpx);
+        const spBat = this.project3D(bat.x, bat.y, bat.z, Wpx, Hpx);
+        const spBrd = this.project3D(brd.x, brd.y, brd.z, Wpx, Hpx);
+
+        ctx.strokeStyle = '#10B981';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath(); ctx.moveTo(spInv.sx, spInv.sy); ctx.lineTo(spBat.sx, spBat.sy); ctx.stroke();
+
+        ctx.strokeStyle = '#F59E0B';
+        ctx.lineWidth = 2.6;
+        ctx.beginPath(); ctx.moveTo(spInv.sx, spInv.sy); ctx.lineTo(spBrd.sx, spBrd.sy); ctx.stroke();
+
+        // 3. Dibujar iconos/pines de los 3 equipos (Inversor, Batería, Cuadro General)
+        const pins = [
+            { pt: spInv, lbl: 'INVERSOR', col: '#0066FF' },
+            { pt: spBat, lbl: 'BATERÍA',  col: '#10B981' },
+            { pt: spBrd, lbl: 'CUADRO AC', col: '#F59E0B' }
+        ];
+        ctx.font = 'bold 9.5px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        for (const pin of pins) {
+            ctx.fillStyle = pin.col;
+            ctx.beginPath(); ctx.arc(pin.pt.sx, pin.pt.sy, 7, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.8; ctx.stroke();
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(pin.lbl, pin.pt.sx, pin.pt.sy - 10);
+        }
+    },
+
+    captureSnapshotForReport() {
+        try {
+            const offCanvas = document.createElement('canvas');
+            this.renderScene(offCanvas, { w: 720, h: 380 });
+            const url = offCanvas.toDataURL('image/png');
+            this.runtimeSnapshotUrl = url;
+            Store.state.scene3D.computed3D.snapshotDataUrl = url;
+        } catch (_) {}
     }
 };
 
@@ -7437,7 +9986,8 @@ const siteI18n = {
         step4Heading: "Cableado y Verificación REBT",
         step5Heading: "Baterías y Almacenamiento",
         step6Heading: "Viabilidad Económica y Ahorro",
-        step7Heading: "Resultados y Memoria Técnica A4"
+        step7Heading: "Resultados y Memoria Técnica A4",
+        s2_3d_title: "Estudio 3D de Sombras y Cableado"
     },
     en: {
         hdrSubtitle: "PVGIS • Multi-MPPT • REBT",
@@ -7466,7 +10016,8 @@ const siteI18n = {
         step4Heading: "Cabling & REBT Compliance",
         step5Heading: "Battery Storage System",
         step6Heading: "Financial Viability & Savings",
-        step7Heading: "Executive Results & A4 Report"
+        step7Heading: "Executive Results & A4 Report",
+        s2_3d_title: "3D Shading & Cabling Studio"
     }
 };
 
@@ -8134,9 +10685,35 @@ const UI = {
         this.setText('s2KpiAnnualGen', fmtNum(c.pv.annualGenKwh));
 
         if (c.losses && c.losses.pv) {
-            this.setText('s2LossBreakdown', `Térmica: -${c.losses.pv.thermalPct}% (física con NOCT ${c.losses.pv.noct}°C y γ) | Mismatch: -${c.losses.pv.mismatchPct}% (tabla panel) | IAM: -${c.losses.pv.iamPct}% (física) | Suciedad: 0% (mant. 60€/año)`);
+            const sh3dTxt = c.losses.pv.shade3DPct > 0 ? ` | Sombra 3D: -${c.losses.pv.shade3DPct}%` : '';
+            this.setText('s2LossBreakdown', `Térmica: -${c.losses.pv.thermalPct}% (física con NOCT ${c.losses.pv.noct}°C y γ) | Mismatch: -${c.losses.pv.mismatchPct}% (tabla panel) | IAM: -${c.losses.pv.iamPct}% (física)${sh3dTxt} | Suciedad: 0% (mant. 60€/año)`);
             this.setText('s2LossPctBadge', `-${c.losses.pv.totalPct}%`);
             this.setText('s2LossKwhBadge', `(-${fmtNum(c.losses.pv.lossKwh)} kWh/año)`);
+        }
+
+        // Control del Lanzador 3D en Paso 2 (Exclusivo Modo Profesional)
+        const boxPro3D = document.getElementById('boxPro3DLauncher');
+        const isAdv = st.projectMeta.wizardMode === 'advanced';
+        if (boxPro3D) {
+            boxPro3D.classList.toggle('hidden', !isAdv);
+            const is3DOn = !!(isAdv && st.scene3D && st.scene3D.enabled);
+            const bdg3D = document.getElementById('s2Badge3DState');
+            const btnDis3D = document.getElementById('btnDisable3DQuick');
+            const sum3D = document.getElementById('s2Active3DSummary');
+            if (bdg3D) {
+                bdg3D.textContent = is3DOn ? 'ACTIVO • 3D' : 'Opcional • Pro';
+                bdg3D.className = is3DOn
+                    ? 'px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981] whitespace-nowrap'
+                    : 'px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--bg-subtle)] text-[var(--text-muted)] whitespace-nowrap';
+            }
+            btnDis3D?.classList.toggle('hidden', !is3DOn);
+            sum3D?.classList.toggle('hidden', !is3DOn);
+            if (is3DOn && st.scene3D.computed3D) {
+                const c3 = st.scene3D.computed3D;
+                const w3 = st.scene3D.electrical3D?.computedWiring;
+                const pCount = (st.scene3D.panels || []).filter(p => p.enabled !== false).length || c.pv.moduleCount;
+                this.setText('s2Active3DMetrics', `✅ Maqueta 3D activa: ${pCount} paneles • Sombra real -${fmtNum(c3.totalEffectiveLossPct, 1)}% • Cable DC ${w3 ? w3.dcEquivalentOneWayM : st.cablingAndREBT.dc.lengthM}m (${w3 ? w3.mc4PairsCount : 4} pares MC4)`);
+            }
         }
 
         /* --- PASO 3: INVERSOR Y STRINGS MPPT --- */
@@ -8607,6 +11184,32 @@ const UI = {
             this.setText('s4LossBreakdown', `Línea DC: -${c.losses.cables.dcPct}% | Línea AC: -${c.losses.cables.acPct}%`);
             this.setText('s4LossPctBadge', `-${c.losses.cables.totalPct}%`);
             this.setText('s4LossKwhBadge', `(-${fmtNum(c.losses.cables.lossKwh)} kWh/año)`);
+        }
+
+        // Tarjeta 3D de Cableado en Paso 4 (Exclusivo Modo Profesional)
+        const s4Box3D = document.getElementById('s4Box3DWiringCard');
+        if (s4Box3D) {
+            const isAdv = st.projectMeta.wizardMode === 'advanced';
+            s4Box3D.classList.toggle('hidden', !isAdv);
+            const is3DOn = !!(isAdv && st.scene3D && st.scene3D.enabled);
+            const w3 = st.scene3D?.electrical3D?.computedWiring;
+            const bdgW = document.getElementById('s4Badge3DWiringStatus');
+            if (bdgW) {
+                bdgW.textContent = is3DOn ? 'Medido en 3D ✅' : 'Estimación / Manual';
+                bdgW.className = is3DOn
+                    ? 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981]'
+                    : 'px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--bg-subtle)] text-[var(--text-muted)]';
+            }
+            if (w3) {
+                this.setText('s4WireIntraM', `${fmtNum(w3.intraPanelTotalM, 1)} m`);
+                this.setText('s4WireTopoSub', st.scene3D.electrical3D?.wiringTopology === 'daisy_chain' ? 'En cadena (Daisy)' : 'Salto de rana');
+                this.setText('s4WireJumpersM', `${fmtNum(w3.interRowJumpersM, 1)} m`);
+                this.setText('s4WireHomerunM', `${fmtNum(w3.homerunPosM, 1)} m (×2)`);
+                this.setText('s4WireAc3DM', `${fmtNum(w3.invToBoardOneWayM, 1)} m`);
+                this.setText('s4WireBat3DM', `Batería: ${fmtNum(w3.invToBatteryOneWayM, 1)} m`);
+                this.setText('s4WireBuyDcM', `${w3.totalDcRedPurchaseM}m R + ${w3.totalDcBlackPurchaseM}m N`);
+                this.setText('s4WireMc4Count', `${w3.mc4PairsCount} pares`);
+            }
         }
 
         // Esquema Unifilar Simplificado SVG
@@ -9454,8 +12057,16 @@ const PrintReport = {
                             <td><span style="font-size: 7pt; font-weight: bold; background: #ECFDF5; color: #059669; padding: 1px 4px; border-radius: 4px; border: 1px solid #A7F3D0;">CALCULADO</span> Modelo Fresnel ARC (Tilt ${st.pvModules.tilt}°, Az ${st.pvModules.azimuth}°)</td>
                             <td style="text-align: right; color: #D97706; font-weight: bold;">-${c.losses ? c.losses.pv.iamPct : 1.2}%</td>
                             <td style="text-align: right; color: #DC2626;">-${c.losses ? fmtNum(c.losses.pv.iamKwh) : '0'} kWh/año</td>
-                            <td style="text-align: right; font-weight: 600;">${c.losses ? fmtNum(c.losses.grossStcGenKwh - c.losses.pv.lossKwh) : '—'} kWh</td>
+                            <td style="text-align: right; font-weight: 600;">${c.losses ? fmtNum(c.losses.grossStcGenKwh - c.losses.pv.thermalKwh - c.losses.pv.mismatchKwh - c.losses.pv.iamKwh) : '—'} kWh</td>
                         </tr>
+                        ${(c.losses && c.losses.pv.shade3DPct > 0) ? `
+                        <tr>
+                            <td><strong>Sombreado 3D (Raytracing PVGIS)</strong></td>
+                            <td><span style="font-size: 7pt; font-weight: bold; background: #EFF6FF; color: #1D4ED8; padding: 1px 4px; border-radius: 4px; border: 1px solid #BFDBFE;">ESTUDIO 3D</span> Obstáculos cercanos, diodos bypass Half-Cut y SVF</td>
+                            <td style="text-align: right; color: #D97706; font-weight: bold;">-${c.losses.pv.shade3DPct}%</td>
+                            <td style="text-align: right; color: #DC2626;">-${fmtNum(c.losses.pv.shade3DKwh)} kWh/año</td>
+                            <td style="text-align: right; font-weight: 600;">${fmtNum(c.losses.grossStcGenKwh - c.losses.pv.lossKwh)} kWh</td>
+                        </tr>` : ''}
                         <tr>
                             <td><strong>Paneles FV (Suciedad)</strong></td>
                             <td><span style="font-size: 7pt; font-weight: bold; background: #F5F3FF; color: #6D28D9; padding: 1px 4px; border-radius: 4px; border: 1px solid #DDD6FE;">MANT. 60€/A</span> 0.0% garantizado por contrato anual de mantenimiento preventivo</td>
@@ -9554,6 +12165,30 @@ const PrintReport = {
                 ${imgCashflow ? `<div style="margin-top: 10px;"><img src="${imgCashflow}" alt="Flujo de Caja Acumulado 25 Años" style="display: block; margin: 0 auto; max-height: 155px; width: auto; max-width: 100%;"/></div>` : ''}
             </div>
 
+            ${(st.projectMeta.wizardMode === 'advanced' && st.scene3D && st.scene3D.enabled) ? `
+            <!-- SECCIÓN 7: ANEXO DE MODELADO VOLUMÉTRICO 3D, SOMBRAS PVGIS Y DESGLOSE DE CABLEADO / MC4 -->
+            <div class="print-section">
+                <h2 style="font-size: 10.5pt; font-weight: 800; margin: 0 0 6px 0; color: #0066FF;">7. ANEXO DE SIMULACIÓN 3D DE CUBIERTA, OBSTÁCULOS Y TRAZADO DE CABLEADO</h2>
+                <table class="print-table">
+                    <tbody>
+                        <tr>
+                            <td><strong>Pérdida por Sombras Cercanas:</strong> -${fmtNum(st.scene3D.computed3D?.annualNearShadingLossPct || 0, 2)}% (Mism. Diodos -${fmtNum(st.scene3D.computed3D?.electricalMismatchPenaltyPct || 0, 2)}%)</td>
+                            <td><strong>Horizonte Remoto PVGIS:</strong> -${fmtNum(st.scene3D.computed3D?.annualHorizonLossPct || 0, 2)}% | <strong>Pérdida 3D Total:</strong> <strong>-${fmtNum(st.scene3D.computed3D?.totalEffectiveLossPct || 0, 2)}%</strong></td>
+                            <td><strong>Obstáculos Evaluados:</strong> ${(st.scene3D.obstacles || []).length} elementos (${(st.scene3D.panels || []).filter(p => p.enabled !== false).length} paneles activos)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Uniones Placa a Placa:</strong> ${fmtNum(st.scene3D.electrical3D?.computedWiring?.intraPanelTotalM || 0, 1)} m (${st.scene3D.electrical3D?.wiringTopology === 'daisy_chain' ? 'Daisy-Chain' : 'Salto de Rana'}) + Puentes ${fmtNum(st.scene3D.electrical3D?.computedWiring?.interRowJumpersM || 0, 1)} m</td>
+                            <td><strong>Bajante DC / Tramo AC / Bat:</strong> DC ${fmtNum(st.scene3D.electrical3D?.computedWiring?.homerunPosM || 0, 1)}m (×2) | AC ${fmtNum(st.scene3D.electrical3D?.computedWiring?.invToBoardOneWayM || 0, 1)}m | Bat ${fmtNum(st.scene3D.electrical3D?.computedWiring?.invToBatteryOneWayM || 0, 1)}m</td>
+                            <td><strong>Lista Compra DC y MC4:</strong> <strong>${st.scene3D.electrical3D?.computedWiring?.totalDcRedPurchaseM || 25}m Rojo + ${st.scene3D.electrical3D?.computedWiring?.totalDcBlackPurchaseM || 25}m Negro</strong> | <strong>${st.scene3D.electrical3D?.computedWiring?.mc4PairsCount || 4} pares MC4</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                ${(typeof Solar3DStudio !== 'undefined' && (Solar3DStudio.runtimeSnapshotUrl || st.scene3D.computed3D?.snapshotDataUrl)) ? `
+                <div style="margin-top: 8px; text-align: center;">
+                    <img src="${Solar3DStudio.runtimeSnapshotUrl || st.scene3D.computed3D?.snapshotDataUrl}" alt="Vista 3D de Cubierta, Sombras y Cableado" style="display: block; margin: 0 auto; max-height: 170px; width: auto; max-width: 100%; border-radius: 6px; border: 1px solid #CBD5E1;"/>
+                </div>` : ''}
+            </div>` : ''}
+
             <!-- PIE DE CONFORMIDAD Y FIRMAS TÉCNICAS CIE -->
             <div class="print-section" style="margin-bottom: 0;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding-top: 4px;">
@@ -9607,6 +12242,7 @@ document.addEventListener('DOMContentLoaded', () => {
             UI.closeJsonModal();
             UI.closeFeatureModal();
             UI.closeDatadisTutorialModal();
+            if (typeof Solar3DStudio !== 'undefined') Solar3DStudio.closeModal();
         }
     });
 });

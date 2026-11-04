@@ -1,5 +1,5 @@
 // Cloudflare Pages Function: Proxy para PVGIS (Comisión Europea - JRC)
-// Resuelve la falta de cabeceras CORS del servidor oficial de la UE
+// Soporta PVcalc (producción mensual), printhorizon (horizonte orográfico 3D) y MRcalc (radiación directa/difusa)
 
 export async function onRequest(context) {
     const url = new URL(context.request.url);
@@ -8,6 +8,7 @@ export async function onRequest(context) {
     const angle = url.searchParams.get("angle");
     const aspect = url.searchParams.get("aspect");
     const loss = url.searchParams.get("loss") || "14";
+    const mode = url.searchParams.get("mode") || "pvcalc";
 
     if (!lat || !lon) {
         return new Response(JSON.stringify({ error: "Faltan parámetros lat y lon" }), {
@@ -19,16 +20,22 @@ export async function onRequest(context) {
         });
     }
 
-    const geomParams = (angle !== null && angle !== "")
-        ? `&angle=${encodeURIComponent(angle)}&aspect=${encodeURIComponent(aspect || "0")}`
-        : `&optimalinclination=1`;
-
-    const pvgisUrl = `https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&peakpower=1&loss=${encodeURIComponent(loss)}${geomParams}&outputformat=json`;
+    let pvgisUrl = "";
+    if (mode === "printhorizon") {
+        pvgisUrl = `https://re.jrc.ec.europa.eu/api/v5_2/printhorizon?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&outputformat=json`;
+    } else if (mode === "mrcalc") {
+        pvgisUrl = `https://re.jrc.ec.europa.eu/api/v5_2/MRcalc?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&horirrad=1&d2g=1&outputformat=json`;
+    } else {
+        const geomParams = (angle !== null && angle !== "")
+            ? `&angle=${encodeURIComponent(angle)}&aspect=${encodeURIComponent(aspect || "0")}`
+            : `&optimalinclination=1`;
+        pvgisUrl = `https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&peakpower=1&loss=${encodeURIComponent(loss)}${geomParams}&outputformat=json`;
+    }
 
     try {
         const response = await fetch(pvgisUrl, {
             headers: {
-                "User-Agent": "SolarAI-2.0TD-Proxy/1.0"
+                "User-Agent": "SolarAI-2.0TD-Proxy/1.1"
             }
         });
 
@@ -48,7 +55,7 @@ export async function onRequest(context) {
             headers: {
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
-                "Cache-Control": "public, max-age=86400" // Cache 24h para no saturar al JRC
+                "Cache-Control": "public, max-age=86400"
             }
         });
     } catch (err) {
