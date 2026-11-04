@@ -229,16 +229,20 @@
             font-size: 0.8125rem;
             font-weight: 600;
             color: var(--text-secondary);
-            transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+            border: 1px solid transparent;
+            transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
         }
         .segmented-btn.active {
             background: var(--bg-surface-solid);
             color: #0066FF;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 102, 255, 0.35);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
         }
         html.dark .segmented-btn.active {
             color: #60A5FA;
             background: #1E293B;
+            border-color: rgba(96, 165, 250, 0.4);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
         }
 
         /* Sliders de Precisión */
@@ -635,7 +639,7 @@
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-2">
                                         <strong class="text-sm font-bold text-[var(--text-primary)]">🚀 Modo Rápido (3 Clics)</strong>
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0066FF] text-white">Recomendado</span>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0066FF] text-white whitespace-nowrap">Recomendado</span>
                                     </div>
                                     <p class="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">
                                         Introduce consumo o Datadis (<button type="button" onclick="event.stopPropagation(); UI.openDatadisTutorialModal()" class="text-[#0066FF] underline font-semibold hover:text-[#0052CC]">¿cómo obtenerlo?</button>), dinos si quieres batería y <strong>salta directamente a los resultados</strong> con todo dimensionado y en regla.
@@ -648,7 +652,7 @@
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-2">
                                         <strong class="text-sm font-bold text-[var(--text-primary)]">🛠️ Modo Ingeniería Avanzada</strong>
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-mono text-[var(--text-muted)] border border-[var(--border-hairline)]">8 Pasos</span>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-mono text-[var(--text-muted)] border border-[var(--border-hairline)] whitespace-nowrap">8 Pasos</span>
                                     </div>
                                     <p class="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">
                                         Inspección detallada de 30 módulos FV, 54 inversores Multi-MPPT, caída de tensión REBT y curvas de batería.
@@ -925,7 +929,7 @@
                                 <span class="w-5 h-5 rounded-md bg-[#10B981]/15 text-[#10B981] font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">1D</span>
                                 <span>Batería, Autarquía y Modalidad</span>
                             </h3>
-                            <span id="badgeS1BatteryStatus" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981]">Con Batería</span>
+                            <span id="badgeS1BatteryStatus" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981] whitespace-nowrap">Con Batería</span>
                         </div>
 
                         <!-- Toggle Batería -->
@@ -1280,9 +1284,9 @@
                         <div class="min-w-0">
                             <div class="flex items-center gap-2">
                                 <h3 class="font-display font-bold text-base text-[var(--text-primary)]" data-i18n="s2_3d_title">
-                                    Estudio 3D de Cubierta, Sombras y Cableado
+                                    Estudio CAD 3D de Cubierta, Sombras y Cableado
                                 </h3>
-                                <span id="s2Badge3DState" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#0066FF]/15 text-[#0066FF] whitespace-nowrap">Exclusivo Pro</span>
+                                <span id="s2Badge3DState" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#64748B]/15 text-[#94A3B8] whitespace-nowrap">Digital Twin al Final (Paso 7)</span>
                             </div>
                             <p id="s2Sub3DState" class="text-xs text-[var(--text-muted)] mt-0.5">
                                 Modela la cubierta sobre ortofoto oficial del IGN, sitúa árboles y obstáculos para calcular sombras exactas, y mide el cableado en 3D.
@@ -2007,7 +2011,7 @@
                         <div class="bento-card p-5 space-y-2.5">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-bold uppercase text-[var(--text-muted)]">Criterio 1 • Térmico</span>
-                                <span id="s4Crit1Badge" class="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-[#10B981]/15 text-[#10B981]">CUMPLE</span>
+                                <span id="s4Crit1Badge" class="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-[#10B981]/15 text-[#10B981] whitespace-nowrap">CUMPLE</span>
                             </div>
                             <div>
                                 <div class="text-xs text-[var(--text-muted)] font-mono">Ib (1.25×In) ≤ Iz</div>
@@ -2025,7 +2029,7 @@
                         <div class="bento-card p-5 space-y-2.5">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-bold uppercase text-[var(--text-muted)]">Criterio 2 • Caída ΔV</span>
-                                <span id="s4Crit2Badge" class="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-[#10B981]/15 text-[#10B981]">CUMPLE</span>
+                                <span id="s4Crit2Badge" class="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-[#10B981]/15 text-[#10B981] whitespace-nowrap">CUMPLE</span>
                             </div>
                             <div>
                                 <div class="text-xs text-[var(--text-muted)] font-mono" id="s4Crit2LimitLabel">Límite ITC-BT-40: ≤ 1.50%</div>
@@ -2043,7 +2047,7 @@
                         <div class="bento-card p-5 space-y-2.5">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-bold uppercase text-[var(--text-muted)]">Criterio 3 • Joule</span>
-                                <span class="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-[#F59E0B]/15 text-[#F59E0B]">R · I²</span>
+                                <span class="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-[#F59E0B]/15 text-[#F59E0B] whitespace-nowrap">R · I²</span>
                             </div>
                             <div>
                                 <div class="text-xs text-[var(--text-muted)] font-mono">Potencia Disipada</div>
@@ -2448,7 +2452,7 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <strong class="text-sm sm:text-base font-bold text-[var(--text-primary)]">¡Estudio Rápido Generado con Éxito!</strong>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#10B981] text-white">Dimensionado Óptimo</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#10B981] text-white whitespace-nowrap">Dimensionado Óptimo</span>
                         </div>
                         <p class="text-xs text-[var(--text-secondary)] mt-1 leading-relaxed">
                             Hemos seleccionado automáticamente la combinación más rentable de paneles solares, inversor comercial, tramos REBT y batería según tu consumo y ubicación.
@@ -2465,7 +2469,7 @@
             <!-- Cabecera Resumen Ejecutiva + Botón Crítico PDF -->
             <div class="bento-card p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
                 <div class="space-y-1.5">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#0066FF]/10 text-[#0066FF]">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#0066FF]/10 text-[#0066FF] whitespace-nowrap">
                         <span>PASO 7 • INFORME TÉCNICO</span>
                     </div>
                     <h2 id="step7Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Resultados y Memoria Técnica A4</h2>
@@ -2541,7 +2545,7 @@
                     </div>
                     <div class="flex items-center gap-2 self-start sm:self-auto">
                         <span class="text-xs text-[var(--text-muted)] font-mono">Performance Ratio:</span>
-                        <span id="s7PrBadge" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30">PR 83.2% • ÓPTIMO</span>
+                        <span id="s7PrBadge" class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 whitespace-nowrap">PR 83.2% • ÓPTIMO</span>
                     </div>
                 </div>
 
@@ -2810,7 +2814,7 @@
             <div class="bento-card p-4 sm:p-5 space-y-2.5 border-l-4 border-l-[#0066FF]">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] font-mono font-bold text-[#0066FF] uppercase">PASO 1 • REGISTRO GRATUITO (Tarda ~2 minutos)</span>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#0066FF]/10 text-[#0066FF] font-semibold">Alta Inicial</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#0066FF]/10 text-[#0066FF] font-semibold whitespace-nowrap">Alta Inicial</span>
                 </div>
                 <h4 class="font-display font-bold text-sm sm:text-base text-[var(--text-primary)]">
                     1. Crear tu cuenta en la web de Datadis
@@ -2837,7 +2841,7 @@
             <div class="bento-card p-4 sm:p-5 space-y-2.5 border-l-4 border-l-[#F59E0B]">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] font-mono font-bold text-[#F59E0B] uppercase">PASO 2 • DESCARGA DEL HISTÓRICO HORARIO REAL</span>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#F59E0B]/10 text-[#F59E0B] font-semibold">Descargar CSV</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#F59E0B]/10 text-[#F59E0B] font-semibold whitespace-nowrap">Descargar CSV</span>
                 </div>
                 <h4 class="font-display font-bold text-sm sm:text-base text-[var(--text-primary)]">
                     2. Exportar tus lecturas de contador en archivo CSV
@@ -2874,7 +2878,7 @@
             <div class="bento-card p-4 sm:p-5 space-y-2.5 border-l-4 border-l-[#10B981]">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] font-mono font-bold text-[#10B981] uppercase">PASO 3 • IMPORTAR Y CALCULAR EN SHOWROOM SOLAR</span>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#10B981]/15 text-[#10B981] font-semibold">1 Clic</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#10B981]/15 text-[#10B981] font-semibold whitespace-nowrap">1 Clic</span>
                 </div>
                 <h4 class="font-display font-bold text-sm sm:text-base text-[var(--text-primary)]">
                     3. Cargar el CSV y dejar que el simulador haga el resto
@@ -3006,6 +3010,9 @@
                 </button>
                 <button type="button" id="btnToggleArcs" onclick="Solar3DStudio.toggleLayer('arcs')" class="btn-press px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30">
                     🌈 Carta Solar: ON
+                </button>
+                <button type="button" id="btn3DToggleInterior" onclick="Solar3DStudio.toggleInteriorView()" class="btn-press px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#0066FF]/15 text-[#0066FF] border border-[#0066FF]/30 hover:bg-[#0066FF] hover:text-white" title="Conmutar vista de rayos X para ver inversores y cuadros dentro de la vivienda">
+                    👁️ Interior 3D: ON
                 </button>
                 <div class="h-4 w-[1px] bg-[var(--border-strong)] mx-0.5"></div>
                 <button type="button" onclick="Solar3DStudio.setCameraPreset('iso')" class="btn-press px-2 py-1 rounded-lg text-[11px] font-mono bento-subtle hover:border-[#0066FF]">Isométrica</button>
@@ -3367,6 +3374,33 @@
                     <strong class="font-display font-bold text-xs uppercase text-[#0066FF] block">4A. Situar Equipos en 3D y Topología de Cableado</strong>
                     <p class="text-[11px] text-[var(--text-muted)]">Pulsa un equipo y haz clic en la fachada/pared del modelo 3D para reubicarlo:</p>
 
+                    <!-- Selector de Ubicación Interior / Exterior (REBT ITC-BT-40) -->
+                    <div class="space-y-1.5">
+                        <span class="text-[11px] font-semibold text-[var(--text-secondary)] block">Entorno de Instalación de Equipos:</span>
+                        <div class="segmented-group w-full grid grid-cols-2" role="group" aria-label="Ubicación física de equipos">
+                            <button type="button" id="btnEqLocInterior" onclick="Solar3DStudio.setEquipmentLocation('interior')" class="segmented-btn active text-center !py-1 text-xs font-bold">
+                                🏠 Interior (Garaje/Técnico)
+                            </button>
+                            <button type="button" id="btnEqLocExterior" onclick="Solar3DStudio.setEquipmentLocation('exterior')" class="segmented-btn text-center !py-1 text-xs font-bold">
+                                🚪 Exterior (Fachada)
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] pt-1">
+                            <span class="text-[var(--text-muted)]">Modo Rayos X (Transparencia):</span>
+                            <button type="button" id="btnToggleXRay" onclick="Solar3DStudio.toggleInteriorView()" class="btn-press px-2 py-0.5 rounded-lg text-xs font-mono font-bold bento-subtle hover:text-[#0066FF]">
+                                👁️ Ver Interior: ON
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Presets Rápidos -->
+                    <div class="flex items-center gap-1.5 pt-0.5">
+                        <span class="text-[10px] text-[var(--text-muted)] font-mono">Presets:</span>
+                        <button type="button" onclick="Solar3DStudio.applyEquipPreset('garage')" class="btn-press px-2 py-0.5 rounded-lg bg-[var(--bg-surface-solid)] border border-[var(--border-hairline)] text-[10px] font-semibold hover:border-[#0066FF] hover:text-[#0066FF]">🏠 Garaje Int.</button>
+                        <button type="button" onclick="Solar3DStudio.applyEquipPreset('technical_room')" class="btn-press px-2 py-0.5 rounded-lg bg-[var(--bg-surface-solid)] border border-[var(--border-hairline)] text-[10px] font-semibold hover:border-[#0066FF] hover:text-[#0066FF]">🔧 Técnico Int.</button>
+                        <button type="button" onclick="Solar3DStudio.applyEquipPreset('facade')" class="btn-press px-2 py-0.5 rounded-lg bg-[var(--bg-surface-solid)] border border-[var(--border-hairline)] text-[10px] font-semibold hover:border-[#0066FF] hover:text-[#0066FF]">🚪 Fachada Ext.</button>
+                    </div>
+
                     <div class="grid grid-cols-3 gap-1.5">
                         <button type="button" id="btnPlace_inverter" onclick="Solar3DStudio.startEquipmentPlace('inverter')" class="btn-press p-2 rounded-xl text-center bento-card border border-[#0066FF]/40 text-[#0066FF] font-bold text-[11px]">📍 Inversor</button>
                         <button type="button" id="btnPlace_battery" onclick="Solar3DStudio.startEquipmentPlace('battery')" class="btn-press p-2 rounded-xl text-center bento-card border border-[#10B981]/40 text-[#10B981] font-bold text-[11px]">🔋 Batería</button>
@@ -3534,7 +3568,7 @@
 </div>
 
 <!-- Notificación Toast Flotante -->
-<div id="toastNotification" role="status" aria-live="polite" class="hidden fixed bottom-24 right-5 z-50 bento-card px-4 py-3 text-xs font-semibold shadow-xl border-l-4 border-l-[#10B981]"></div>
+<div id="toastNotification" role="status" aria-live="polite" class="hidden fixed bottom-24 right-5 z-[70] bento-card px-4 py-3 text-xs font-semibold shadow-xl border-l-4 border-l-[#10B981]"></div>
 
 <!-- ==========================================================================
      VISTA EXCLUSIVA DE IMPRESIÓN / EXPORTACIÓN PDF A4 (#printReportA4)
@@ -4557,9 +4591,10 @@ function createDefaultState() {
                 routingStyle: "orthogonal_walls", // 'orthogonal_walls' | 'direct_conduit'
                 pigtailLengthM: 1.15,
                 showCablesIn3D: true,
-                inverterPos: { x: -4.2, y: 1.6, z: 4.5, wallLabel: "Fachada Sur / Garaje" },
-                batteryPos: { x: -2.8, y: 0.8, z: 4.5, wallLabel: "Junto al Inversor" },
-                mainBoardPos: { x: 2.8, y: 1.6, z: 4.5, wallLabel: "Entrada Vivienda (CGMP)" },
+                location: "interior",
+                inverterPos: { x: -3.8, y: 1.6, z: 4.15, wallLabel: "Interior Garaje / Cuarto Técnico" },
+                batteryPos: { x: -2.4, y: 0.6, z: 4.15, wallLabel: "Junto al Inversor (Interior)" },
+                mainBoardPos: { x: 2.5, y: 1.6, z: 4.15, wallLabel: "Interior (CGMP)" },
                 computedWiring: {
                     intraPanelTotalM: 9.2,
                     interRowJumpersM: 2.4,
@@ -4961,6 +4996,20 @@ const PVGISService = {
    5. MOTOR DE INGENIERÍA SOLAR, MULTI-MPPT, REBT ITC-BT-19/20/40 Y FINANZAS
    ============================================================================ */
 const PhysicsEngine = {
+
+    getModuleThermalSpecs(pv) {
+        const betaVoc = -Math.abs(Number(pv?.betaVoc) || 0.27);
+        const betaVmp = betaVoc - 0.04;
+        const voc25 = Number(pv?.voc) || 41.5;
+        const vmp25 = Number(pv?.vmp) || 34.6;
+        const vVocColdMod = +(voc25 * (1 + (betaVoc / 100) * (-35))).toFixed(2); // -10°C vs 25°C
+        const vVmpHotMod = +(vmp25 * (1 + (betaVmp / 100) * 45)).toFixed(2);     // +70°C vs 25°C
+        const vVmpColdMod = +(vmp25 * (1 + (betaVoc / 100) * (-35))).toFixed(2);
+        const imp = Number(pv?.imp) || 13.0;
+        const isc = Number(pv?.isc) || 13.8;
+        const wp = Math.max(50, Number(pv?.wp) || 450);
+        return { voc25, vmp25, betaVoc, betaVmp, vVocColdMod, vVmpHotMod, vVmpColdMod, imp, isc, wp };
+    },
 
     computeGeomFactor(tilt, azimuth, optimalTilt = 34) {
         const dTiltRad = ((Number(tilt) - Number(optimalTilt)) * 0.85 * Math.PI) / 180;
@@ -5687,12 +5736,8 @@ const PhysicsEngine = {
 
         // 4. Inversor y Validación Térmica Multi-MPPT (Paso 3)
         const numMppts = Math.max(1, Math.min(12, Math.round(Number(inv.numMppts) || 2)));
-        const betaVoc = -Math.abs(Number(pv.betaVoc) || 0.27);
-        const betaVmp = betaVoc - 0.04;
-
-        const vVocColdMod = (Number(pv.voc) || 41.5) * (1 + (betaVoc / 100) * (-10 - 25));
-        const vVmpHotMod = (Number(pv.vmp) || 34.6) * (1 + (betaVmp / 100) * (70 - 25));
-        const vVmpColdMod = (Number(pv.vmp) || 34.6) * (1 + (betaVoc / 100) * (-10 - 25));
+        const modThermal = this.getModuleThermalSpecs(pv);
+        const { vVocColdMod, vVmpHotMod, vVmpColdMod } = modThermal;
 
         const activeMppts = [];
         let maxVocCold = 0;
@@ -6126,16 +6171,7 @@ const PhysicsEngine = {
 const AutoOptimizer = {
 
     getModuleThermalSpecs(pv) {
-        const betaVoc = -Math.abs(Number(pv.betaVoc) || 0.27);
-        const betaVmp = betaVoc - 0.04;
-        const voc25 = Number(pv.voc) || 41.5;
-        const vmp25 = Number(pv.vmp) || 34.6;
-        const vVocColdMod = voc25 * (1 + (betaVoc / 100) * (-35)); // -10°C vs 25°C
-        const vVmpHotMod = vmp25 * (1 + (betaVmp / 100) * 45);     // +70°C vs 25°C
-        const imp = Number(pv.imp) || 13.0;
-        const isc = Number(pv.isc) || 13.8;
-        const wp = Math.max(50, Number(pv.wp) || 450);
-        return { voc25, vmp25, vVocColdMod, vVmpHotMod, imp, isc, wp };
+        return PhysicsEngine.getModuleThermalSpecs(pv);
     },
 
     getInverterBounds(invSpec, pv) {
@@ -6845,9 +6881,11 @@ const Solar3DStudio = {
             stringsCountMode: '2', // 'auto_faces' | '1' | '2' | '3' | '4' (Por defecto 2 líneas para ver claramente las 2 bajantes al inversor)
             wiringTopology: 'leapfrog',
             routingStyle: 'orthogonal',
-            inverter: { x: -4.2, y: 1.6, z: 4.5 },
-            battery:  { x: -2.6, y: 0.8, z: 4.5 },
-            mainBoard:{ x: 2.8,  y: 1.6, z: 4.5 },
+            location: 'interior', // 'interior' (garaje / cuarto técnico) | 'exterior' (fachada)
+            hasBattery: false,
+            inverter: { x: -3.8, y: 1.6, z: 4.15 },
+            battery:  { x: -2.4, y: 0.6, z: 4.15 },
+            mainBoard:{ x: 2.5,  y: 1.6, z: 4.15 },
             computed: {}
         },
         sun: {
@@ -6909,12 +6947,41 @@ const Solar3DStudio = {
     },
 
     showToast(msg) {
-        const el = document.getElementById('toastBox');
+        if (typeof UI !== 'undefined' && UI.showToast) {
+            UI.showToast(msg, "ok");
+            return;
+        }
+        const el = document.getElementById('toastNotification');
         if (!el) return;
         el.textContent = msg;
         el.classList.remove('hidden');
         clearTimeout(this._toastTimer);
         this._toastTimer = setTimeout(() => el.classList.add('hidden'), 3200);
+    },
+
+    disposeHierarchy(obj) {
+        if (!obj) return;
+        obj.traverse((child) => {
+            if (child.geometry && typeof child.geometry.dispose === 'function') {
+                child.geometry.dispose();
+            }
+            if (child.material) {
+                if (Array.isArray(child.material)) {
+                    child.material.forEach(m => m && typeof m.dispose === 'function' && m.dispose());
+                } else if (typeof child.material.dispose === 'function') {
+                    child.material.dispose();
+                }
+            }
+        });
+    },
+
+    clearGroup(group) {
+        if (!group) return;
+        while (group.children && group.children.length > 0) {
+            const child = group.children[0];
+            this.disposeHierarchy(child);
+            group.remove(child);
+        }
     },
 
     toggleTheme() {
@@ -6927,7 +6994,11 @@ const Solar3DStudio = {
     setTab(tab) {
         this.activeTab = tab;
         ['casa', 'obstaculos', 'placas', 'cables', 'auditoria'].forEach(t => {
-            document.getElementById(`tabBtn_${t}`)?.classList.toggle('active', t === tab);
+            const btn = document.getElementById(`tab3D_${t}`) || document.getElementById(`tabBtn_${t}`);
+            if (btn) {
+                btn.classList.toggle('active', t === tab);
+                btn.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+            }
             document.getElementById(`tabPanel_${t}`)?.classList.toggle('hidden', t !== tab);
         });
         this.setInteractionMode(null);
@@ -7615,9 +7686,7 @@ const Solar3DStudio = {
     },
 
     rebuildBuilding3D() {
-        while (this.buildingGroup.children.length > 0) {
-            this.buildingGroup.remove(this.buildingGroup.children[0]);
-        }
+        this.clearGroup(this.buildingGroup);
 
         const b = this.state.building;
         const { W, D, H, tilt, ridgeRise } = this.getRoofFacesDefinition();
@@ -7626,13 +7695,31 @@ const Solar3DStudio = {
         const container = new THREE.Group();
         container.rotation.y = -azRad;
 
-        const wallMat = new THREE.MeshStandardMaterial({ color: 0xE2E8F0, roughness: 0.85 });
+        const isInterior = Boolean(this.state.building.interiorView !== false && this.state.electrical.location === 'interior');
+        const wallMat = new THREE.MeshStandardMaterial({
+            color: isInterior ? 0xDCE4EC : 0xE2E8F0,
+            roughness: 0.85,
+            transparent: isInterior,
+            opacity: isInterior ? 0.35 : 1.0,
+            depthWrite: !isInterior
+        });
         const roofMat = new THREE.MeshStandardMaterial({ color: b.archType === 'piso_plana' ? 0x475569 : 0x9A3412, roughness: 0.75, side: THREE.DoubleSide });
+
+        // Solera interior de suelo para visualización técnica en corte
+        if (isInterior) {
+            const floorGeo = new THREE.PlaneGeometry(W - 0.3, D - 0.3);
+            const floorMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.9 });
+            const floorMesh = new THREE.Mesh(floorGeo, floorMat);
+            floorMesh.rotation.x = -Math.PI / 2;
+            floorMesh.position.y = 0.03;
+            floorMesh.receiveShadow = true;
+            container.add(floorMesh);
+        }
 
         // Cuerpo principal de paredes
         const wallMesh = new THREE.Mesh(new THREE.BoxGeometry(W, H, D), wallMat);
         wallMesh.position.y = H / 2;
-        wallMesh.castShadow = true;
+        wallMesh.castShadow = !isInterior;
         wallMesh.receiveShadow = true;
         container.add(wallMesh);
 
@@ -7791,7 +7878,7 @@ const Solar3DStudio = {
     deleteSelectedObstacle() {
         this.state.obstacles = this.state.obstacles.filter(o => o.id !== this.selectedObsId);
         this.selectedObsId = this.state.obstacles[0]?.id || null;
-        this.rebuildObstacles3D();
+        if (this.obstaclesGroup) this.rebuildObstacles3D();
         this.recalculatePhysicsAndWiring();
         this.syncUIControls();
     },
@@ -7820,9 +7907,7 @@ const Solar3DStudio = {
     },
 
     rebuildObstacles3D() {
-        while (this.obstaclesGroup.children.length > 0) {
-            this.obstaclesGroup.remove(this.obstaclesGroup.children[0]);
-        }
+        this.clearGroup(this.obstaclesGroup);
 
         const isWinter = (this.state.sun.monthIdx <= 2 || this.state.sun.monthIdx >= 10);
 
@@ -8150,9 +8235,7 @@ const Solar3DStudio = {
     },
 
     rebuildPanels3D() {
-        while (this.panelsGroup.children.length > 0) {
-            this.panelsGroup.remove(this.panelsGroup.children[0]);
-        }
+        this.clearGroup(this.panelsGroup);
 
         const showHeat = this.state.sun.showHeatmap;
         for (const p of this.state.panels) {
@@ -8512,7 +8595,7 @@ const Solar3DStudio = {
             });
         }
 
-        const batM = +dist3D(inv, bat, 1.08).toFixed(1);
+        const batM = (el.hasBattery && bat) ? +dist3D(inv, bat, 1.08).toFixed(1) : 0;
         const acM = +dist3D(inv, brd, 1.10).toFixed(1);
         const mc4Pairs = Math.max(2, facesSummary.length * 2 + Math.round(jumpersM / 2.2));
         const redBuy = Math.ceil((posRunM + jumpersM * 0.5 + intraM * 0.25) * 1.15);
@@ -8625,9 +8708,7 @@ const Solar3DStudio = {
     },
 
     rebuildCablesAndEquipment3D() {
-        while (this.cablesGroup.children.length > 0) {
-            this.cablesGroup.remove(this.cablesGroup.children[0]);
-        }
+        this.clearGroup(this.cablesGroup);
         if (!this.state.sun.showCables) return;
 
         const el = this.state.electrical;
@@ -8635,12 +8716,16 @@ const Solar3DStudio = {
         const bat = el.battery;
         const brd = el.mainBoard;
 
-        // 1. Cajas 3D de los 3 equipos (Inversor Azul, Batería Verde, Cuadro AC Ámbar)
+        // 1. Cajas 3D de los equipos (Inversor Azul, Batería Verde sólo si hay en proyecto, Cuadro AC Ámbar)
+        const hasBat = Boolean(el.hasBattery && bat);
         const eqSpecs = [
-            { pos: inv, w: 0.55, h: 0.65, d: 0.25, col: 0x0066FF },
-            { pos: bat, w: 0.65, h: 0.85, d: 0.28, col: 0x10B981 },
-            { pos: brd, w: 0.50, h: 0.60, d: 0.20, col: 0xF59E0B }
+            { pos: inv, w: 0.55, h: 0.65, d: 0.25, col: 0x0066FF }
         ];
+        if (hasBat) {
+            eqSpecs.push({ pos: bat, w: 0.65, h: 0.85, d: 0.28, col: 0x10B981 });
+        }
+        eqSpecs.push({ pos: brd, w: 0.50, h: 0.60, d: 0.20, col: 0xF59E0B });
+
         for (const eq of eqSpecs) {
             const m = new THREE.Mesh(
                 new THREE.BoxGeometry(eq.w, eq.h, eq.d),
@@ -8736,9 +8821,11 @@ const Solar3DStudio = {
             );
         });
 
-        // 3. Cable Inversor -> Batería (Verde) e Inversor -> Cuadro AC (Ámbar)
-        const batPts = [new THREE.Vector3(inv.x, inv.y, inv.z), new THREE.Vector3(bat.x, bat.y, bat.z)];
-        this.cablesGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(batPts), new THREE.LineBasicMaterial({ color: 0x10B981, linewidth: 2 })));
+        // 3. Cable Inversor -> Batería (Verde, SOLO si hay batería) e Inversor -> Cuadro AC (Ámbar)
+        if (hasBat) {
+            const batPts = [new THREE.Vector3(inv.x, inv.y, inv.z), new THREE.Vector3(bat.x, bat.y, bat.z)];
+            this.cablesGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(batPts), new THREE.LineBasicMaterial({ color: 0x10B981, linewidth: 2 })));
+        }
 
         const acPts = el.routingStyle === 'orthogonal'
             ? [new THREE.Vector3(inv.x, inv.y, inv.z), new THREE.Vector3(inv.x, 0.4, inv.z), new THREE.Vector3(brd.x, 0.4, brd.z), new THREE.Vector3(brd.x, brd.y, brd.z)]
@@ -8820,9 +8907,7 @@ const Solar3DStudio = {
 
     rebuildSunArcs3D() {
         if (!this.arcsGroup) return;
-        while (this.arcsGroup.children.length > 0) {
-            this.arcsGroup.remove(this.arcsGroup.children[0]);
-        }
+        this.clearGroup(this.arcsGroup);
         if (!this.state.sun.showArcs) return;
 
         const R = 18.5;
@@ -8861,9 +8946,7 @@ const Solar3DStudio = {
     },
 
     rebuildUIHelpers3D() {
-        while (this.uiHelpersGroup.children.length > 0) {
-            this.uiHelpersGroup.remove(this.uiHelpersGroup.children[0]);
-        }
+        this.clearGroup(this.uiHelpersGroup);
 
         // Puntos de calibración métrica
         if (this.calibratePts.length > 0) {
@@ -8989,7 +9072,31 @@ const Solar3DStudio = {
         document.getElementById('lblWireIntra').textContent = `${w.intraM} m`;
         document.getElementById('lblWireJumpers').textContent = `${w.jumpersM} m`;
         document.getElementById('lblWireHomerun').textContent = `+${w.posRunM}m / -${w.negRunM}m`;
-        document.getElementById('lblWireBat').textContent = `${w.batM} m`;
+        document.getElementById('lblWireBat').textContent = s.electrical.hasBattery ? `${w.batM} m` : 'N/A (Sin batería)';
+        const btnBat = document.getElementById('btnPlace_battery');
+        if (btnBat) {
+            if (s.electrical.hasBattery) {
+                btnBat.disabled = false;
+                btnBat.className = "btn-press p-2 rounded-xl text-center bento-card border border-[#10B981]/40 text-[#10B981] font-bold text-[11px]";
+                btnBat.textContent = "🔋 Batería";
+            } else {
+                btnBat.disabled = true;
+                btnBat.className = "p-2 rounded-xl text-center bento-card border border-dashed border-[var(--border-hairline)] text-[var(--text-muted)] opacity-50 cursor-not-allowed text-[11px]";
+                btnBat.textContent = "🔋 Batería (Sin Batería)";
+            }
+        }
+        const optBat = document.querySelector('#selEquipTarget option[value="battery"]');
+        if (optBat) {
+            optBat.disabled = !s.electrical.hasBattery;
+            optBat.textContent = s.electrical.hasBattery ? '🔋 Batería LiFePO4' : '🔋 Batería (No configurada)';
+        }
+        const isLocInt = s.electrical.location === 'interior';
+        document.getElementById('btnEqLocInterior')?.classList.toggle('active', isLocInt);
+        document.getElementById('btnEqLocExterior')?.classList.toggle('active', !isLocInt);
+        const btnXRay = document.getElementById('btnToggleXRay');
+        if (btnXRay) btnXRay.textContent = `👁️ Ver Interior: ${this.state.building.interiorView ? 'ON' : 'OFF'}`;
+        const btnBarInt = document.getElementById('btn3DToggleInterior');
+        if (btnBarInt) btnBarInt.textContent = `👁️ Interior 3D: ${this.state.building.interiorView ? 'ON' : 'OFF'}`;
         document.getElementById('lblWireAc').textContent = `${w.acM} m`;
         document.getElementById('lblWireRollBuy').textContent = `${w.redBuy}m Rojo + ${w.blkBuy}m Negro`;
         document.getElementById('lblWireMc4').textContent = `${w.mc4Pairs} pares (M/H)`;
@@ -9090,6 +9197,14 @@ const Solar3DStudio = {
             this.rebuildSunArcs3D();
         } else {
             this.onResize();
+        }
+
+        // Sincronizar paneles exactos desde el Store del cálculo base
+        if (typeof Store !== 'undefined' && Store.state?.pvModules?.moduleCount) {
+            const targetCount = Math.max(1, Number(Store.state.pvModules.moduleCount) || 5);
+            if (this.state.panels.length !== targetCount) {
+                this.populateExactPanels(targetCount);
+            }
         }
 
         if (initialTab) {
@@ -9292,17 +9407,29 @@ const Solar3DStudio = {
             this.state.loc.name = loc.city || loc.address || 'Madrid';
         }
 
-        // Sincronizar módulo FV
+        // Sincronizar módulo FV y dimensiones
         if (Store.state.pvModules) {
             const pv = Store.state.pvModules;
-            if (pv.powerWp) this.state.moduleSpec.wp = Number(pv.powerWp);
+            if (pv.wp) this.state.moduleSpec.wp = Number(pv.wp);
+            else if (pv.powerWp) this.state.moduleSpec.wp = Number(pv.powerWp);
             if (pv.lengthMm) this.state.moduleSpec.lenMm = Number(pv.lengthMm);
             if (pv.widthMm) this.state.moduleSpec.widMm = Number(pv.widthMm);
             if (pv.vmp) this.state.moduleSpec.vmp = Number(pv.vmp);
             if (pv.voc) this.state.moduleSpec.voc = Number(pv.voc);
             if (pv.imp) this.state.moduleSpec.imp = Number(pv.imp);
             if (pv.isc) this.state.moduleSpec.isc = Number(pv.isc);
+            if (pv.name) this.state.moduleSpec.name = pv.name;
+            if (pv.tilt !== undefined && this.state.building.archType !== 'piso_plana') {
+                this.state.building.roofTiltDeg = Number(pv.tilt);
+            }
+            if (pv.azimuth !== undefined) {
+                this.state.building.azimuthDeg = Number(pv.azimuth);
+            }
         }
+
+        // Sincronizar Batería LiFePO4: si el modelo normal no tiene batería, NO se pone en el 3D
+        const hasBat = Boolean(Store.state.batterySystem?.enabled && (Number(Store.state.batterySystem?.nominalKwh) || 0) > 0);
+        this.state.electrical.hasBattery = hasBat;
 
         // Sincronizar edificio
         if (s3d.buildings && s3d.buildings[0]) {
@@ -9397,7 +9524,8 @@ const Solar3DStudio = {
     clampEquipmentToInnerWall(bld, x, z, eqType = 'inverter') {
         const W = Math.max(4, Number(bld?.widthM || this.state.building.widthM) || 12);
         const D = Math.max(4, Number(bld?.depthM || this.state.building.depthM) || 9);
-        const tw = 0.28;
+        const isInt = this.state.electrical.location === 'interior';
+        const tw = isInt ? 0.35 : -0.08;
         const minX = -W / 2 + tw;
         const maxX = W / 2 - tw;
         const minZ = -D / 2 + tw;
@@ -9412,34 +9540,143 @@ const Solar3DStudio = {
         let cx = x, cz = z;
         if (minD === dSouth) {
             cz = maxZ;
-            cx = Math.max(minX, Math.min(maxX, x));
+            cx = Math.max(-W / 2 + 0.5, Math.min(W / 2 - 0.5, x));
         } else if (minD === dWest) {
             cx = minX;
-            cz = Math.max(minZ, Math.min(maxZ, z));
+            cz = Math.max(-D / 2 + 0.5, Math.min(D / 2 - 0.5, z));
         } else if (minD === dEast) {
             cx = maxX;
-            cz = Math.max(minZ, Math.min(maxZ, z));
+            cz = Math.max(-D / 2 + 0.5, Math.min(D / 2 - 0.5, z));
         } else {
             cz = minZ;
-            cx = Math.max(minX, Math.min(maxX, x));
+            cx = Math.max(-W / 2 + 0.5, Math.min(W / 2 - 0.5, x));
         }
         return { x: +cx.toFixed(2), z: +cz.toFixed(2) };
     },
 
     autoFillOptimalPanels(keepTargetCountIfPossible = false) {
-        this.autoPopulateRoof(true);
         if (typeof Store !== 'undefined' && Store.state?.pvModules?.moduleCount) {
-            const target = Math.max(1, Number(Store.state.pvModules.moduleCount) || 8);
-            if (this.state.panels.length > target) {
-                const sorted = [...this.state.panels].sort((a, b) => a.shadeLossPct - b.shadeLossPct);
-                this.state.panels = sorted.slice(0, target);
-            }
+            const target = Math.max(1, Number(Store.state.pvModules.moduleCount) || 5);
+            this.populateExactPanels(target);
+        } else {
+            this.autoPopulateRoof(true);
         }
         this.recalculatePhysicsAndWiring();
         this.syncUIControls();
         if (typeof UI !== 'undefined' && UI.showToast) {
-            UI.showToast(`✨ Cubierta ajustada: ${this.state.panels.length} paneles óptimos según proyecto base.`, "ok");
+            UI.showToast(`✨ Cubierta ajustada: ${this.state.panels.length} paneles sincronizados con el proyecto.`, "ok");
         }
+    },
+
+    /* Gestión de Ubicación Interior / Exterior de Equipos y Presets */
+    setEquipmentLocation(loc) {
+        this.state.electrical.location = loc;
+        const isInt = loc === 'interior';
+        this.state.building.interiorView = isInt;
+
+        const bld = this.state.building;
+        const D = Math.max(4, Number(bld.depthM) || 9);
+        const zTarget = isInt ? (D / 2 - 0.35) : (D / 2 + 0.08);
+
+        if (this.state.electrical.inverter) this.state.electrical.inverter.z = +zTarget.toFixed(2);
+        if (this.state.electrical.battery) this.state.electrical.battery.z = +zTarget.toFixed(2);
+        if (this.state.electrical.mainBoard) this.state.electrical.mainBoard.z = +zTarget.toFixed(2);
+
+        this.rebuildBuilding3D();
+        this.rebuildCablesAndEquipment3D();
+        this.syncEquipCoordsInputs();
+        this.recalculatePhysicsAndWiring();
+        this.syncUIControls();
+        this.showToast(isInt ? '🏠 Equipos situados en INTERIOR (Garaje / Cuarto Técnico).' : '🚪 Equipos situados en EXTERIOR (Fachada).');
+    },
+
+    applyEquipPreset(preset) {
+        const bld = this.state.building;
+        const W = Math.max(4, Number(bld.widthM) || 12);
+        const D = Math.max(4, Number(bld.depthM) || 9);
+
+        if (preset === 'garage') {
+            this.state.electrical.location = 'interior';
+            this.state.building.interiorView = true;
+            this.state.electrical.inverter = { x: -3.8, y: 1.6, z: +(D / 2 - 0.35).toFixed(2) };
+            if (this.state.electrical.battery) {
+                this.state.electrical.battery = { x: -2.4, y: 0.6, z: +(D / 2 - 0.35).toFixed(2) };
+            }
+            this.state.electrical.mainBoard = { x: 2.5, y: 1.6, z: +(D / 2 - 0.35).toFixed(2) };
+        } else if (preset === 'technical_room') {
+            this.state.electrical.location = 'interior';
+            this.state.building.interiorView = true;
+            this.state.electrical.inverter = { x: +(W / 2 - 0.35).toFixed(2), y: 1.6, z: 0.6 };
+            if (this.state.electrical.battery) {
+                this.state.electrical.battery = { x: +(W / 2 - 0.35).toFixed(2), y: 0.6, z: -0.8 };
+            }
+            this.state.electrical.mainBoard = { x: +(W / 2 - 0.35).toFixed(2), y: 1.6, z: 2.2 };
+        } else if (preset === 'facade') {
+            this.state.electrical.location = 'exterior';
+            this.state.building.interiorView = false;
+            this.state.electrical.inverter = { x: -4.2, y: 1.6, z: +(D / 2 + 0.08).toFixed(2) };
+            if (this.state.electrical.battery) {
+                this.state.electrical.battery = { x: -2.6, y: 0.8, z: +(D / 2 + 0.08).toFixed(2) };
+            }
+            this.state.electrical.mainBoard = { x: 2.8, y: 1.6, z: +(D / 2 + 0.08).toFixed(2) };
+        }
+
+        this.rebuildBuilding3D();
+        this.rebuildCablesAndEquipment3D();
+        this.syncEquipCoordsInputs();
+        this.recalculatePhysicsAndWiring();
+        this.syncUIControls();
+        this.showToast(`📍 Configuración aplicada: ${preset === 'garage' ? 'Garaje Interior' : (preset === 'technical_room' ? 'Cuarto Técnico Interior' : 'Fachada Exterior')}.`);
+    },
+
+    toggleInteriorView() {
+        this.state.building.interiorView = !this.state.building.interiorView;
+        this.rebuildBuilding3D();
+        this.syncUIControls();
+    },
+
+    populateExactPanels(targetCount) {
+        this.autoPopulateRoof(true);
+        const candidates = [...this.state.panels];
+        if (candidates.length === 0) return;
+
+        const count = Math.max(1, Number(targetCount) || 5);
+
+        if (candidates.length >= count) {
+            candidates.sort((a, b) => {
+                if (Math.abs(a.shadeLossPct - b.shadeLossPct) > 0.5) {
+                    return a.shadeLossPct - b.shadeLossPct;
+                }
+                if (Math.abs(b.y - a.y) > 0.05) {
+                    return b.y - a.y;
+                }
+                return Math.abs(a.lx) - Math.abs(b.lx);
+            });
+            this.state.panels = candidates.slice(0, count);
+        } else {
+            this.state.panels = candidates;
+        }
+
+        this.state.panels.forEach((p, idx) => {
+            p.id = `pnl_${idx + 1}`;
+        });
+        this.selectedPanelId = this.state.panels[0]?.id || null;
+
+        this.rebuildPanels3D();
+        this.recalculatePhysicsAndWiring();
+        this.syncUIControls();
+    },
+
+    requestOpenFromStep(step) {
+        if (typeof Store !== 'undefined' && Store.state?.projectMeta) {
+            const cur = Number(Store.state.projectMeta.currentStep) || 0;
+            if (cur < 7) {
+                if (typeof UI !== 'undefined' && UI.showToast) {
+                    UI.showToast("ℹ️ El Estudio CAD 3D se sincroniza con el cálculo en el Paso 7 para incorporar la totalidad de equipos decididos.", "info");
+                }
+            }
+        }
+        this.openModal();
     },
 
     /* Métodos alias para compatibilidad */
@@ -9451,14 +9688,6 @@ const Solar3DStudio = {
     removeHighShadePanels() { return this.pruneShadedPanels(); },
     clearAllPanels() { return this.clearPanels(); },
     toggleDrawFootprint() { return this.toggleFootprintDraw(); },
-    deleteSelectedObstacle() {
-        this.state.obstacles = this.state.obstacles.filter(o => o.id !== this.selectedObsId);
-        if (this.state.obstacles.length > 0) this.selectedObsId = this.state.obstacles[0].id;
-        else this.selectedObsId = null;
-        if (this.obstaclesGroup) this.rebuildObstacles3D();
-        this.recalculatePhysicsAndWiring();
-        this.syncUIControls();
-    },
     selectObstacle(id) {
         this.selectedObsId = id;
         if (this.obstaclesGroup) this.rebuildObstacles3D();
@@ -9735,10 +9964,10 @@ const Wizard = {
         }
         bar.classList.remove('hidden');
 
-        // Botón Estudio 3D en la barra inferior: EXCLUSIVO MODO AVANZADO
+        // Botón Estudio 3D en la barra inferior: EXCLUSIVO AL FINAL (PASO 7)
         const btnBtm3D = document.getElementById('btnBottom3DStudio');
         if (btnBtm3D) {
-            btnBtm3D.classList.toggle('hidden', isExpress);
+            btnBtm3D.classList.toggle('hidden', cur !== 7);
         }
 
         if (btnPrev) {
@@ -10245,20 +10474,21 @@ const Actions = {
     normalizeDatadisDate(rawDate) {
         if (!rawDate) return null;
         const clean = String(rawDate).replace(/^["']+|["']+$/g, '').trim().split(/[T\s]/)[0];
+        let yr, mo, da;
         let m = clean.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
         if (m) {
-            const yr = parseInt(m[1], 10);
-            const mo = parseInt(m[2], 10);
-            const da = parseInt(m[3], 10);
+            yr = parseInt(m[1], 10);
+            mo = parseInt(m[2], 10);
+            da = parseInt(m[3], 10);
             if (mo >= 1 && mo <= 12 && da >= 1 && da <= 31) {
                 return `${yr}-${String(mo).padStart(2, '0')}-${String(da).padStart(2, '0')}`;
             }
         }
         m = clean.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
         if (m) {
-            const da = parseInt(m[1], 10);
-            const mo = parseInt(m[2], 10);
-            let yr = parseInt(m[3], 10);
+            da = parseInt(m[1], 10);
+            mo = parseInt(m[2], 10);
+            yr = parseInt(m[3], 10);
             if (yr < 100) yr += 2000;
             if (mo >= 1 && mo <= 12 && da >= 1 && da <= 31) {
                 return `${yr}-${String(mo).padStart(2, '0')}-${String(da).padStart(2, '0')}`;
@@ -10506,24 +10736,24 @@ const Actions = {
             const validH = undatedCounts.filter(c => c > 0).length;
             if (validH < 12) return null;
             const factorQuarter = hasQuarterHour ? 4 : 1;
-            const avg24 = undatedSums.map((s, h) => undatedCounts[h] > 0 ? +((s / undatedCounts[h]) * factorQuarter).toFixed(4) : 0.05);
-            const dailySum = avg24.reduce((a, b) => a + b, 0);
+            const simpleAvg24 = undatedSums.map((s, h) => undatedCounts[h] > 0 ? +((s / undatedCounts[h]) * factorQuarter).toFixed(4) : 0.05);
+            const dailySum = simpleAvg24.reduce((a, b) => a + b, 0);
             const estAnnual = rawRecords.length >= 24 * 30 ? Math.round(dailySum * 365) : null;
-            let detectedTariff = '20td';
+            let simpleTariff = '20td';
             if (matches30 && !matches20) {
-                detectedTariff = '30td';
+                simpleTariff = '30td';
             } else if (matches20 && !matches30) {
-                detectedTariff = '20td';
+                simpleTariff = '20td';
             } else if (maxObservedKw > 15.0 || (estAnnual && estAnnual > 15000)) {
-                detectedTariff = '30td';
+                simpleTariff = '30td';
             }
             return {
-                curve24: avg24,
+                curve24: simpleAvg24,
                 estimatedAnnualKwh: estAnnual,
                 monthlyKwh: null,
                 monthlyCurves24: null,
                 customDaysCompact: "",
-                detectedTariff,
+                detectedTariff: simpleTariff,
                 maxObservedKw: +maxObservedKw.toFixed(2),
                 datadisMeta: {
                     rowsCount: rawRecords.length,
@@ -10533,7 +10763,7 @@ const Actions = {
                     dateTo: '',
                     resolution: hasQuarterHour ? '15 min' : '24h agregada',
                     cups: detectedCups,
-                    detectedTariff,
+                    detectedTariff: simpleTariff,
                     maxObservedKw: +maxObservedKw.toFixed(2)
                 }
             };
@@ -11679,10 +11909,10 @@ const UI = {
         if (badgeBat) {
             if (batS1.enabled) {
                 badgeBat.textContent = `Con Batería (${batS1.targetAutarkyPct || 85}%)`;
-                badgeBat.className = "px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981]";
+                badgeBat.className = "px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981] whitespace-nowrap";
             } else {
                 badgeBat.textContent = "Sin Batería";
-                badgeBat.className = "px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[var(--bg-subtle)] text-[var(--text-muted)]";
+                badgeBat.className = "px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[var(--bg-subtle)] text-[var(--text-muted)] whitespace-nowrap";
             }
         }
 
@@ -11849,13 +12079,15 @@ const UI = {
             this.setText('s2LossKwhBadge', `(-${fmtNum(c.losses.pv.lossKwh)} kWh/año)`);
         }
 
-        // Visibilidad y estado de los accesos al Estudio 3D en Header, Bottom Bar y Paso 1 (EXCLUSIVO MODO AVANZADO)
+        // Visibilidad y estado de los accesos al Estudio 3D en Header y Bottom Bar: DISPONIBLE AL FINAL (PASO 7)
         const isAdv = st.projectMeta.wizardMode === 'advanced';
-        const is3DOn = !!(isAdv && st.scene3D && st.scene3D.enabled);
+        const curStep = Number(st.projectMeta.currentStep) || 0;
+        const isStep7 = curStep === 7;
+        const is3DOn = !!(st.scene3D && st.scene3D.enabled);
         
         const btnHdr3D = document.getElementById('btnHeader3DStudio');
         if (btnHdr3D) {
-            btnHdr3D.style.display = isAdv ? '' : 'none';
+            btnHdr3D.style.display = isStep7 ? '' : 'none';
             if (is3DOn) {
                 btnHdr3D.classList.add('ring-2', 'ring-[#10B981]');
             } else {
@@ -11865,7 +12097,7 @@ const UI = {
         
         const btnBtm3D = document.getElementById('btnBottom3DStudio');
         if (btnBtm3D) {
-            btnBtm3D.classList.toggle('hidden', !isAdv);
+            btnBtm3D.classList.toggle('hidden', !isStep7);
             if (is3DOn) {
                 btnBtm3D.classList.add('border-[#10B981]', 'text-[#10B981]');
             } else {
