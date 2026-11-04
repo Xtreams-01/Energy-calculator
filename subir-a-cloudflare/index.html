@@ -517,9 +517,9 @@
                     <div class="min-w-0">
                         <div class="flex items-center gap-2">
                             <span class="font-display font-bold text-base sm:text-lg tracking-tight truncate">SHOWROOM<span class="text-[#0066FF]">.</span>SOLAR</span>
-                            <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#0066FF]/10 text-[#0066FF] border border-[#0066FF]/20 whitespace-nowrap" id="hdrProjectBadge">Proyecto Activo</span>
+                            <span class="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-[#0066FF]/10 text-[#0066FF] border border-[#0066FF]/20 whitespace-nowrap" id="hdrProjectBadge">Proyecto Solar</span>
                         </div>
-                        <p class="text-[11px] text-[var(--text-muted)] truncate hidden sm:block" data-i18n="hdrSubtitle">PVGIS • Multi-MPPT • REBT</p>
+                        <p class="text-[11px] text-[var(--text-muted)] truncate hidden sm:block" data-i18n="hdrSubtitle">Estudio Fotovoltaico</p>
                     </div>
                 </div>
 
@@ -601,7 +601,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label for="inpProjName" class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5" data-i18n="lblProjName">Nombre del Proyecto *</label>
-                            <input id="inpProjName" type="text" class="showroom-input w-full font-medium" placeholder="Ej. Autoconsumo Residencial Villa Sol" oninput="Actions.updateMeta('projectName', this.value)">
+                            <input id="inpProjName" type="text" class="showroom-input w-full font-medium" placeholder="Ej. Proyecto Solar Residencial" oninput="Actions.updateMeta('projectName', this.value)">
                             <p id="errProjName" class="hidden text-xs text-[#EF4444] mt-1 font-medium">Introduce un nombre para el proyecto.</p>
                         </div>
                         <div>
@@ -733,13 +733,10 @@
         <section id="step-1" class="wizard-step space-y-6" aria-labelledby="step1Heading">
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                 <div>
-                    <span class="text-xs font-mono font-bold uppercase text-[#0066FF]">PASO 1 • DATOS DE PARTIDA DEL SUMINISTRO</span>
-                    <h2 id="step1Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Ubicación PVGIS, Demanda y Tarifas</h2>
-                    <p class="text-xs text-[var(--text-muted)] mt-0.5">Introduce primero localización, telemetría/consumos mensuales y precios tarifarios; abajo obtendrás el pre-dimensionado resultante.</p>
+                    <span class="text-xs font-mono font-bold uppercase text-[#0066FF]">PASO 1 • SUMINISTRO</span>
+                    <h2 id="step1Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Ubicación y Demanda</h2>
                 </div>
-                <span id="s1BadgePvgis" class="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#10B981]/12 text-[#10B981] border border-[#10B981]/25 whitespace-nowrap">
-                    PVGIS JRC Conectado
-                </span>
+                <span id="s1BadgePvgis" class="hidden"></span>
             </div>
 
             <!-- BLOQUE SUPERIOR: INTRODUCCIÓN CAUSAL DE DATOS (1. Ubicación + 3. Tarifa | 2. Demanda, Meses y Curva) -->
@@ -753,7 +750,10 @@
                         <div class="flex items-center justify-between gap-2">
                             <h3 class="font-display font-bold text-sm flex items-center gap-2">
                                 <span class="w-5 h-5 rounded-md bg-[#0066FF]/12 text-[#0066FF] font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">1</span>
-                                <span>Ubicación & Radiación Solar PVGIS</span>
+                                <span>Ubicación</span>
+                                <span class="hint-tip text-[var(--text-muted)] hover:text-[#0066FF] cursor-help inline-flex items-center" title="Radiación solar calculada con la base de datos oficial PVGIS (Comisión Europea JRC)">
+                                    <span class="w-3.5 h-3.5 rounded-full border border-current text-[9px] font-mono font-bold flex items-center justify-center">i</span>
+                                </span>
                             </h3>
                             <div class="flex items-center gap-1.5 shrink-0">
                                 <button type="button" onclick="PVGISService.useGPS()" id="btnUseGps" class="btn-press px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#0066FF]/10 text-[#0066FF] hover:bg-[#0066FF]/20 inline-flex items-center gap-1 whitespace-nowrap" aria-label="Obtener coordenadas por GPS">
@@ -795,7 +795,7 @@
                                 <strong id="s1LocLabel" class="text-[var(--text-primary)] block truncate">Madrid (40.42°, -3.70°)</strong>
                             </div>
                             <div class="text-right shrink-0">
-                                <span class="text-[var(--text-muted)] block text-[10px] font-sans uppercase">Recurso Local PVGIS</span>
+                                <span class="text-[var(--text-muted)] block text-[10px] font-sans uppercase">Recurso Solar</span>
                                 <strong id="s1BaseYieldLabel" class="text-[#F59E0B]">1.640 kWh/kWp</strong>
                             </div>
                         </div>
@@ -806,7 +806,7 @@
                         <div class="flex items-center justify-between gap-2">
                             <h3 class="font-display font-bold text-sm flex items-center gap-2">
                                 <span class="w-5 h-5 rounded-md bg-[#10B981]/12 text-[#10B981] font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">3</span>
-                                <span>Tarifa Eléctrica y Precios de Energía</span>
+                                <span>Tarifa Eléctrica</span>
                             </h3>
                             <span id="s1FiscalPill" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#0066FF]/10 text-[#0066FF] whitespace-nowrap">IVA 21% + IEE</span>
                         </div>
@@ -927,14 +927,14 @@
                         <div class="flex items-center justify-between">
                             <h3 class="font-display font-bold text-sm flex items-center gap-2">
                                 <span class="w-5 h-5 rounded-md bg-[#10B981]/15 text-[#10B981] font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">1D</span>
-                                <span>Batería, Autarquía y Modalidad</span>
+                                <span>Batería</span>
                             </h3>
                             <span id="badgeS1BatteryStatus" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981] whitespace-nowrap">Con Batería</span>
                         </div>
 
                         <!-- Toggle Batería -->
                         <div>
-                            <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">¿Deseas incluir Batería de Almacenamiento (LiFePO4)?</label>
+                            <label class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Batería de Almacenamiento</label>
                             <div class="grid grid-cols-2 gap-2 text-xs">
                                 <button type="button" id="btnS1BatNo" onclick="Actions.setExpressBattery(false)" class="btn-press p-2.5 rounded-xl border text-center transition">
                                     <span class="font-bold block">⚡ Sin Batería</span>
@@ -974,17 +974,21 @@
                             </div>
                         </div>
 
-                        <!-- Modalidad Legal RD 244/2019 -->
+                        <!-- Modalidad de Excedentes -->
                         <div class="pt-2 border-t border-[var(--border-hairline)] space-y-1.5">
-                            <label for="selExpressLegalMode" class="block text-xs font-semibold text-[var(--text-secondary)]">Modalidad de Autoconsumo (RD 244/2019):</label>
+                            <div class="flex items-center justify-between">
+                                <label for="selExpressLegalMode" class="block text-xs font-semibold text-[var(--text-secondary)]">Modalidad de Excedentes</label>
+                                <span class="hint-tip text-[var(--text-muted)] hover:text-[#0066FF] cursor-help text-[11px] inline-flex items-center gap-1" title="Regulación según RD 244/2019 de autoconsumo eléctrico">
+                                    <span class="w-3.5 h-3.5 rounded-full border border-current text-[9px] font-mono font-bold flex items-center justify-center">i</span>
+                                    <span>RD 244/2019</span>
+                                </span>
+                            </div>
                             <select id="selExpressLegalMode" class="showroom-input w-full text-xs" onchange="Actions.setExpressLegalMode(this.value)">
-                                <option value="compensacion">Con compensación simplificada de excedentes (Con venta/abono)</option>
-                                <option value="sin_excedentes">Sin excedentes (Inyección Cero / Anti-vertido certificado)</option>
-                                <option value="aislada">Instalación Aislada de la Red Eléctrica (Off-Grid 100%)</option>
+                                <option value="compensacion">Compensación simplificada de excedentes</option>
+                                <option value="sin_excedentes">Sin excedentes (Inyección Cero / Anti-vertido)</option>
+                                <option value="aislada">Instalación Aislada (Off-Grid)</option>
                             </select>
-                            <p id="lblExpressLegalDesc" class="text-[11px] text-[var(--text-muted)] font-mono leading-relaxed">
-                                Los excedentes solares no consumidos en el instante se vierten a la red y se compensan en tu factura mensual.
-                            </p>
+                            <p id="lblExpressLegalDesc" class="hidden text-[11px] text-[var(--text-muted)] font-mono leading-relaxed"></p>
                         </div>
                     </div>
                 </div>
@@ -995,7 +999,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <h3 class="font-display font-bold text-sm sm:text-base flex items-center gap-2">
                                 <span class="w-5 h-5 rounded-md bg-[#F59E0B]/15 text-[#F59E0B] font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">2</span>
-                                <span>Demanda Eléctrica, Variabilidad Mensual y Curva de Carga</span>
+                                <span>Demanda Eléctrica</span>
                             </h3>
                             <span class="px-2.5 py-0.5 rounded-md text-[11px] font-mono bg-[#10B981]/12 text-[#10B981] font-bold whitespace-nowrap" id="s1ProfileBadge">Estándar REE</span>
                         </div>
@@ -1036,13 +1040,7 @@
                                 </div>
                             </div>
 
-                            <!-- Enlace contextual para usuarios nuevos -->
-                            <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-muted)] pt-1 border-t border-[var(--border-hairline)]">
-                                <span>¿No tienes cuenta o no sabes cómo descargar tu fichero?</span>
-                                <button type="button" onclick="UI.openDatadisTutorialModal()" class="text-[#0066FF] hover:underline font-semibold font-mono inline-flex items-center gap-1">
-                                    <span>Guía de Alta y Descarga Paso a Paso →</span>
-                                </button>
-                            </div>
+
 
                             <!-- Resumen de Telemetría Real Importada -->
                             <div id="boxDatadisStatus" class="hidden p-3 rounded-xl bg-[#10B981]/10 border border-[#10B981]/30 text-xs font-mono text-[#10B981] leading-relaxed"></div>
@@ -1088,7 +1086,7 @@
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                     <div>
                                         <label for="selSeasonalityMode" class="block text-xs font-semibold text-[var(--text-secondary)]">Variabilidad Mensual del Consumo (Ene – Dic)</label>
-                                        <span class="text-[11px] text-[var(--text-muted)]">No generalices más consumo en verano: introduce tus 12 facturas o elige el régimen real.</span>
+                                        <span class="text-[11px] text-[var(--text-muted)]">Distribución mensual según 12 facturas o régimen de uso.</span>
                                     </div>
                                     <select id="selSeasonalityMode" class="showroom-input !py-1.5 !px-2.5 text-xs font-semibold sm:w-64 shrink-0" onchange="Actions.setSeasonalityMode(this.value)">
                                         <option value="neutro">⚖️ Neutro (Sin sesgo estacional)</option>
@@ -1113,14 +1111,14 @@
                             </div>
                         </div>
 
-                        <!-- 2C. CURVA HORARIA SINTÉTICA CON NOTA DE CAUTELA METODOLÓGICA -->
+                        <!-- 2C. CURVA HORARIA ESTIMADA -->
                         <div id="boxSyntheticProfiles" class="pt-2 border-t border-[var(--border-hairline)] space-y-3">
                             <div class="flex items-center justify-between text-xs">
-                                <span class="font-semibold text-[var(--text-secondary)]">Aproximación Horaria Orientativa (si no hay Datadis):</span>
-                                <span class="hint-tip text-[var(--text-muted)] hover:text-[#F59E0B] transition inline-flex items-center gap-1 text-[11px] cursor-help">
-                                    <span class="text-xs">⚠️</span>
-                                    <span>Cautela metodológica</span>
-                                    <span class="tip-bubble">Tipificar un consumidor por características generales rara vez reproduce su curva real. Los hábitos reales suelen diferir de la telemetría del contador. Usa estos perfiles como estimación orientativa si no dispones de archivo Datadis.</span>
+                                <span class="font-semibold text-[var(--text-secondary)]">Perfil Horario Estimado</span>
+                                <span class="hint-tip text-[var(--text-muted)] hover:text-[#0066FF] transition inline-flex items-center gap-1 text-[11px] cursor-help" title="Perfil orientativo aplicable cuando no se dispone de archivo horario de contador">
+                                    <span class="w-3.5 h-3.5 rounded-full border border-current text-[9px] font-mono font-bold flex items-center justify-center">i</span>
+                                    <span>Info perfil</span>
+                                    <span class="tip-bubble">Perfil horario orientativo según tipología de consumo en caso de no disponer de telemetría de contador.</span>
                                 </span>
                             </div>
 
@@ -1167,17 +1165,16 @@
             <div class="pt-2 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-[var(--border-hairline)] pt-5">
                     <div>
-                        <span class="text-[11px] font-mono font-bold uppercase text-[#10B981]">SÍNTESIS PRELIMINAR RESULTANTE DE TUS DATOS</span>
-                        <h3 class="font-display font-bold text-lg sm:text-xl">Pre-Dimensionado Orientativo y Balance Estacional / Horario</h3>
+                        <span class="text-[11px] font-mono font-bold uppercase text-[#10B981]">PRE-DIMENSIONADO ORIENTATIVO</span>
+                        <h3 class="font-display font-bold text-lg sm:text-xl">Balance y Producción Estimada</h3>
                     </div>
-                    <span class="text-xs text-[var(--text-muted)] font-mono">El modelo y nº exacto de paneles se elige en el Paso 2 →</span>
                 </div>
 
                 <!-- 3 Tarjetas KPI Derivadas (Sin presuponer modelo ni nº de paneles antes del Paso 2) -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="bento-card p-5 sm:p-6">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Potencia Solar Orientativa</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Potencia Orientativa</span>
                             <span class="w-2.5 h-2.5 rounded-full bg-[#0066FF]"></span>
                         </div>
                         <div class="inline-flex items-baseline">
@@ -1189,7 +1186,7 @@
 
                     <div class="bento-card p-5 sm:p-6">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Cobertura Directa Estimada</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Cobertura Estimada</span>
                             <span class="w-2.5 h-2.5 rounded-full bg-[#F59E0B]"></span>
                         </div>
                         <div class="inline-flex items-baseline">
@@ -1201,7 +1198,7 @@
 
                     <div class="bento-card p-5 sm:p-6">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Ahorro Preliminar s/ Tarifa</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Ahorro Anual Estimado</span>
                             <span class="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span>
                         </div>
                         <div class="inline-flex items-baseline">
@@ -1216,8 +1213,8 @@
                 <div class="bento-card p-5 sm:p-6 space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                            <h4 id="s1ChartTitle" class="font-display font-bold text-base sm:text-lg">Balance Mensual (12 Meses): Consumo vs. Generación PVGIS</h4>
-                            <p id="s1ChartSubtitle" class="text-xs text-[var(--text-muted)]">Simulación mes a mes (evitando promediar todo el año en una única curva anual optimista)</p>
+                            <h4 id="s1ChartTitle" class="font-display font-bold text-base sm:text-lg">Balance Mensual: Consumo vs. Generación</h4>
+                            <p id="s1ChartSubtitle" class="text-xs text-[var(--text-muted)]">Simulación de generación frente al consumo mensual</p>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
                             <div class="segmented-group" role="group" aria-label="Modo de gráfica en Paso 1">
@@ -1267,7 +1264,7 @@
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                 <div>
                     <span class="text-xs font-mono font-bold uppercase text-[#0066FF]">PASO 2 • GENERADOR SOLAR</span>
-                    <h2 id="step2Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Módulos Fotovoltaicos y Geometría</h2>
+                    <h2 id="step2Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Módulos Solares</h2>
                 </div>
                 <span class="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-mono font-semibold bento-subtle whitespace-nowrap" id="s2ModuleBadge">
                     STC 1000 W/m² • 25 °C
@@ -1560,7 +1557,7 @@
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                 <div>
                     <span class="text-xs font-mono font-bold uppercase text-[#0066FF]">PASO 3 • CONVERSIÓN DC/AC</span>
-                    <h2 id="step3Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Inversor y Strings por MPPT</h2>
+                    <h2 id="step3Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Inversor y Strings</h2>
                 </div>
                 <div id="s3GlobalCompatBadge" class="self-start sm:self-auto px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-[#10B981]/12 text-[#10B981] border border-[#10B981]/30 whitespace-nowrap">
                     ✅ ARQUITECTURA DC/AC COMPATIBLE
@@ -1762,7 +1759,7 @@
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                 <div>
                     <span class="text-xs font-mono font-bold uppercase text-[#0066FF]">PASO 4 • CABLEADO REBT</span>
-                    <h2 id="step4Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Cableado y Verificación REBT</h2>
+                    <h2 id="step4Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Cableado y Protecciones</h2>
                 </div>
                 <button type="button" onclick="Actions.autoSelectAllCables()" class="btn-press self-start sm:self-auto px-4 py-2 rounded-xl text-xs font-bold bg-[#0066FF] text-white shadow-sm whitespace-nowrap">
                     ✨ Auto-dimensionar Todos los Tramos
@@ -2109,7 +2106,7 @@
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                 <div>
                     <span class="text-xs font-mono font-bold uppercase text-[#0066FF]">PASO 5 • BATERÍAS (OPCIONAL)</span>
-                    <h2 id="step5Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Baterías y Almacenamiento</h2>
+                    <h2 id="step5Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Almacenamiento en Baterías</h2>
                 </div>
             </div>
 
@@ -2281,7 +2278,7 @@
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
                 <div>
                     <span class="text-xs font-mono font-bold uppercase text-[#0066FF]">PASO 6 • FINANZAS Y LEGAL</span>
-                    <h2 id="step6Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Viabilidad Económica y Ahorro</h2>
+                    <h2 id="step6Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Viabilidad Económica</h2>
                 </div>
                 <span id="s6TaxBadge" class="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#0066FF]/10 text-[#0066FF] whitespace-nowrap">
                     Península • IVA 21%
@@ -2472,7 +2469,7 @@
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#0066FF]/10 text-[#0066FF] whitespace-nowrap">
                         <span>PASO 7 • INFORME TÉCNICO</span>
                     </div>
-                    <h2 id="step7Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Resultados y Memoria Técnica A4</h2>
+                    <h2 id="step7Heading" class="font-display font-bold text-2xl sm:text-3xl tracking-tight">Estudio y Memoria Técnica</h2>
                     <p id="s7ProjectMetaLine" class="text-xs sm:text-sm text-[var(--text-secondary)] font-mono">
                         Proyecto: — | Titular: — | Ubicación: Madrid | Fecha: —
                     </p>
@@ -2690,7 +2687,7 @@
 
             <div class="hidden md:flex flex-col items-center text-center min-w-0">
                 <span id="bottomStepIndicator" class="text-xs font-mono font-bold text-[#0066FF]">Paso 1 de 7</span>
-                <span id="bottomLiveSummary" class="text-[11px] text-[var(--text-muted)] truncate max-w-md">3.60 kWp • 5.904 kWh/año • REBT Conforme</span>
+                <span id="bottomLiveSummary" class="text-[11px] text-[var(--text-muted)] truncate max-w-md">3.60 kWp • 5.904 kWh/año</span>
             </div>
 
             <div class="flex items-center gap-2">
@@ -4383,7 +4380,7 @@ function createDefaultState() {
     const today = new Date().toISOString().split('T')[0];
     return {
         projectMeta: {
-            projectName: "Instalación Autoconsumo Residencial",
+            projectName: "Proyecto Solar Residencial",
             clientName: "Titular del Suministro",
             date: today,
             engineerName: "Oficina Técnica Fotovoltaica",
@@ -9790,13 +9787,13 @@ window.Studio3D = Solar3DStudio;
 const Wizard = {
     stepsMeta: [
         { step: 0, es: "0. Portada", en: "0. Cover" },
-        { step: 1, es: "1. Consumo & PVGIS", en: "1. Load & PVGIS" },
-        { step: 2, es: "2. Módulos FV", en: "2. PV Array" },
-        { step: 3, es: "3. Inversor & MPPT", en: "3. Inverter & MPPT" },
-        { step: 4, es: "4. Cableado REBT", en: "4. REBT Cabling" },
+        { step: 1, es: "1. Suministro", en: "1. Supply" },
+        { step: 2, es: "2. Módulos", en: "2. Modules" },
+        { step: 3, es: "3. Inversor", en: "3. Inverter" },
+        { step: 4, es: "4. Cableado", en: "4. Cabling" },
         { step: 5, es: "5. Baterías", en: "5. Batteries" },
-        { step: 6, es: "6. Legal & Finanzas", en: "6. Legal & ROI" },
-        { step: 7, es: "7. Informe Final", en: "7. Final Report" }
+        { step: 6, es: "6. Presupuesto", en: "6. Budget" },
+        { step: 7, es: "7. Memoria", en: "7. Report" }
     ],
 
     validateStep(step) {
@@ -9933,8 +9930,8 @@ const Wizard = {
         if (isExpress) {
             const expressSteps = [
                 { step: 0, es: "0. Portada", en: "0. Cover" },
-                { step: 1, es: "1. Suministro & Batería", en: "1. Load & Battery" },
-                { step: 7, es: "2. Resultados & Memoria", en: "2. Results & Report" }
+                { step: 1, es: "1. Suministro", en: "1. Supply" },
+                { step: 7, es: "2. Memoria", en: "2. Report" }
             ];
             const currentExpressIdx = cur === 0 ? 0 : (cur === 1 ? 1 : 2);
             if (fill) {
@@ -10068,8 +10065,7 @@ const Wizard = {
         }
 
         if (sum && c) {
-            const rebtTxt = c.cabling.allRebtCompliant ? (en ? 'REBT Compliant' : 'REBT CUMPLE') : (en ? 'REBT Review' : 'Revisar REBT');
-            sum.textContent = `${fmtNum(c.pv.totalKwp, 2)} kWp • ${fmtNum(c.pv.annualGenKwh)} kWh/a • ${rebtTxt}`;
+            sum.textContent = `${fmtNum(c.pv.totalKwp, 2)} kWp • ${fmtNum(c.pv.annualGenKwh)} ${en ? 'kWh/yr' : 'kWh/año'}`;
         }
 
         const btnGlobalFix = document.getElementById('btnGlobalAutoFix');
@@ -11450,13 +11446,13 @@ const siteI18n = {
         f3Desc: "Cálculo riguroso de secciones Cu/Al, intensidad admisible Iz (UNE 60364-5-52), caída ΔV% y pérdidas Joule.",
         f4Title: "4. Viabilidad & PDF A4",
         f4Desc: "Simulación LiFePO4, compensación RD 244/2019, VAN, TIR, Cashflow a 25 años y memoria técnica imprimible.",
-        step1Heading: "Ubicación PVGIS, Demanda y Tarifas",
-        step2Heading: "Módulos Fotovoltaicos y Geometría",
-        step3Heading: "Inversor y Strings por MPPT",
-        step4Heading: "Cableado y Verificación REBT",
-        step5Heading: "Baterías y Almacenamiento",
-        step6Heading: "Viabilidad Económica y Ahorro",
-        step7Heading: "Resultados y Memoria Técnica A4",
+        step1Heading: "Ubicación y Demanda",
+        step2Heading: "Módulos Solares",
+        step3Heading: "Inversor y Strings",
+        step4Heading: "Cableado y Protecciones",
+        step5Heading: "Almacenamiento en Baterías",
+        step6Heading: "Viabilidad Económica",
+        step7Heading: "Estudio y Memoria Técnica",
         s2_3d_title: "Estudio 3D de Sombras y Cableado"
     },
     en: {
@@ -11480,13 +11476,13 @@ const siteI18n = {
         f3Desc: "Strict Cu/Al cable sizing, ampacity Iz, impedance voltage drop ΔV% and Joule power losses.",
         f4Title: "4. Financials & A4 PDF",
         f4Desc: "LiFePO4 dispatch, RD 244/2019 surplus compensation, NPV, IRR, 25-year cashflow & printable A4 report.",
-        step1Heading: "PVGIS Location, Demand & Tariffs",
-        step2Heading: "PV Modules & Array Geometry",
-        step3Heading: "Inverter & Strings per MPPT",
-        step4Heading: "Cabling & REBT Compliance",
-        step5Heading: "Battery Storage System",
-        step6Heading: "Financial Viability & Savings",
-        step7Heading: "Executive Results & A4 Report",
+        step1Heading: "Location & Demand",
+        step2Heading: "Solar Modules",
+        step3Heading: "Inverter & Strings",
+        step4Heading: "Cabling & Protections",
+        step5Heading: "Battery Storage",
+        step6Heading: "Financial Viability",
+        step7Heading: "Executive Results & Report",
         s2_3d_title: "3D Shading & Cabling Studio"
     }
 };
