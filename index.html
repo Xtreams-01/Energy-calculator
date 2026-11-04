@@ -3248,6 +3248,11 @@
                         </select>
                     </div>
 
+                    <div id="boxObsElevationBadge" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[var(--bg-subtle)] text-[11px] font-mono">
+                        <span class="text-[var(--text-muted)]">Cota / Referencia:</span>
+                        <span id="lblObsElevation" class="font-bold text-[#38BDF8]">Y = 0.00 m</span>
+                    </div>
+
                     <div id="listObstacles" class="max-h-36 overflow-y-auto custom-scroll space-y-1 pt-2 border-t border-[var(--border-hairline)]"></div>
                 </div>
             </div>
@@ -7116,13 +7121,33 @@ const Solar3DStudio = {
                 this.mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
                 this.mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
                 this.raycaster.setFromCamera(this.mouseNDC, this.camera);
-                const hits = this.raycaster.intersectObject(this.groundMesh);
+                const targets = [...this.buildingGroup.children, this.groundMesh];
+                const hits = this.raycaster.intersectObjects(targets, true);
                 if (hits.length > 0) {
                     const pt = hits[0].point;
                     const obs = this.state.obstacles.find(o => o.id === this.selectedObsId);
                     if (obs) {
-                        obs.x = +pt.x.toFixed(1);
-                        obs.z = +pt.z.toFixed(1);
+                        const targetX = pt.x;
+                        const targetZ = pt.z;
+                        const insideFootprint = this.isPointInsideFootprint(targetX, targetZ, 0.25);
+
+                        if (insideFootprint) {
+                            obs.mountOnRoof = true;
+                            // Snapping magnético a ejes de referencia (Cumbrera o Eje central de cubierta)
+                            const { lx, lz } = this.worldToLocal(targetX, targetZ);
+                            let snappedLx = lx;
+                            let snappedLz = lz;
+                            if (Math.abs(lz) < 0.40) snappedLz = 0; // Cumbrera Z = 0
+                            if (Math.abs(lx) < 0.40) snappedLx = 0; // Eje de simetría X = 0
+                            const snappedW = this.localToWorld(snappedLx, 0, snappedLz);
+                            obs.x = +snappedW.x.toFixed(1);
+                            obs.z = +snappedW.z.toFixed(1);
+                        } else {
+                            obs.mountOnRoof = false;
+                            obs.x = +targetX.toFixed(1);
+                            obs.z = +targetZ.toFixed(1);
+                        }
+
                         this.rebuildObstacles3D();
                         this.recalculatePhysicsAndWiring();
                         this.syncUIControls();
@@ -7527,10 +7552,66 @@ const Solar3DStudio = {
         return { W, D, H, tilt, ridgeRise, azBld, faces };
     },
 
+    worldToLocal(wx, wz) {
+        const azRad = ((Number(this.state.building.azimuthDeg) || 0) * Math.PI) / 180;
+        const c = Math.cos(azRad), s = Math.sin(azRad);
+        return {
+            lx: wx * c + wz * s,
+            lz: -wx * s + wz * c
+        };
+    },
+
     localToWorld(lx, ly, lz) {
         const azRad = ((Number(this.state.building.azimuthDeg) || 0) * Math.PI) / 180;
         const c = Math.cos(azRad), s = Math.sin(azRad);
         return new THREE.Vector3(lx * c - lz * s, ly, lx * s + lz * c);
+    },
+
+    isPointInsideFootprint(wx, wz, margin = 0.35) {
+        const roof = this.getRoofFacesDefinition();
+        const { lx, lz } = this.worldToLocal(wx, wz);
+        const b = this.state.building;
+        if (b.archType === 'chalet_l') {
+            const lwW = Math.min(roof.W * 0.7, Math.max(3, Number(b.lWingWidthM) || 5.5));
+            const lwD = Math.max(3, Number(b.lWingDepthM) || 5.0);
+            const inMain = (Math.abs(lx) <= roof.W / 2 + margin) && (lz >= -roof.D / 2 - margin && lz <= roof.D / 2 + margin);
+            const inWing = (lx >= roof.W / 2 - lwW - margin && lx <= roof.W / 2 + margin) && (lz >= roof.D / 2 - margin && lz <= roof.D / 2 + lwD + margin);
+            return inMain || inWing;
+        }
+        return (Math.abs(lx) <= roof.W / 2 + margin) && (Math.abs(lz) <= roof.D / 2 + margin);
+    },
+
+    getRoofHeightAtCoords(wx, wz) {
+        const roof = this.getRoofFacesDefinition();
+        const { lx, lz } = this.worldToLocal(wx, wz);
+        const b = this.state.building;
+
+        if (b.archType === 'piso_plana') {
+            return roof.H;
+        }
+
+        if (b.archType === 'chalet_1agua') {
+            const f = roof.faces[0];
+            return f ? f.yAt(lx, lz) : roof.H;
+        }
+
+        if (b.archType === 'chalet_l') {
+            const fWing = roof.faces.find(f => f.faceId === 'faldon_ala_l');
+            if (fWing && lx >= fWing.minX - 0.25 && lx <= fWing.maxX + 0.25 && lz >= fWing.minZ - 0.25 && lz <= fWing.maxZ + 0.25) {
+                return fWing.yAt(lx, lz);
+            }
+            const fMain = roof.faces.find(f => f.faceId === 'faldon_sur');
+            return fMain ? fMain.yAt(lx, lz) : roof.H;
+        }
+
+        // 2 aguas / 4 aguas / nave industrial
+        if (lz >= 0) {
+            const fSur = roof.faces.find(f => f.faceId === 'faldon_sur');
+            return fSur ? fSur.yAt(lx, lz) : (roof.H + (1 - Math.min(1, Math.max(0, lz) / (roof.D / 2))) * roof.ridgeRise);
+        } else {
+            const fNorte = roof.faces.find(f => f.faceId === 'faldon_opuesto');
+            return fNorte ? fNorte.yAt(lx, lz) : (roof.H + (1 - Math.min(1, Math.max(0, -lz) / (roof.D / 2))) * roof.ridgeRise);
+        }
     },
 
     rebuildBuilding3D() {
@@ -7722,6 +7803,11 @@ const Solar3DStudio = {
             obs.mountOnRoof = Boolean(val);
         } else {
             obs[prop] = parseFloat(val) || 0;
+            if ((prop === 'x' || prop === 'z') && ['chimney', 'antenna', 'hvac'].includes(obs.type)) {
+                if (this.isPointInsideFootprint(obs.x, obs.z, 0.25)) {
+                    obs.mountOnRoof = true;
+                }
+            }
         }
         this.rebuildObstacles3D();
         this.recalculatePhysicsAndWiring();
@@ -7730,9 +7816,7 @@ const Solar3DStudio = {
 
     getObstacleBaseY(obs) {
         if (!obs.mountOnRoof) return 0;
-        const roof = this.getRoofFacesDefinition();
-        const f = roof.faces[0];
-        return f ? f.yAt(obs.x, obs.z) : roof.H;
+        return this.getRoofHeightAtCoords(obs.x, obs.z);
     },
 
     rebuildObstacles3D() {
@@ -7776,8 +7860,83 @@ const Solar3DStudio = {
                 crown.position.y = trunkH + crownH * 0.38;
                 crown.castShadow = true;
                 grp.add(crown);
+            } else if (obs.type === 'chimney') {
+                // Chimenea arquitectónica empotrada en cubierta (penetra hacia abajo para evitar huecos en pendiente)
+                const penDepth = obs.mountOnRoof ? 0.65 : 0;
+                const shaftH = H + penDepth;
+                const shaft = new THREE.Mesh(
+                    new THREE.BoxGeometry(W, shaftH, D),
+                    new THREE.MeshStandardMaterial({ color: 0x9A3412, roughness: 0.85 })
+                );
+                shaft.position.y = (H - penDepth) / 2;
+                shaft.castShadow = true;
+                shaft.receiveShadow = true;
+                grp.add(shaft);
+
+                // Albardilla superior de hormigón
+                const capH = 0.10;
+                const cap = new THREE.Mesh(
+                    new THREE.BoxGeometry(W + 0.12, capH, D + 0.12),
+                    new THREE.MeshStandardMaterial({ color: 0xCBD5E1, roughness: 0.75 })
+                );
+                cap.position.y = H + capH / 2;
+                cap.castShadow = true;
+                grp.add(cap);
+
+                // Sombrerete / tobera metálica de humos
+                const potR = Math.max(0.08, Math.min(W, D) * 0.22);
+                const pot = new THREE.Mesh(
+                    new THREE.CylinderGeometry(potR * 0.85, potR, 0.22, 12),
+                    new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.4, metalness: 0.6 })
+                );
+                pot.position.y = H + capH + 0.11;
+                pot.castShadow = true;
+                grp.add(pot);
+
+                // Babeta / faldón perimetral de chapa de zinc en la base
+                if (obs.mountOnRoof) {
+                    const skirt = new THREE.Mesh(
+                        new THREE.BoxGeometry(W + 0.08, 0.06, D + 0.08),
+                        new THREE.MeshStandardMaterial({ color: 0x64748B, roughness: 0.5, metalness: 0.3 })
+                    );
+                    skirt.position.y = 0.03;
+                    grp.add(skirt);
+                }
+            } else if (obs.type === 'hvac') {
+                // Equipo de clima sobre bancada
+                const hvacBody = new THREE.Mesh(
+                    new THREE.BoxGeometry(W, H, D),
+                    new THREE.MeshStandardMaterial({ color: 0x94A3B8, roughness: 0.4, metalness: 0.3 })
+                );
+                hvacBody.position.y = H / 2;
+                hvacBody.castShadow = true;
+                hvacBody.receiveShadow = true;
+                grp.add(hvacBody);
+
+                const railMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.7 });
+                const r1 = new THREE.Mesh(new THREE.BoxGeometry(W * 0.95, 0.08, 0.10), railMat);
+                r1.position.set(0, 0.04, -D * 0.35);
+                const r2 = new THREE.Mesh(new THREE.BoxGeometry(W * 0.95, 0.08, 0.10), railMat);
+                r2.position.set(0, 0.04, D * 0.35);
+                grp.add(r1);
+                grp.add(r2);
+            } else if (obs.type === 'antenna') {
+                const mast = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.04, 0.05, H, 10),
+                    new THREE.MeshStandardMaterial({ color: 0xCBD5E1, metalness: 0.8, roughness: 0.3 })
+                );
+                mast.position.y = H / 2;
+                mast.castShadow = true;
+                grp.add(mast);
+
+                const baseP = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.35, 0.04, 0.35),
+                    new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.5 })
+                );
+                baseP.position.y = 0.02;
+                grp.add(baseP);
             } else {
-                const col = obs.type === 'chimney' ? 0x9A3412 : (obs.type === 'neighbor_block' ? 0x475569 : 0x64748B);
+                const col = obs.type === 'neighbor_block' ? 0x475569 : 0x64748B;
                 const box = new THREE.Mesh(
                     new THREE.BoxGeometry(W, H, D),
                     new THREE.MeshStandardMaterial({ color: col, roughness: 0.75 })
@@ -7789,13 +7948,24 @@ const Solar3DStudio = {
             }
 
             if (isSel) {
-                const ring = new THREE.Mesh(
-                    new THREE.RingGeometry(Math.max(W, D) * 0.58, Math.max(W, D) * 0.66, 24),
+                // Marco delimitador 3D de referencia y selección exacta
+                const selBoxGeo = new THREE.BoxGeometry(W + 0.10, H + 0.08, D + 0.10);
+                const edgesGeo = new THREE.EdgesGeometry(selBoxGeo);
+                const selLine = new THREE.LineSegments(
+                    edgesGeo,
+                    new THREE.LineBasicMaterial({ color: 0x38BDF8, linewidth: 2 })
+                );
+                selLine.position.y = H / 2;
+                grp.add(selLine);
+
+                // Anillo de apoyo en base
+                const snapRing = new THREE.Mesh(
+                    new THREE.RingGeometry(Math.max(W, D) * 0.55, Math.max(W, D) * 0.65, 24),
                     new THREE.MeshBasicMaterial({ color: 0x38BDF8, side: THREE.DoubleSide })
                 );
-                ring.rotation.x = -Math.PI / 2;
-                ring.position.y = 0.05;
-                grp.add(ring);
+                snapRing.rotation.x = -Math.PI / 2;
+                snapRing.position.y = 0.04;
+                grp.add(snapRing);
             }
 
             grp.position.set(obs.x, y0, obs.z);
@@ -8509,16 +8679,44 @@ const Solar3DStudio = {
             // 2B. Línea Bajante Positiva (+) desde el primer panel de este string hasta la entrada MPPT del Inversor
             const pStart = strObj.firstP;
             const invEntryPos = new THREE.Vector3(inv.x + offset - 0.05, inv.y + 0.15, inv.z);
-            const dcPosPts = el.routingStyle === 'orthogonal'
-                ? [
-                    new THREE.Vector3(pStart.x, pStart.y + yLift, pStart.z),
-                    new THREE.Vector3(inv.x + offset - 0.05, pStart.y + yLift, inv.z),
-                    invEntryPos
-                  ]
-                : [
-                    new THREE.Vector3(pStart.x, pStart.y + yLift, pStart.z),
-                    invEntryPos
-                  ];
+
+            // Generador de trazado ceñido a la pendiente de la cubierta y bajante de fachada (cero cables flotando en el aire)
+            const buildDcDropPoints = (panelPt, entryTarget, latOffset) => {
+                const p0 = new THREE.Vector3(panelPt.x, panelPt.y + yLift, panelPt.z);
+                const pTarget = new THREE.Vector3(entryTarget.x, entryTarget.y, entryTarget.z);
+                const roof = this.getRoofFacesDefinition();
+                const H = roof.H;
+                const pLocal = this.worldToLocal(panelPt.x, panelPt.z);
+                const invLocal = this.worldToLocal(inv.x, inv.z);
+
+                const targetEavesLz = invLocal.lz >= 0 ? roof.D / 2 : -roof.D / 2;
+                const sameSlope = (pLocal.lz >= 0 && invLocal.lz >= 0) || (pLocal.lz <= 0 && invLocal.lz <= 0);
+
+                const pts = [p0];
+
+                if (roof.archType === 'piso_plana') {
+                    const edgeW = this.localToWorld(pLocal.lx, H + 0.08, targetEavesLz);
+                    const cornisaW = this.localToWorld(invLocal.lx + latOffset, H + 0.08, targetEavesLz);
+                    pts.push(new THREE.Vector3(edgeW.x, H + 0.08, edgeW.z));
+                    pts.push(new THREE.Vector3(cornisaW.x, H + 0.08, cornisaW.z));
+                    pts.push(pTarget);
+                } else {
+                    if (!sameSlope && roof.ridgeRise > 0) {
+                        const ridgeW = this.localToWorld(pLocal.lx, H + roof.ridgeRise + 0.08, 0);
+                        pts.push(new THREE.Vector3(ridgeW.x, H + roof.ridgeRise + 0.08, ridgeW.z));
+                    }
+                    const aleroW1 = this.localToWorld(pLocal.lx, H + 0.08, targetEavesLz);
+                    pts.push(new THREE.Vector3(aleroW1.x, H + 0.08, aleroW1.z));
+
+                    const aleroW2 = this.localToWorld(invLocal.lx + latOffset, H + 0.08, targetEavesLz);
+                    pts.push(new THREE.Vector3(aleroW2.x, H + 0.08, aleroW2.z));
+
+                    pts.push(pTarget);
+                }
+                return pts;
+            };
+
+            const dcPosPts = buildDcDropPoints(pStart, invEntryPos, offset - 0.05);
             this.cablesGroup.add(
                 new THREE.Line(
                     new THREE.BufferGeometry().setFromPoints(dcPosPts),
@@ -8529,16 +8727,7 @@ const Solar3DStudio = {
             // 2C. Línea Bajante Negativa (-) de retorno desde el último panel de este string hasta el Inversor
             const pEnd = strObj.lastP;
             const invEntryNeg = new THREE.Vector3(inv.x + offset + 0.05, inv.y + 0.15, inv.z);
-            const dcNegPts = el.routingStyle === 'orthogonal'
-                ? [
-                    new THREE.Vector3(pEnd.x, pEnd.y + yLift - 0.02, pEnd.z),
-                    new THREE.Vector3(inv.x + offset + 0.05, pEnd.y + yLift - 0.02, inv.z),
-                    invEntryNeg
-                  ]
-                : [
-                    new THREE.Vector3(pEnd.x, pEnd.y + yLift - 0.02, pEnd.z),
-                    invEntryNeg
-                  ];
+            const dcNegPts = buildDcDropPoints(pEnd, invEntryNeg, offset + 0.05);
             this.cablesGroup.add(
                 new THREE.Line(
                     new THREE.BufferGeometry().setFromPoints(dcNegPts),
@@ -8741,6 +8930,19 @@ const Solar3DStudio = {
             document.getElementById('inpObsD').value = obs.depthM ?? obs.widthM;
             document.getElementById('inpObsRot').value = obs.rotationDeg || 0;
             document.getElementById('selObsMount').value = obs.mountOnRoof ? 'roof' : 'ground';
+            const elevEl = document.getElementById('lblObsElevation');
+            if (elevEl) {
+                const y0 = this.getObstacleBaseY(obs);
+                if (obs.mountOnRoof) {
+                    const { lz } = this.worldToLocal(obs.x, obs.z);
+                    const fName = Math.abs(lz) < 0.35 ? 'Cumbrera' : (lz < 0 ? 'Faldón Norte' : 'Faldón Sur');
+                    elevEl.textContent = `Y = ${y0.toFixed(2)} m (${fName})`;
+                    elevEl.className = 'font-bold text-[#38BDF8]';
+                } else {
+                    elevEl.textContent = `Y = 0.00 m (Suelo / Terreno)`;
+                    elevEl.className = 'font-bold text-[#10B981]';
+                }
+            }
         }
         const listObsEl = document.getElementById('listObstacles');
         if (listObsEl) {
@@ -9189,28 +9391,7 @@ const Solar3DStudio = {
     },
 
     getRoofHeightAt(bld, wx, wz) {
-        const H = Math.max(2.5, Number(bld?.wallHeightM || this.state.building.wallHeightM) || 5.8);
-        const roof = this.getRoofFacesDefinition();
-        for (const face of roof.faces) {
-            if (wx >= face.minX && wx <= face.maxX && wz >= face.minZ && wz <= face.maxZ) {
-                return face.yAt(wx, wz);
-            }
-        }
-        if (roof.faces.length > 0) {
-            let bestFace = roof.faces[0];
-            let minDist = Infinity;
-            for (const face of roof.faces) {
-                const cx = (face.minX + face.maxX) / 2;
-                const cz = (face.minZ + face.maxZ) / 2;
-                const d = Math.hypot(wx - cx, wz - cz);
-                if (d < minDist) {
-                    minDist = d;
-                    bestFace = face;
-                }
-            }
-            return bestFace.yAt(wx, wz);
-        }
-        return H;
+        return this.getRoofHeightAtCoords(wx, wz);
     },
 
     clampEquipmentToInnerWall(bld, x, z, eqType = 'inverter') {
