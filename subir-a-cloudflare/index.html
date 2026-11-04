@@ -519,7 +519,7 @@
 
                 <!-- Acciones Globales: Modo Rápido/Experto, Auto-Ajuste, JSON, Idioma, Tema -->
                 <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                    <button type="button" id="btnHeader3DStudio" onclick="Solar3DStudio.openModal()" class="hidden sm:inline-flex btn-press items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#0066FF] text-white hover:bg-[#0052CC] shadow-sm shadow-[#0066FF]/25 whitespace-nowrap transition" title="Abrir maqueta 3D interactiva, sombras PVGIS y trazado de cables">
+                    <button type="button" id="btnHeader3DStudio" onclick="Solar3DStudio.openModal()" style="display: none;" class="hidden sm:inline-flex btn-press items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#0066FF] text-white hover:bg-[#0052CC] shadow-sm shadow-[#0066FF]/25 whitespace-nowrap transition" title="Abrir maqueta 3D interactiva, sombras PVGIS y trazado de cables">
                         <span class="text-sm">🧊</span>
                         <span class="hidden sm:inline">Estudio 3D</span>
                     </button>
@@ -753,7 +753,7 @@
                                 <button type="button" onclick="PVGISService.useGPS()" id="btnUseGps" class="btn-press px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#0066FF]/10 text-[#0066FF] hover:bg-[#0066FF]/20 inline-flex items-center gap-1 whitespace-nowrap" aria-label="Obtener coordenadas por GPS">
                                     <span>📍 GPS</span>
                                 </button>
-                                <button type="button" id="btnStep1Open3D" onclick="Solar3DStudio.openModal()" class="btn-press px-2.5 py-1 rounded-lg text-xs font-bold bg-[#0066FF] text-white hover:bg-[#0052CC] inline-flex items-center gap-1 whitespace-nowrap shadow-sm shadow-[#0066FF]/20" title="Ver maqueta 3D interactiva y ortofoto aérea">
+                                <button type="button" id="btnStep1Open3D" onclick="Solar3DStudio.openModal()" class="hidden btn-press px-2.5 py-1 rounded-lg text-xs font-bold bg-[#0066FF] text-white hover:bg-[#0052CC] inline-flex items-center gap-1 whitespace-nowrap shadow-sm shadow-[#0066FF]/20" title="Ver maqueta 3D interactiva y ortofoto aérea">
                                     <span>🧊 Estudio 3D</span>
                                 </button>
                             </div>
@@ -2681,7 +2681,7 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <button type="button" id="btnBottom3DStudio" onclick="Solar3DStudio.openModal()" class="btn-press px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs font-bold text-[#0066FF] bg-[#0066FF]/12 hover:bg-[#0066FF] hover:text-white border border-[#0066FF]/30 shadow-sm inline-flex items-center gap-1.5 whitespace-nowrap transition" title="Abrir maqueta 3D interactiva y trazado de cables">
+                <button type="button" id="btnBottom3DStudio" onclick="Solar3DStudio.openModal()" class="hidden btn-press px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs font-bold text-[#0066FF] bg-[#0066FF]/12 hover:bg-[#0066FF] hover:text-white border border-[#0066FF]/30 shadow-sm inline-flex items-center gap-1.5 whitespace-nowrap transition" title="Abrir maqueta 3D interactiva y trazado de cables">
                     <span>🧊</span>
                     <span class="hidden sm:inline">Estudio 3D</span>
                 </button>
@@ -8723,6 +8723,12 @@ const Wizard = {
         }
         bar.classList.remove('hidden');
 
+        // Botón Estudio 3D en la barra inferior: EXCLUSIVO MODO AVANZADO
+        const btnBtm3D = document.getElementById('btnBottom3DStudio');
+        if (btnBtm3D) {
+            btnBtm3D.classList.toggle('hidden', isExpress);
+        }
+
         if (btnPrev) {
             if (isExpress && cur === 7) {
                 btnPrev.innerHTML = `<span>${en ? '← Back to Supply & Battery' : '← Volver a Suministro y Batería'}</span>`;
@@ -10828,12 +10834,13 @@ const UI = {
             this.setText('s2LossKwhBadge', `(-${fmtNum(c.losses.pv.lossKwh)} kWh/año)`);
         }
 
-        // Visibilidad y estado de los accesos al Estudio 3D en Header, Bottom Bar y Paso 1
+        // Visibilidad y estado de los accesos al Estudio 3D en Header, Bottom Bar y Paso 1 (EXCLUSIVO MODO AVANZADO)
         const isAdv = st.projectMeta.wizardMode === 'advanced';
-        const is3DOn = !!(st.scene3D && st.scene3D.enabled);
+        const is3DOn = !!(isAdv && st.scene3D && st.scene3D.enabled);
         
         const btnHdr3D = document.getElementById('btnHeader3DStudio');
         if (btnHdr3D) {
+            btnHdr3D.style.display = isAdv ? '' : 'none';
             if (is3DOn) {
                 btnHdr3D.classList.add('ring-2', 'ring-[#10B981]');
             } else {
@@ -10843,7 +10850,7 @@ const UI = {
         
         const btnBtm3D = document.getElementById('btnBottom3DStudio');
         if (btnBtm3D) {
-            btnBtm3D.classList.remove('hidden');
+            btnBtm3D.classList.toggle('hidden', !isAdv);
             if (is3DOn) {
                 btnBtm3D.classList.add('border-[#10B981]', 'text-[#10B981]');
             } else {
@@ -10853,7 +10860,7 @@ const UI = {
         
         const btnS1_3D = document.getElementById('btnStep1Open3D');
         if (btnS1_3D) {
-            btnS1_3D.classList.remove('hidden');
+            btnS1_3D.classList.toggle('hidden', !isAdv);
         }
 
         // Control del Lanzador 3D en Paso 2 (Exclusivo Modo Profesional)
