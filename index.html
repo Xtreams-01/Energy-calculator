@@ -318,6 +318,59 @@
             transform: translateX(26px);
         }
 
+        /* Tooltip sobrio y elegante para reducir sobrecarga de texto */
+        .hint-tip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            cursor: help;
+        }
+        .hint-tip .tip-bubble {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0F172A;
+            color: #F8FAFC;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 7px 11px;
+            border-radius: 9px;
+            font-size: 11px;
+            line-height: 1.4;
+            white-space: normal;
+            width: max-content;
+            max-width: min(260px, 80vw);
+            z-index: 60;
+            pointer-events: none;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45);
+            text-align: left;
+            font-weight: 500;
+        }
+        .light .hint-tip .tip-bubble {
+            background: #FFFFFF;
+            color: #1E293B;
+            border-color: #CBD5E1;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18);
+        }
+        .hint-tip:hover .tip-bubble,
+        .hint-tip:focus-within .tip-bubble {
+            display: block;
+        }
+        .hint-tip .tip-bubble::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 4px;
+            border-style: solid;
+            border-color: #0F172A transparent transparent transparent;
+        }
+        .light .hint-tip .tip-bubble::after {
+            border-color: #FFFFFF transparent transparent transparent;
+        }
+
         /* Ocultar contenedor de impresión en pantalla normal */
         #printReportA4 {
             display: none;
@@ -466,6 +519,11 @@
 
                 <!-- Acciones Globales: Modo Rápido/Experto, Auto-Ajuste, JSON, Idioma, Tema -->
                 <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <button type="button" id="btnHeader3DStudio" onclick="Solar3DStudio.openModal()" class="hidden sm:inline-flex btn-press items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#0066FF] text-white hover:bg-[#0052CC] shadow-sm shadow-[#0066FF]/25 whitespace-nowrap transition" title="Abrir maqueta 3D interactiva, sombras PVGIS y trazado de cables">
+                        <span class="text-sm">🧊</span>
+                        <span class="hidden sm:inline">Estudio 3D</span>
+                    </button>
+
                     <button type="button" id="btnWizardModeToggle" onclick="Actions.toggleWizardMode()" class="btn-press inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-mono font-bold bg-[#0066FF]/12 text-[#0066FF] border border-[#0066FF]/30 whitespace-nowrap transition" aria-label="Cambiar entre modo rápido y modo ingeniería avanzada">
                         <span id="lblWizardModeBadge">⚡ Rápido</span>
                     </button>
@@ -686,14 +744,19 @@
 
                     <!-- Tarjeta 1A: Ubicación / PVGIS (50 provincias y 2 ciudades autónomas) -->
                     <div class="bento-card p-5 space-y-4">
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-center justify-between gap-2">
                             <h3 class="font-display font-bold text-sm flex items-center gap-2">
                                 <span class="w-5 h-5 rounded-md bg-[#0066FF]/12 text-[#0066FF] font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">1</span>
                                 <span>Ubicación & Radiación Solar PVGIS</span>
                             </h3>
-                            <button type="button" onclick="PVGISService.useGPS()" id="btnUseGps" class="btn-press px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#0066FF]/10 text-[#0066FF] hover:bg-[#0066FF]/20 inline-flex items-center gap-1 whitespace-nowrap" aria-label="Obtener coordenadas por GPS">
-                                <span>📍 GPS</span>
-                            </button>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <button type="button" onclick="PVGISService.useGPS()" id="btnUseGps" class="btn-press px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#0066FF]/10 text-[#0066FF] hover:bg-[#0066FF]/20 inline-flex items-center gap-1 whitespace-nowrap" aria-label="Obtener coordenadas por GPS">
+                                    <span>📍 GPS</span>
+                                </button>
+                                <button type="button" id="btnStep1Open3D" onclick="Solar3DStudio.openModal()" class="btn-press px-2.5 py-1 rounded-lg text-xs font-bold bg-[#0066FF] text-white hover:bg-[#0052CC] inline-flex items-center gap-1 whitespace-nowrap shadow-sm shadow-[#0066FF]/20" title="Ver maqueta 3D interactiva y ortofoto aérea">
+                                    <span>🧊 Estudio 3D</span>
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Buscador Municipio + Selector Rápido Territorio -->
@@ -783,7 +846,14 @@
                                     <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1KwhP3">--</span> kWh/a</span>
                                 </div>
                             </div>
-                            <p class="text-[11px] text-[var(--text-muted)] font-mono">Peaje BT ≤ 15 kW: P1 (10-14, 18-22h) • P2 (08-10, 14-18, 22-24h) • P3 (00-08h + Finde)</p>
+                            <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] font-mono">
+                                <span>Peaje 2.0TD (≤ 15 kW)</span>
+                                <span class="hint-tip text-[var(--text-muted)] hover:text-[#0066FF] transition inline-flex items-center gap-1 cursor-help">
+                                    <span class="w-3.5 h-3.5 rounded-full border border-current text-[9px] font-bold flex items-center justify-center">i</span>
+                                    <span>Horarios Peajes</span>
+                                    <span class="tip-bubble">Punta P1: 10-14h y 18-22h (L-V). Llano P2: 08-10h, 14-18h y 22-24h (L-V). Valle P3: 00-08h todos los días y 24h sábados, domingos y festivos nacionales.</span>
+                                </span>
+                            </div>
                         </div>
 
                         <!-- Panel Tarifa Comercial / Industrial 3.0TD (> 15 kW, 6 Periodos Circular 3/2020 CNMC) -->
@@ -820,7 +890,14 @@
                                     <span class="block text-[10px] font-mono text-[var(--text-muted)] mt-1"><span id="s1Kwh30P6">--</span> kWh</span>
                                 </div>
                             </div>
-                            <p class="text-[11px] text-[var(--text-muted)] font-mono">Circular 3/2020 CNMC (&gt;15 kW Comercial/PYME): calendario estacional de 4 temporadas + noches (00-08h) y fines de semana en P6.</p>
+                            <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] font-mono">
+                                <span>Peaje 3.0TD (> 15 kW)</span>
+                                <span class="hint-tip text-[var(--text-muted)] hover:text-[#0066FF] transition inline-flex items-center gap-1 cursor-help">
+                                    <span class="w-3.5 h-3.5 rounded-full border border-current text-[9px] font-bold flex items-center justify-center">i</span>
+                                    <span>Normativa Circular 3/2020</span>
+                                    <span class="tip-bubble">6 periodos tarifarios con 4 temporadas estacionales. Noches (00-08h) y fines de semana completos siempre en P6 (Valle económico).</span>
+                                </span>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3 pt-1">
@@ -918,23 +995,22 @@
                         </div>
 
                         <!-- 2A. VÍA PRIORITARIA: TELEMETRÍA REAL DATADIS / DISTRIBUIDORA -->
-                        <div class="bento-subtle p-4 sm:p-5 space-y-3.5 border border-[#0066FF]/25 rounded-2xl bg-[#0066FF]/[0.03]">
-                            <!-- Título y descripción con ancho completo 100% (cero columnas aplastadas) -->
-                            <div class="space-y-1.5">
-                                <div class="flex flex-wrap items-center justify-between gap-2">
-                                    <span class="text-xs sm:text-sm font-bold text-[var(--text-primary)] flex items-center gap-1.5">
-                                        <span class="text-base">📊</span>
-                                        <span>Opción A (Recomendada): Importar Curva Real de Contador (Datadis / Distribuidora)</span>
+                        <div class="bento-subtle p-4 sm:p-5 space-y-3 border border-[#0066FF]/25 rounded-2xl bg-[#0066FF]/[0.02]">
+                            <!-- Título limpio con tooltip informativo -->
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <span class="text-base">📊</span>
+                                    <span class="text-xs sm:text-sm font-bold text-[var(--text-primary)]">Curva Real de Contador (Datadis / CSV)</span>
+                                    <span class="hint-tip text-[var(--text-muted)] hover:text-[#0066FF] transition inline-flex items-center cursor-help">
+                                        <span class="w-4 h-4 rounded-full border border-current text-[10px] font-mono font-bold flex items-center justify-center">i</span>
+                                        <span class="tip-bubble">Importa el fichero .csv o .json oficial descargado de Datadis o tu distribuidora (medidas horarias o cuartohorarias, ';' y coma decimal). Simula balance neto y excedentes con 8.760 horas reales.</span>
                                     </span>
-                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#0066FF]/12 text-[#0066FF] whitespace-nowrap">Máxima Precisión</span>
                                 </div>
-                                <p class="text-xs text-[var(--text-muted)] leading-relaxed">
-                                    Acepta directamente el archivo oficial <code class="px-1 py-0.5 rounded bg-[var(--bg-subtle)] text-[var(--text-primary)] font-mono text-[11px]">.csv</code> o <code class="px-1 py-0.5 rounded bg-[var(--bg-subtle)] text-[var(--text-primary)] font-mono text-[11px]">.json</code> descargado de <strong>Datadis</strong> o tu distribuidora (medidas horarias o cuartohorarias, separador <code class="font-mono">;</code> y coma decimal <code class="font-mono">,</code>).
-                                </p>
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#0066FF]/12 text-[#0066FF] whitespace-nowrap">Máxima Precisión</span>
                             </div>
 
-                            <!-- Botonera de Acción en Fila Propia (Flex Wrap con espacio y ergonomía) -->
-                            <div class="flex flex-wrap items-center justify-between gap-2.5 pt-1 border-t border-[var(--border-hairline)]">
+                            <!-- Botonera de Acción en Fila Propia -->
+                            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[var(--border-hairline)]">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <input type="file" id="inpCsvCurveFile" accept=".csv,.txt,.json" class="hidden" onchange="Actions.handleCurveUpload(this.files[0])">
                                     <button type="button" onclick="document.getElementById('inpCsvCurveFile').click()" class="btn-press px-4 py-2.5 rounded-xl text-xs font-bold bg-[#0066FF] text-white hover:bg-[#0052CC] shadow-sm inline-flex items-center gap-2 whitespace-nowrap">
@@ -955,10 +1031,10 @@
                             </div>
 
                             <!-- Enlace contextual para usuarios nuevos -->
-                            <div class="flex flex-wrap items-center gap-1.5 text-xs text-[var(--text-muted)]">
-                                <span>¿No tienes cuenta en Datadis o es tu primera vez?</span>
-                                <button type="button" onclick="UI.openDatadisTutorialModal()" class="text-[#0066FF] hover:underline font-semibold inline-flex items-center gap-1">
-                                    <span>Ver tutorial paso a paso (Alta con DNI y Descarga) →</span>
+                            <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--text-muted)] pt-1 border-t border-[var(--border-hairline)]">
+                                <span>¿No tienes cuenta o no sabes cómo descargar tu fichero?</span>
+                                <button type="button" onclick="UI.openDatadisTutorialModal()" class="text-[#0066FF] hover:underline font-semibold font-mono inline-flex items-center gap-1">
+                                    <span>Guía de Alta y Descarga Paso a Paso →</span>
                                 </button>
                             </div>
 
@@ -1033,15 +1109,16 @@
 
                         <!-- 2C. CURVA HORARIA SINTÉTICA CON NOTA DE CAUTELA METODOLÓGICA -->
                         <div id="boxSyntheticProfiles" class="pt-2 border-t border-[var(--border-hairline)] space-y-3">
-                            <div class="p-3 rounded-xl bg-[#F59E0B]/10 border border-[#F59E0B]/30 flex items-start gap-2.5 text-[11px] leading-relaxed text-[var(--text-secondary)]">
-                                <span class="text-sm shrink-0 leading-none mt-0.5">⚠️</span>
-                                <div class="flex-1 min-w-0">
-                                    <strong class="text-[var(--text-primary)]">Cautela metodológica con curvas estándar:</strong> Tipificar un hogar o socio por características generales (ocupantes, superficie o equipos) rara vez reproduce su curva horaria real, y los hábitos declarados suelen diferir de la telemetría del contador. Usa estos perfiles únicamente como estimación orientativa a falta de fichero <strong>Datadis</strong>.
-                                </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-[var(--text-secondary)]">Aproximación Horaria Orientativa (si no hay Datadis):</span>
+                                <span class="hint-tip text-[var(--text-muted)] hover:text-[#F59E0B] transition inline-flex items-center gap-1 text-[11px] cursor-help">
+                                    <span class="text-xs">⚠️</span>
+                                    <span>Cautela metodológica</span>
+                                    <span class="tip-bubble">Tipificar un consumidor por características generales rara vez reproduce su curva real. Los hábitos reales suelen diferir de la telemetría del contador. Usa estos perfiles como estimación orientativa si no dispones de archivo Datadis.</span>
+                                </span>
                             </div>
 
                             <div>
-                                <span class="block text-xs font-semibold text-[var(--text-secondary)] mb-1.5">Aproximación Horaria Orientativa (si no hay Datadis):</span>
                                 <div class="grid grid-cols-2 gap-2 text-xs">
                                     <button type="button" id="profBtn_diurno" onclick="Actions.setProfileType('diurno')" class="btn-press p-2.5 rounded-xl border text-left transition">
                                         <span class="font-bold block">🏢 Diurno Comercial / PYME</span>
@@ -1189,6 +1266,40 @@
                 <span class="self-start sm:self-auto px-3 py-1 rounded-full text-xs font-mono font-semibold bento-subtle whitespace-nowrap" id="s2ModuleBadge">
                     STC 1000 W/m² • 25 °C
                 </span>
+            </div>
+
+            <!-- TARJETA DESTACADA: ACCESO AL ESTUDIO 3D (Exclusivo Modo Profesional) -->
+            <div id="boxPro3DLauncher" class="bento-card p-4 sm:p-5 border border-[#0066FF]/35 bg-[#0066FF]/[0.03] space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-11 h-11 rounded-2xl bg-[#0066FF] text-white flex items-center justify-center text-xl shadow-md shadow-[#0066FF]/25 shrink-0">
+                            🧊
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-display font-bold text-base text-[var(--text-primary)]" data-i18n="s2_3d_title">
+                                    Estudio 3D de Cubierta, Sombras y Cableado
+                                </h3>
+                                <span id="s2Badge3DState" class="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#0066FF]/15 text-[#0066FF] whitespace-nowrap">Exclusivo Pro</span>
+                            </div>
+                            <p id="s2Sub3DState" class="text-xs text-[var(--text-muted)] mt-0.5">
+                                Modela la cubierta sobre ortofoto oficial del IGN, sitúa árboles y obstáculos para calcular sombras exactas, y mide el cableado en 3D.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button type="button" id="btnDisable3DQuick" onclick="Solar3DStudio.toggleActive(false)" class="hidden btn-press px-3 py-2 rounded-xl text-xs font-semibold bento-subtle text-[var(--text-muted)] hover:text-[#EF4444]" title="Desactivar datos 3D y volver a sliders manuales">
+                            Apagar 3D
+                        </button>
+                        <button type="button" id="btnOpenSolar3DStudio" onclick="Solar3DStudio.openModal()" class="btn-press px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#0066FF] text-white hover:bg-[#0052CC] shadow-md shadow-[#0066FF]/25 inline-flex items-center gap-2 whitespace-nowrap">
+                            <span>🧊 Abrir Estudio 3D →</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="s2Active3DSummary" class="hidden p-3 rounded-xl bg-[#10B981]/10 border border-[#10B981]/25 text-xs font-mono text-[var(--text-secondary)] flex flex-wrap items-center justify-between gap-2">
+                    <span id="s2Active3DMetrics">✅ Maqueta 3D activa: 16 paneles • Sombra real -0.1% • Cables medidos</span>
+                    <span class="text-[#10B981] font-bold">PVGIS + 3D Sincronizado</span>
+                </div>
             </div>
 
             <!-- 4 Tarjetas KPI Gigantes del Generador -->
@@ -1372,7 +1483,13 @@
                     <!-- Orientación (Azimuth -180° a 180°) -->
                     <div class="space-y-1.5">
                         <div class="flex justify-between items-center text-xs">
-                            <label for="inpAzimuth" class="font-semibold text-[var(--text-secondary)]">Orientación / Azimuth (0°=Sur, -90°=Este, 90°=Oeste)</label>
+                            <span class="inline-flex items-center gap-1.5">
+                                <label for="inpAzimuth" class="font-semibold text-[var(--text-secondary)]">Orientación (Azimuth)</label>
+                                <span class="hint-tip text-[var(--text-muted)] hover:text-[#0066FF] transition inline-flex items-center cursor-help">
+                                    <span class="w-3.5 h-3.5 rounded-full border border-current text-[9px] font-bold flex items-center justify-center">i</span>
+                                    <span class="tip-bubble">Convenio PVGIS JRC: 0° = Sur exacto, -90° = Este, +90° = Oeste, 180° = Norte.</span>
+                                </span>
+                            </span>
                             <div class="flex items-center gap-1">
                                 <input id="inpAzimuth" type="number" min="-180" max="180" step="5" class="showroom-input w-20 !py-1 text-right font-mono font-bold" oninput="Actions.setGeometry('azimuth', this.value)">
                                 <span class="font-mono text-[var(--text-muted)]">°</span>
@@ -1384,7 +1501,13 @@
                     <!-- Pérdidas del Sistema (%) -->
                     <div class="space-y-1.5">
                         <div class="flex justify-between items-center text-xs">
-                            <label for="inpSysLoss" class="font-semibold text-[var(--text-secondary)]">Pérdidas Globales del Sistema (%)</label>
+                            <span class="inline-flex items-center gap-1.5">
+                                <label for="inpSysLoss" class="font-semibold text-[var(--text-secondary)]">Pérdidas Globales (%)</label>
+                                <span class="hint-tip text-[var(--text-muted)] hover:text-[#10B981] transition inline-flex items-center cursor-help">
+                                    <span class="w-3.5 h-3.5 rounded-full border border-current text-[9px] font-bold flex items-center justify-center">i</span>
+                                    <span class="tip-bubble">Incluye suciedad (~2-3%), pérdidas óhmicas DC (~1-1.5%), mismatch (~1%), pérdidas térmicas y reflexión angular IAM s/ PVGIS JRC.</span>
+                                </span>
+                            </span>
                             <div class="flex items-center gap-1">
                                 <input id="inpSysLoss" type="number" min="5" max="35" step="0.5" class="showroom-input w-20 !py-1 text-right font-mono font-bold" oninput="Actions.setGeometry('systemLossPct', this.value)">
                                 <span class="font-mono text-[var(--text-muted)]">%</span>
@@ -1416,34 +1539,6 @@
                         <button type="button" onclick="PVGISService.refreshLivePVGIS()" class="btn-press px-3 py-2 rounded-xl text-xs font-bold bg-[#0066FF] text-white whitespace-nowrap">
                             Actualizar PVGIS
                         </button>
-                    </div>
-
-                    <!-- Acceso Discreto al Estudio 3D (Exclusivo Modo Profesional) -->
-                    <div id="boxPro3DLauncher" class="pt-3 border-t border-[var(--border-hairline)] space-y-2.5">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                            <div class="flex items-center gap-2 min-w-0">
-                                <span class="w-7 h-7 rounded-lg bg-[#0066FF]/12 text-[#0066FF] flex items-center justify-center text-sm shrink-0">🏗️</span>
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="text-xs font-bold text-[var(--text-primary)] truncate" data-i18n="s2_3d_title">Estudio 3D de Sombras y Cableado</span>
-                                        <span id="s2Badge3DState" class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--bg-subtle)] text-[var(--text-muted)] whitespace-nowrap">Opcional • Pro</span>
-                                    </div>
-                                    <p id="s2Sub3DState" class="text-[11px] text-[var(--text-muted)] truncate">Casa, árboles, sol PVGIS y cables entre paneles</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
-                                <button type="button" id="btnDisable3DQuick" onclick="Solar3DStudio.toggleActive(false)" class="hidden btn-press px-2.5 py-1.5 rounded-xl text-[11px] font-semibold bento-subtle text-[var(--text-muted)] hover:text-[#EF4444]" title="Desactivar datos 3D y volver a sliders manuales">
-                                    Apagar 3D
-                                </button>
-                                <button type="button" id="btnOpenSolar3DStudio" onclick="Solar3DStudio.openModal()" class="btn-press px-3.5 py-2 rounded-xl text-xs font-bold bg-[#0066FF]/12 text-[#0066FF] hover:bg-[#0066FF] hover:text-white border border-[#0066FF]/25 transition inline-flex items-center gap-1.5 whitespace-nowrap">
-                                    <span>🧊 Abrir Estudio 3D</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div id="s2Active3DSummary" class="hidden p-2.5 rounded-xl bg-[#10B981]/10 border border-[#10B981]/25 text-[11px] font-mono text-[var(--text-secondary)] flex flex-wrap items-center justify-between gap-2">
-                            <span id="s2Active3DMetrics">✅ Maqueta 3D activa: 8 paneles • Sombra real -2.4% • Cables medidos</span>
-                            <span class="text-[#10B981] font-bold">PVGIS + 3D Sincronizado</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -2254,11 +2349,15 @@
                     </div>
 
                     <!-- Alerta Tope Legal RD 244/2019 si aplica -->
-                    <div id="s6LegalCapNotice" class="bento-subtle p-3.5 text-xs space-y-1">
-                        <strong class="font-display block text-[var(--text-primary)]">Verificación Tope Mensual RD 244/2019</strong>
-                        <p id="s6LegalCapText" class="text-[var(--text-muted)]">
-                            En compensación simplificada, el descuento mensual por excedentes no puede superar el coste de la energía consumida de red en ese mes.
-                        </p>
+                    <div id="s6LegalCapNotice" class="bento-subtle p-2.5 text-xs flex items-center justify-between gap-2">
+                        <span class="inline-flex items-center gap-1.5 text-[var(--text-primary)] font-semibold">
+                            <span>⚖️ Tope Mensual RD 244/2019</span>
+                            <span class="hint-tip text-[var(--text-muted)] hover:text-[#0066FF] transition inline-flex items-center cursor-help">
+                                <span class="w-3.5 h-3.5 rounded-full border border-current text-[9px] font-bold flex items-center justify-center">i</span>
+                                <span class="tip-bubble">En compensación simplificada, el valor económico mensual de la energía excedentaria vertida a la red está limitado como máximo al coste de la energía horaria consumida de la red en ese mismo mes (término de energía neto ≥ 0 €).</span>
+                            </span>
+                        </span>
+                        <span id="s6LegalCapText" class="text-[var(--text-muted)] font-mono text-[11px] truncate">Tope mensual comprobado</span>
                     </div>
 
                     <!-- Bonificaciones / Subvenciones Opcionales -->
@@ -2582,6 +2681,10 @@
             </div>
 
             <div class="flex items-center gap-2">
+                <button type="button" id="btnBottom3DStudio" onclick="Solar3DStudio.openModal()" class="btn-press px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs font-bold text-[#0066FF] bg-[#0066FF]/12 hover:bg-[#0066FF] hover:text-white border border-[#0066FF]/30 shadow-sm inline-flex items-center gap-1.5 whitespace-nowrap transition" title="Abrir maqueta 3D interactiva y trazado de cables">
+                    <span>🧊</span>
+                    <span class="hidden sm:inline">Estudio 3D</span>
+                </button>
                 <span id="wizardValidationMsg" class="hidden text-xs font-semibold text-[#EF4444]">Revisa los campos requeridos</span>
                 <button type="button" id="btnGlobalAutoFix" onclick="Actions.autoFixAllErrors('smart')" class="hidden btn-press px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs font-bold text-white bg-[#EF4444] hover:bg-red-600 shadow-md shadow-[#EF4444]/25 inline-flex items-center gap-1.5 whitespace-nowrap">
                     <span>🔧</span>
@@ -10725,20 +10828,46 @@ const UI = {
             this.setText('s2LossKwhBadge', `(-${fmtNum(c.losses.pv.lossKwh)} kWh/año)`);
         }
 
+        // Visibilidad y estado de los accesos al Estudio 3D en Header, Bottom Bar y Paso 1
+        const isAdv = st.projectMeta.wizardMode === 'advanced';
+        const is3DOn = !!(st.scene3D && st.scene3D.enabled);
+        
+        const btnHdr3D = document.getElementById('btnHeader3DStudio');
+        if (btnHdr3D) {
+            if (is3DOn) {
+                btnHdr3D.classList.add('ring-2', 'ring-[#10B981]');
+            } else {
+                btnHdr3D.classList.remove('ring-2', 'ring-[#10B981]');
+            }
+        }
+        
+        const btnBtm3D = document.getElementById('btnBottom3DStudio');
+        if (btnBtm3D) {
+            btnBtm3D.classList.remove('hidden');
+            if (is3DOn) {
+                btnBtm3D.classList.add('border-[#10B981]', 'text-[#10B981]');
+            } else {
+                btnBtm3D.classList.remove('border-[#10B981]', 'text-[#10B981]');
+            }
+        }
+        
+        const btnS1_3D = document.getElementById('btnStep1Open3D');
+        if (btnS1_3D) {
+            btnS1_3D.classList.remove('hidden');
+        }
+
         // Control del Lanzador 3D en Paso 2 (Exclusivo Modo Profesional)
         const boxPro3D = document.getElementById('boxPro3DLauncher');
-        const isAdv = st.projectMeta.wizardMode === 'advanced';
         if (boxPro3D) {
             boxPro3D.classList.toggle('hidden', !isAdv);
-            const is3DOn = !!(isAdv && st.scene3D && st.scene3D.enabled);
             const bdg3D = document.getElementById('s2Badge3DState');
             const btnDis3D = document.getElementById('btnDisable3DQuick');
             const sum3D = document.getElementById('s2Active3DSummary');
             if (bdg3D) {
-                bdg3D.textContent = is3DOn ? 'ACTIVO • 3D' : 'Opcional • Pro';
+                bdg3D.textContent = is3DOn ? 'ACTIVO • 3D' : 'Exclusivo Pro';
                 bdg3D.className = is3DOn
-                    ? 'px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981] whitespace-nowrap'
-                    : 'px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--bg-subtle)] text-[var(--text-muted)] whitespace-nowrap';
+                    ? 'px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#10B981]/15 text-[#10B981] whitespace-nowrap'
+                    : 'px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-[#0066FF]/15 text-[#0066FF] whitespace-nowrap';
             }
             btnDis3D?.classList.toggle('hidden', !is3DOn);
             sum3D?.classList.toggle('hidden', !is3DOn);
