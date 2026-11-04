@@ -4645,6 +4645,20 @@ const Store = {
                 if (parsed && parsed.projectMeta && parsed.pvModules) {
                     this.state = this.deepMerge(createDefaultState(), parsed);
                     this.hasSavedInStorage = true;
+                    // PRIORIDAD CATÁLOGO: Sanear cualquier residuo Custom persistido en sesiones anteriores
+                    const pv = this.state.pvModules;
+                    const inv = this.state.inverterAndStrings;
+                    const isExp = (this.state.projectMeta?.wizardMode || 'express') === 'express';
+                    if (!pv.catalogId || !MODULOS_FV[pv.catalogId]) pv.catalogId = 'longi_450';
+                    if (isExp || pv.mode !== 'custom' || (pv.name && pv.name.includes('Custom'))) {
+                        pv.mode = 'catalog';
+                        pv.name = MODULOS_FV[pv.catalogId].name;
+                    }
+                    if (!inv.catalogId || !INVERSORES_COMERCIALES[inv.catalogId]) inv.catalogId = 'huawei_sun2000_3ktl_l1';
+                    if (isExp || inv.mode !== 'custom' || (inv.modelName && (inv.modelName.includes('Custom') || inv.modelName.includes('Personalizado')))) {
+                        inv.mode = 'catalog';
+                        inv.modelName = INVERSORES_COMERCIALES[inv.catalogId].nombre;
+                    }
                 }
             }
         } catch (e) {
@@ -6368,8 +6382,8 @@ const AutoOptimizer = {
                 else if (d.batBus && d.batBus !== 'ac') score -= 2.0;
             }
 
-            // Preferir inversor string frente a microinversor a partir de 5 módulos
-            if (nMods >= 5 && isMicro) score += 8;
+            // Preferir inversor string central residencial Tier-1 frente a microinversor por defecto
+            if (isMicro) score += 14;
             if (isOffGrid && (d.brand === 'victron' || d.brand === 'deye')) score -= 6.0;
 
             // Bonificar mayor rendimiento europeo de ficha
@@ -6586,22 +6600,33 @@ const AutoOptimizer = {
     /* Cascada integral desde Paso 1 (Curva / Datadis / Consumo / Ubicación / Tarifa -> Paneles Óptimos -> Inversor -> Strings -> Cables -> Batería -> CAPEX) */
     cascadeFromStep1() {
         const st = Store.state;
-        // En Modo Rápido (Express), asegurar siempre cálculo automático de inversión
-        if (st.projectMeta.wizardMode === 'express') {
+        const isExp = (st.projectMeta?.wizardMode || 'express') === 'express';
+        if (isExp) {
             st.legalAndFinancials.capexMode = 'auto';
+            st.pvModules.mode = 'catalog';
+            st.inverterAndStrings.mode = 'catalog';
+            if (st.batterySystem.enabled) st.batterySystem.mode = 'catalog';
+            if (!st.pvModules.catalogId || !MODULOS_FV[st.pvModules.catalogId]) st.pvModules.catalogId = 'longi_450';
+            st.pvModules.name = MODULOS_FV[st.pvModules.catalogId].name;
+        } else if (st.pvModules.mode === 'catalog') {
+            if (!st.pvModules.catalogId || !MODULOS_FV[st.pvModules.catalogId]) st.pvModules.catalogId = 'longi_450';
+            st.pvModules.name = MODULOS_FV[st.pvModules.catalogId].name;
         }
+
         const opt = this.findEconomicallyOptimalSizing();
         st.pvModules.moduleCount = opt.optimalPanels;
         st.pvModules.useRecommendedCount = true;
         PhysicsEngine.recalculateAll();
 
         // Si la batería está habilitada, dimensionar primero la batería de catálogo para fijar compatibilidad
-        if (st.batterySystem.enabled && st.batterySystem.mode === 'catalog') {
+        if (st.batterySystem.enabled && (st.batterySystem.mode === 'catalog' || isExp)) {
+            st.batterySystem.mode = 'catalog';
             this.applyOptimalBattery();
         }
 
-        // Seleccionar inversor de catálogo (si hay batería, DEBE ser inversor-cargador híbrido)
-        if (st.inverterAndStrings.mode === 'catalog') {
+        // Seleccionar inversor de catálogo (prioridad comercial estricta en modo catálogo o express)
+        if (st.inverterAndStrings.mode === 'catalog' || isExp) {
+            st.inverterAndStrings.mode = 'catalog';
             const bestInv = this.findBestCatalogInverter(st.pvModules.moduleCount, st.pvModules, st.consumptionAndTariff, st.batterySystem);
             if (bestInv) {
                 this.applyCatalogInverterToState(bestInv.id, bestInv.dist.slots);
@@ -6617,9 +6642,21 @@ const AutoOptimizer = {
     /* Cascada integral desde Paso 2 (Cambio manual de nº de paneles, modelo o Wp -> Inversor -> Strings -> Cables -> Batería -> CAPEX) */
     cascadeFromStep2() {
         const st = Store.state;
+        const isExp = (st.projectMeta?.wizardMode || 'express') === 'express';
+        if (isExp) {
+            st.pvModules.mode = 'catalog';
+            st.inverterAndStrings.mode = 'catalog';
+            if (!st.pvModules.catalogId || !MODULOS_FV[st.pvModules.catalogId]) st.pvModules.catalogId = 'longi_450';
+            st.pvModules.name = MODULOS_FV[st.pvModules.catalogId].name;
+        } else if (st.pvModules.mode === 'catalog') {
+            if (!st.pvModules.catalogId || !MODULOS_FV[st.pvModules.catalogId]) st.pvModules.catalogId = 'longi_450';
+            st.pvModules.name = MODULOS_FV[st.pvModules.catalogId].name;
+        }
         PhysicsEngine.recalculateAll();
 
-        if (st.inverterAndStrings.mode === 'catalog') {
+        // PRIORIDAD CATÁLOGO: Seleccionar siempre el mejor inversor de catálogo comercial en modo catálogo o express
+        if (st.inverterAndStrings.mode === 'catalog' || isExp) {
+            st.inverterAndStrings.mode = 'catalog';
             const bestInv = this.findBestCatalogInverter(st.pvModules.moduleCount, st.pvModules, st.consumptionAndTariff, st.batterySystem);
             if (bestInv) {
                 this.applyCatalogInverterToState(bestInv.id, bestInv.dist.slots);
@@ -6629,7 +6666,8 @@ const AutoOptimizer = {
             this.writeSlotsToState(dist.slots, dist.bounds.numMppts);
         }
 
-        if (st.batterySystem.enabled && st.batterySystem.mode === 'catalog') {
+        if (st.batterySystem.enabled && (st.batterySystem.mode === 'catalog' || isExp)) {
+            st.batterySystem.mode = 'catalog';
             this.applyOptimalBattery();
         }
 
@@ -6753,15 +6791,16 @@ const AutoOptimizer = {
                 if (bestPv) {
                     pv.mode = 'catalog';
                     pv.catalogId = bestPv.id;
-                    pv.modelName = bestPv.spec.nombre;
+                    pv.name = bestPv.spec.name;
                     pv.wp = bestPv.spec.wp;
                     pv.voc = bestPv.spec.voc;
                     pv.vmp = bestPv.spec.vmp;
                     pv.isc = bestPv.spec.isc;
                     pv.imp = bestPv.spec.imp;
-                    pv.tempCoeffVoc = bestPv.spec.tempCoeffVoc;
+                    pv.betaVoc = bestPv.spec.betaVoc;
+                    pv.gammaPmp = bestPv.spec.gammaPmp;
                     bounds = this.getInverterBounds(inv, pv);
-                    actionsTaken.push(`módulo de catálogo compatible (${bestPv.spec.nombre.split('(')[0].trim()})`);
+                    actionsTaken.push(`módulo de catálogo compatible (${bestPv.spec.name.split('(')[0].trim()})`);
                 }
             }
         }
@@ -9181,10 +9220,6 @@ const Solar3DStudio = {
     runtimeSnapshotUrl: null,
 
     openModal(initialTab = null) {
-        if (typeof Store !== 'undefined' && Store.state?.projectMeta && Store.state.projectMeta.wizardMode !== 'advanced') {
-            Store.state.projectMeta.wizardMode = 'advanced';
-            if (typeof Wizard !== 'undefined' && Wizard.renderStepper) Wizard.renderStepper();
-        }
         const modal = document.getElementById('modalSolar3DStudio');
         if (!modal) return;
         modal.classList.remove('hidden');
@@ -9271,6 +9306,23 @@ const Solar3DStudio = {
                 pv.azimuth = Number(b.azimuthDeg) || 0;
             }
 
+            // PRIORIDAD CATÁLOGO: Asegurar siempre módulo comercial oficial Tier-1
+            if (pv.mode !== 'custom' || (Store.state.projectMeta?.wizardMode || 'express') === 'express' || !pv.catalogId || (pv.name && pv.name.includes('Custom'))) {
+                pv.mode = 'catalog';
+                if (!pv.catalogId || !MODULOS_FV[pv.catalogId]) pv.catalogId = 'longi_450';
+                pv.name = MODULOS_FV[pv.catalogId].name;
+            }
+
+            // PRIORIDAD CATÁLOGO: Auto-seleccionar y escalar al mejor inversor de catálogo comercial adaptado a los paneles 3D
+            const inv = Store.state.inverterAndStrings;
+            if (inv.mode === 'catalog' || (Store.state.projectMeta?.wizardMode || 'express') === 'express' || !inv.catalogId || (inv.modelName && (inv.modelName.includes('Custom') || inv.modelName.includes('Personalizado')))) {
+                inv.mode = 'catalog';
+                const bestInv = AutoOptimizer.findBestCatalogInverter(pv.moduleCount, pv, Store.state.consumptionAndTariff, Store.state.batterySystem);
+                if (bestInv) {
+                    AutoOptimizer.applyCatalogInverterToState(bestInv.id, bestInv.dist.slots);
+                }
+            }
+
             // 2. Sincronizar Paso 3 (MPPTs)
             this.syncPanelsToInverterMppts();
 
@@ -9313,6 +9365,23 @@ const Solar3DStudio = {
             const b = this.state.building;
             pv.tilt = b.archType === 'piso_plana' ? (Number(this.state.mountCfg.flatRoofTiltDeg) || 25) : (Number(b.roofTiltDeg) || 30);
             pv.azimuth = Number(b.azimuthDeg) || 0;
+        }
+
+        // PRIORIDAD CATÁLOGO: Asegurar siempre módulo comercial oficial Tier-1
+        if (pv.mode !== 'custom' || (Store.state.projectMeta?.wizardMode || 'express') === 'express' || !pv.catalogId || (pv.name && pv.name.includes('Custom'))) {
+            pv.mode = 'catalog';
+            if (!pv.catalogId || !MODULOS_FV[pv.catalogId]) pv.catalogId = 'longi_450';
+            pv.name = MODULOS_FV[pv.catalogId].name;
+        }
+
+        // PRIORIDAD CATÁLOGO: Auto-seleccionar y escalar al mejor inversor de catálogo comercial adaptado a los paneles 3D
+        const inv = Store.state.inverterAndStrings;
+        if (inv.mode === 'catalog' || (Store.state.projectMeta?.wizardMode || 'express') === 'express' || !inv.catalogId || (inv.modelName && (inv.modelName.includes('Custom') || inv.modelName.includes('Personalizado')))) {
+            inv.mode = 'catalog';
+            const bestInv = AutoOptimizer.findBestCatalogInverter(pv.moduleCount, pv, Store.state.consumptionAndTariff, Store.state.batterySystem);
+            if (bestInv) {
+                AutoOptimizer.applyCatalogInverterToState(bestInv.id, bestInv.dist.slots);
+            }
         }
 
         // 2. Sincronizar Paso 3
@@ -9367,24 +9436,35 @@ const Solar3DStudio = {
         if (typeof Store === 'undefined' || !Store.state) return;
         const s3d = Store.state.scene3D;
         const inv = Store.state.inverterAndStrings;
+        const pv = Store.state.pvModules;
         const breakdown = s3d?.electrical3D?.computedWiring?.stringsBreakdown || [];
-        if (breakdown.length === 0) return;
+        const activeCount = this.state.panels.filter(p => !p.disabled).length;
+        if (activeCount === 0) return;
 
         const numMppts = Math.max(1, Number(inv.numMppts) || 2);
-        for (let i = 0; i < inv.mppts.length; i++) {
-            if (i < breakdown.length && i < numMppts) {
-                inv.mppts[i].name = `MPPT ${i + 1} (${breakdown[i].faceName})`;
-                inv.mppts[i].stringsParallel = 1;
-                inv.mppts[i].modulesSeries = breakdown[i].panelCount;
-            } else {
-                inv.mppts[i].stringsParallel = 0;
-                inv.mppts[i].modulesSeries = 0;
+        const bounds = (typeof AutoOptimizer !== 'undefined') ? AutoOptimizer.getInverterBounds(inv, pv) : { minNs: 1, maxNs: 25 };
+        const hasUnderVoltage = breakdown.some(b => b.panelCount > 0 && b.panelCount < bounds.minNs);
+
+        if (!hasUnderVoltage && breakdown.length > 0 && breakdown.length <= numMppts) {
+            for (let i = 0; i < inv.mppts.length; i++) {
+                if (i < breakdown.length && i < numMppts) {
+                    inv.mppts[i].name = `MPPT ${i + 1} (${breakdown[i].faceName})`;
+                    inv.mppts[i].stringsParallel = 1;
+                    inv.mppts[i].modulesSeries = breakdown[i].panelCount;
+                } else {
+                    inv.mppts[i].stringsParallel = 0;
+                    inv.mppts[i].modulesSeries = 0;
+                }
             }
-        }
-        const assigned = inv.mppts.slice(0, numMppts).reduce((acc, m) => acc + (m.stringsParallel * m.modulesSeries), 0);
-        const activeCount = this.state.panels.filter(p => !p.disabled).length;
-        if (assigned !== activeCount && typeof AutoOptimizer !== 'undefined') {
-            AutoOptimizer.autoDistributeStringsInCurrentInverter(activeCount);
+        } else if (typeof AutoOptimizer !== 'undefined') {
+            const dist = AutoOptimizer.solveMpptDistribution(activeCount, inv, pv);
+            AutoOptimizer.writeSlotsToState(dist.slots, numMppts);
+            for (let i = 0; i < numMppts; i++) {
+                if (inv.mppts[i] && inv.mppts[i].modulesSeries > 0) {
+                    const label = (breakdown[i] && breakdown[i].faceName) || breakdown[0]?.faceName || 'Faldón Sur';
+                    inv.mppts[i].name = `MPPT ${i + 1} (${label})`;
+                }
+            }
         }
     },
 
@@ -10052,6 +10132,17 @@ const Actions = {
         meta.wizardMode = mode === 'advanced' ? 'advanced' : 'express';
         if (meta.wizardMode === 'express') {
             Store.state.legalAndFinancials.capexMode = 'auto';
+            // PRIORIDAD CATÁLOGO: En modo rápido garantizar equipos comerciales oficiales Tier-1
+            Store.state.pvModules.mode = 'catalog';
+            if (!Store.state.pvModules.catalogId || !MODULOS_FV[Store.state.pvModules.catalogId]) {
+                Store.state.pvModules.catalogId = 'longi_450';
+            }
+            Store.state.pvModules.name = MODULOS_FV[Store.state.pvModules.catalogId].name;
+            Store.state.inverterAndStrings.mode = 'catalog';
+            if (Store.state.batterySystem.enabled) {
+                Store.state.batterySystem.mode = 'catalog';
+            }
+            AutoOptimizer.cascadeFromStep1();
         }
         Store.save();
         Wizard.renderStepper();
@@ -10985,9 +11076,10 @@ const Actions = {
     },
 
     updateModuleField(field, val) {
-        if (Store.state.pvModules.mode !== 'custom') {
-            Store.state.pvModules.mode = 'custom';
+        if ((Store.state.projectMeta?.wizardMode || 'express') === 'express') {
+            return;
         }
+        Store.state.pvModules.mode = 'custom';
         const num = parseFloat(val);
         if (!isNaN(num)) {
             Store.state.pvModules[field] = num;
@@ -11081,6 +11173,9 @@ const Actions = {
     },
 
     updateInverterField(field, val) {
+        if ((Store.state.projectMeta?.wizardMode || 'express') === 'express') {
+            return;
+        }
         if (field !== 'cosPhi' && Store.state.inverterAndStrings.mode !== 'custom') {
             Store.state.inverterAndStrings.mode = 'custom';
             Store.state.inverterAndStrings.modelName = "Inversor Personalizado (Custom)";
@@ -12872,16 +12967,29 @@ const UI = {
             }
         }
 
-        // Ficha 1: Campo Solar + Inversor & Strings
+        // Ficha 1: Campo Solar + Inversor & Strings (Prioridad Catálogo Comercial Tier-1 Oficial)
         const box1 = document.getElementById('s7TechSummaryPvInv');
         if (box1) {
+            const isExp = (meta.wizardMode || 'express') === 'express';
+            let displayModName = pv.name;
+            if (isExp || pv.mode === 'catalog') {
+                const catMod = MODULOS_FV[pv.catalogId || 'longi_450'] || MODULOS_FV['longi_450'];
+                if (catMod) displayModName = catMod.name;
+            }
+
+            let displayInvName = inv.modelName;
+            if (isExp || inv.mode === 'catalog') {
+                const catInv = INVERSORES_COMERCIALES[inv.catalogId || 'huawei_sun2000_3ktl_l1'] || INVERSORES_COMERCIALES['huawei_sun2000_3ktl_l1'];
+                if (catInv) displayInvName = catInv.nombre;
+            }
+
             const mpptLines = c.inverter.activeMppts.filter(m => m.isUsed).map(m =>
                 `${escapeHtml(m.name)}: ${m.stringsParallel}×${m.modulesSeries} uds (Voc frío ${fmtNum(m.vocCold, 1)}V / Vmp calor ${fmtNum(m.vmpHot, 1)}V)`
             ).join(' • ') || 'Sin ramas asignadas';
 
             box1.innerHTML = `
                 <div class="grid grid-cols-2 gap-y-2 gap-x-4 py-1">
-                    <div><span class="text-[var(--text-muted)] block">Módulo Solar:</span><strong class="font-semibold">${escapeHtml(pv.name)}</strong></div>
+                    <div><span class="text-[var(--text-muted)] block">Módulo Solar:</span><strong class="font-semibold">${escapeHtml(displayModName)}</strong></div>
                     <div><span class="text-[var(--text-muted)] block">Campo Captación:</span><strong class="font-mono text-[#0066FF]">${c.pv.moduleCount} uds • ${fmtNum(c.pv.totalKwp, 2)} kWp (${fmtNum(c.pv.areaM2, 1)} m²)</strong></div>
                     <div><span class="text-[var(--text-muted)] block">Geometría & PVGIS:</span><strong class="font-mono">Tilt ${pv.tilt}° / Az ${pv.azimuth}° • ${fmtNum(c.pv.specificYield)} kWh/kWp</strong></div>
                     <div><span class="text-[var(--text-muted)] block">${bat.enabled ? 'Inversor-Cargador Híbrido:' : 'Inversor Seleccionado:'}</span><strong class="font-semibold">${escapeHtml(inv.modelName)}</strong></div>
